@@ -48,7 +48,7 @@ export function initializeGameObject<Class extends GameObject, Args extends read
     }
 
     if (typeof newObjectAsAny["step"] === "function") {
-        newObjectAsAny.onCreate(newObjectAsAny["step"]);
+        newObjectAsAny.onStep(newObjectAsAny["step"]);
     }
 
     return newObject;
