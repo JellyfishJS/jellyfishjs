@@ -19,7 +19,9 @@
     },
     "homepage": "https://github.com/NicholasThrom/fydp#readme",
     "devDependencies": {
-        "ts-lint": "^4.5.1",
         "typescript": "^3.6.3"
+    },
+    "dependencies": {
+        "tslint": "^5.20.0"
     }
 }
