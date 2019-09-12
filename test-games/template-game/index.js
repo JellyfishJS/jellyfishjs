@@ -1,3 +1,14 @@
-const engine = require("engine");
+const { Game } = require("engine");
 
-engine.sayHello();
+class Player extends Game.GameObject {
+    create() {
+        console.log("My existence has begun");
+    }
+
+    step() {
+        console.log("I still exist");
+    }
+}
+
+Game.create(Player);
+Game.start();
