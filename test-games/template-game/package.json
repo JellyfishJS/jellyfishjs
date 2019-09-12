@@ -8,5 +8,8 @@
     "start": "node ./index.js"
   },
   "author": "",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "dependencies": {
+    "engine": "file:../../engine"
+  }
 }
