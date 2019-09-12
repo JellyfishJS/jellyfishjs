@@ -1,23 +1,23 @@
 {
-  "name": "engine",
-  "version": "0.0.0",
-  "description": "",
-  "main": "dist/index.js",
-  "scripts": {
-    "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/NicholasThrom/fydp.git"
-  },
-  "author": "",
-  "license": "UNLICENSED",
-  "bugs": {
-    "url": "https://github.com/NicholasThrom/fydp/issues"
-  },
-  "homepage": "https://github.com/NicholasThrom/fydp#readme",
-  "devDependencies": {
-    "typescript": "^3.6.3"
-  }
+    "name": "engine",
+    "version": "0.0.0",
+    "description": "",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/NicholasThrom/fydp.git"
+    },
+    "author": "",
+    "license": "UNLICENSED",
+    "bugs": {
+        "url": "https://github.com/NicholasThrom/fydp/issues"
+    },
+    "homepage": "https://github.com/NicholasThrom/fydp#readme",
+    "devDependencies": {
+        "typescript": "^3.6.3"
+    }
 }
