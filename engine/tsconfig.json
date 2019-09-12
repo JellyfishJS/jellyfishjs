@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "declaration": true,
+        "noEmit": false,
+        "module": "commonjs",
+        "moduleResolution": "Node",
+        "outDir": "dist",
+        "removeComments": false,
+        "strict": true,
+        "target": "ES5",
+        "typeRoots": ["node_modules/@types"]
+    },
+    "include": [
+        "./src/**/*"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
