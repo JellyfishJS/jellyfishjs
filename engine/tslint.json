@@ -46,6 +46,7 @@
         "no-empty": false,
         "no-invalid-this": true,
         "no-shadowed-variable": false,
+        "no-string-literal": false,
         "no-inferrable-types": [
             true,
             "ignore-params"
