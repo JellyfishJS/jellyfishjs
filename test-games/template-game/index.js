@@ -10,5 +10,5 @@ class Player extends Engine.GameObject {
     }
 }
 
-Engine.create(Player);
-Engine.start();
+Engine.game.createObject(Player);
+Engine.game.start();
