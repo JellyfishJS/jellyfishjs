@@ -1,6 +1,6 @@
-const { Game } = require("engine");
+const Engine = require("engine");
 
-class Player extends Game.GameObject {
+class Player extends Engine.GameObject {
     create() {
         console.log("My existence has begun");
     }
@@ -10,5 +10,5 @@ class Player extends Game.GameObject {
     }
 }
 
-Game.create(Player);
-Game.start();
+Engine.create(Player);
+Engine.start();
