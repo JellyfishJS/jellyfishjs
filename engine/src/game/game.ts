@@ -1,5 +1,5 @@
 import { GameLoop } from "../game-loop/game-loop";
-import { GameObject, initializeGameObject } from "../game-object/game-object";
+import { GameObject } from "../game-object/game-object";
 
 /**
  * Represents separate games.
@@ -25,7 +25,7 @@ export class Game {
         Class: new (...args: Args) => Subclass,
         ...args: Args
     ) {
-        const newObject = initializeGameObject(Class, ...args);
+        const newObject = new Class(...args);
         this._gameLoop.addGameObject(newObject);
     }
 
