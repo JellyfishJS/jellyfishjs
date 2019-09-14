@@ -3,7 +3,7 @@ import { Handler } from "./handler";
 /**
  * The superclass of any objects that appear in the game.
  */
-export class GameObject {
+export abstract class GameObject {
 
     /**
      * Keeps track of the functions to call on creation.
@@ -23,11 +23,21 @@ export class GameObject {
     private _onStepHandler = new Handler();
 
     /**
-     * Calls the specified callback when the object is created.
+     * Calls the specified callback every step.
      */
     public onStep(callback: () => void) {
         this._onStepHandler.addCallback(callback);
     }
+
+    /**
+     * Called when the object is created.
+     */
+    public create?(): void;
+
+    /**
+     * Called every step.
+     */
+    public step?(): void;
 
 }
 
@@ -41,14 +51,13 @@ export function initializeGameObject<Class extends GameObject, Args extends read
     ...args: Args
 ) {
     const newObject = new Class(...args);
-    const newObjectAsAny = newObject as any;
 
-    if (typeof newObjectAsAny["create"] === "function") {
-        newObjectAsAny.onCreate(newObjectAsAny["create"]);
+    if (newObject.create) {
+        newObject.onCreate(newObject.create);
     }
 
-    if (typeof newObjectAsAny["step"] === "function") {
-        newObjectAsAny.onStep(newObjectAsAny["step"]);
+    if (newObject.step) {
+        newObject.onStep(newObject.step);
     }
 
     return newObject;
