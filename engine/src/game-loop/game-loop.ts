@@ -28,12 +28,14 @@ export class GameLoop {
      */
     private _handleCreation() {
         let iterations = 0;
+
         while (this._gameObjectsToBeCreated.length !== 0 && ++iterations < maxCreationDepth) {
             this._gameObjects = [...this._gameObjects, ...this._gameObjectsToBeCreated];
             const gameObjectsCreatedThisIteration = this._gameObjectsToBeCreated;
             this._gameObjectsToBeCreated = [];
-            gameObjectsCreatedThisIteration.forEach((gameObject) => gameObject["_onCreateHandler"].callCallback());
+            gameObjectsCreatedThisIteration.forEach((gameObject) => gameObject.onCreate && gameObject.onCreate());
         }
+
         if (iterations === maxCreationDepth) {
             console.error("Recursive object creation detected. Some object is probably creating itself in its `create`.");
         }
@@ -56,7 +58,7 @@ export class GameLoop {
      */
     public runLoop() {
         this._handleCreation();
-        this._gameObjects.forEach((gameObject) => gameObject["_onStepHandler"].callCallback());
+        this._gameObjects.forEach((gameObject) => gameObject.step && gameObject.step());
     }
 
 }

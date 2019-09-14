@@ -1,7 +1,7 @@
 const Engine = require("engine");
 
 class Player extends Engine.GameObject {
-    create() {
+    onCreate() {
         console.log("My existence has begun");
     }
 
