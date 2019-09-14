@@ -10,7 +10,8 @@
     "author": "",
     "license": "UNLICENSED",
     "dependencies": {
-        "engine": "file:../../engine"
+        "engine": "file:../../engine",
+        "pixi.js": "^5.1.3"
     },
     "devDependencies": {
         "webpack": "^4.40.2",
