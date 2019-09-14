@@ -33,6 +33,8 @@ export class PIXIProvider {
 
         this._application = new PIXI.Application({
             view: canvas || undefined,
+            height: canvas && canvas.height || 300,
+            width: canvas && canvas.width || 300,
             resolution: window && window.devicePixelRatio || 1,
             antialias: true,
         });
@@ -43,6 +45,20 @@ export class PIXIProvider {
      */
     public getCanvas() {
         return this._application.view;
+    }
+
+    /**
+     * Returns the container at the root of the canvas.
+     */
+    public getContainer() {
+        return this._application.stage;
+    }
+
+    /**
+     * Executes the specified callback every frame.
+     */
+    public onInterval(callback: () => void) {
+        this._application.ticker.add(callback);
     }
 
 }
