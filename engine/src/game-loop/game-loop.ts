@@ -87,9 +87,9 @@ export class GameLoop {
         this._gameObjects.forEach((gameObject) => gameObject.step && gameObject.step());
 
         this._gameObjects.forEach((gameObject) => {
-            const container = gameObject[containerKey];
             const sprite = gameObject[spriteKey];
-            if (gameObject.draw && container && sprite) {
+            const container = gameObject[containerKey];
+            if (gameObject.draw && sprite && container) {
                 gameObject.draw(PIXI, sprite, container);
             }
         });
