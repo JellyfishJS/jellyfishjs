@@ -26,6 +26,8 @@ export class PIXIProvider {
             const view = window.document.getElementById(id);
             if (view instanceof HTMLCanvasElement) {
                 canvas = view;
+            } else {
+                console.error(`Could not find canvas with id "${id}".`);
             }
         }
 

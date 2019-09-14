@@ -1,5 +1,6 @@
 import { GameLoop } from "../game-loop/game-loop";
 import { GameObject, initializeGameObject } from "../game-object/game-object";
+import { PIXIProvider } from "../pixi-provider/pixi-provider";
 
 /**
  * Represents separate games.
@@ -8,12 +9,15 @@ import { GameObject, initializeGameObject } from "../game-object/game-object";
  * use the default `game`.
  */
 export class Game {
+
     /**
      * The GameLoop for this game.
      *
      * Holds the GameObjects and performs appropriate actions on them.
      */
     private readonly _gameLoop = new GameLoop();
+
+    private _pixiProvider: PIXIProvider | undefined;
 
     /**
      * Creates an instance of a specified subclass of GameObject,
@@ -30,11 +34,34 @@ export class Game {
     }
 
     /**
+     * Sets the canvas on which this game draws to the one with the specified ID.
+     */
+    public setCanvasByID(id: string) {
+        this._pixiProvider = new PIXIProvider(id);
+    }
+
+    /**
+     * Returns the canvas on which this game is drawn.
+     */
+    public getCanvas() {
+        if (!this._pixiProvider) {
+            this._pixiProvider = new PIXIProvider();
+        }
+
+        return this._pixiProvider.getCanvas();
+    }
+
+    /**
      * Begins running the game.
      */
     public start() {
-        setInterval(() => this._gameLoop.runLoop(), 1000);
+        if (this._pixiProvider) {
+
+        } else {
+            setInterval(() => this._gameLoop.runLoop(), 1000);
+        }
     }
+
 }
 
 /**
