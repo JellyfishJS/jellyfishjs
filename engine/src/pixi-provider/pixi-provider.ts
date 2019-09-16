@@ -1,8 +1,17 @@
-import * as PIXI from "pixi.js";
+import * as PIXIForType from "pixi.js";
 
-// PIXI puts a fancy message in the console,
-// unless you disable it.
-PIXI.utils.skipHello();
+let PIXI: typeof PIXIForType | undefined;
+
+try {
+    PIXI = require("pixi.js") as typeof PIXIForType;
+
+    // PIXI puts a fancy message in the console,
+    // unless you disable it.
+    PIXI.utils.skipHello();
+} catch {
+    // In node, requiring PIXI errors.
+    // This is okay, it just means there will be no display.
+}
 
 /**
  * Sets up a PIXI app.
@@ -12,7 +21,7 @@ export class PIXIProvider {
     /**
      * The PIXI Application this PIXIProvider provides.
      */
-    private readonly _application: PIXI.Application;
+    private readonly _application: PIXI.Application | undefined;
 
     /**
      * Constructs a PIXIProvider, with, optionally,
@@ -22,6 +31,9 @@ export class PIXIProvider {
      */
     public constructor(id?: string) {
         let canvas: HTMLCanvasElement | undefined;
+
+        if (!PIXI) { return; }
+
         if (window && id) {
             const view = window.document.getElementById(id);
             if (view instanceof HTMLCanvasElement) {
@@ -44,21 +56,27 @@ export class PIXIProvider {
      * Returns the canvas element that the PIXI application this contains uses.
      */
     public getCanvas() {
-        return this._application.view;
+        return this._application && this._application.view;
     }
 
     /**
      * Returns the container at the root of the canvas.
      */
     public getContainer() {
-        return this._application.stage;
+        return this._application && this._application.stage;
     }
 
     /**
      * Executes the specified callback every frame.
      */
     public onInterval(callback: () => void) {
-        this._application.ticker.add(callback);
+        if (this._application) {
+            this._application.ticker.add(callback);
+        } else {
+            setInterval(callback, 1000 / 60);
+        }
     }
 
 }
+
+export { PIXI };

@@ -14,6 +14,7 @@ class Player extends Engine.GameObject {
 
     step() {
         this.x += 0.1;
+        console.log(this.x);
     }
 
     draw(pixi, sprite, container) {

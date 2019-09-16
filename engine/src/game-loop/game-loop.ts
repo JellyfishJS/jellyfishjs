@@ -1,6 +1,5 @@
-import * as PIXI from "pixi.js";
 import { containerKey, GameObject, spriteKey } from "../game-object/game-object";
-import { PIXIProvider } from "../pixi-provider/pixi-provider";
+import { PIXI, PIXIProvider } from "../pixi-provider/pixi-provider";
 
 /**
  * How many times to add the objects that have been created
@@ -35,8 +34,12 @@ export class GameLoop {
 
         if (!pixiProvider) { return; }
 
+        const mainContainer = pixiProvider.getContainer();
+
+        if (!mainContainer || !PIXI) { return; }
+
         if (!gameObject[containerKey]) {
-            gameObject.setContainer(pixiProvider.getContainer());
+            gameObject.setContainer(mainContainer);
         }
 
         const container = gameObject[containerKey];
@@ -86,13 +89,18 @@ export class GameLoop {
 
         this._gameObjects.forEach((gameObject) => gameObject.step && gameObject.step());
 
-        this._gameObjects.forEach((gameObject) => {
-            const sprite = gameObject[spriteKey];
-            const container = gameObject[containerKey];
-            if (gameObject.draw && sprite && container) {
-                gameObject.draw(PIXI, sprite, container);
-            }
-        });
+        // For some reason Typescript doesn't handle type narrowing on imported constants,
+        // so it needs to be reassigned.
+        const pixi = PIXI;
+        if (pixi) {
+            this._gameObjects.forEach((gameObject) => {
+                const sprite = gameObject[spriteKey];
+                const container = gameObject[containerKey];
+                if (gameObject.draw && sprite && container) {
+                    gameObject.draw(pixi, sprite, container);
+                }
+            });
+        }
     }
 
 }

@@ -55,11 +55,11 @@ export class Game {
      * Begins running the game.
      */
     public start() {
-        if (this._pixiProvider) {
-            this._pixiProvider.onInterval(() => this._gameLoop.runLoop(this._pixiProvider));
-        } else {
-            setInterval(() => this._gameLoop.runLoop(), 1000);
+        if (!this._pixiProvider) {
+            this._pixiProvider = new PIXIProvider();
         }
+
+        this._pixiProvider.onInterval(() => this._gameLoop.runLoop(this._pixiProvider));
     }
 
 }
