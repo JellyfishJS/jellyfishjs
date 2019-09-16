@@ -1,6 +1,6 @@
 import { GameLoop } from "../game-loop/game-loop";
 import { GameObject } from "../game-object/game-object";
-import { PIXIProvider } from "../pixi-provider/pixi-provider";
+import { PIXISetup } from "../pixi-setup/pixi-setup";
 
 /**
  * Represents separate games.
@@ -17,7 +17,7 @@ export class Game {
      */
     private readonly _gameLoop = new GameLoop();
 
-    private _pixiProvider: PIXIProvider | undefined;
+    private _pixiSetup: PIXISetup | undefined;
 
     /**
      * Creates an instance of a specified subclass of GameObject,
@@ -37,29 +37,29 @@ export class Game {
      * Sets the canvas on which this game draws to the one with the specified ID.
      */
     public setCanvasByID(id: string) {
-        this._pixiProvider = new PIXIProvider(id);
+        this._pixiSetup = new PIXISetup(id);
     }
 
     /**
      * Returns the canvas on which this game is drawn.
      */
     public getCanvas() {
-        if (!this._pixiProvider) {
-            this._pixiProvider = new PIXIProvider();
+        if (!this._pixiSetup) {
+            this._pixiSetup = new PIXISetup();
         }
 
-        return this._pixiProvider.getCanvas();
+        return this._pixiSetup.getCanvas();
     }
 
     /**
      * Begins running the game.
      */
     public start() {
-        if (!this._pixiProvider) {
-            this._pixiProvider = new PIXIProvider();
+        if (!this._pixiSetup) {
+            this._pixiSetup = new PIXISetup();
         }
 
-        this._pixiProvider.onInterval(() => this._gameLoop.runLoop(this._pixiProvider));
+        this._pixiSetup.onInterval(() => this._gameLoop.runLoop(this._pixiSetup));
     }
 
 }

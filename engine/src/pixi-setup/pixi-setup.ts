@@ -16,15 +16,15 @@ try {
 /**
  * Sets up a PIXI app.
  */
-export class PIXIProvider {
+export class PIXISetup {
 
     /**
-     * The PIXI Application this PIXIProvider provides.
+     * The PIXI Application this PIXISetup provides.
      */
     private readonly _application: PIXI.Application | undefined;
 
     /**
-     * Constructs a PIXIProvider, with, optionally,
+     * Constructs a PIXISetup, with, optionally,
      * an id with which to find the canvas.
      *
      * If no id is provided, use `.getCanvas()` to get a canvas element.
