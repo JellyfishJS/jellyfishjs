@@ -1,4 +1,4 @@
-import { GameObject } from "../game-object/game-object";
+import { GameObject } from '../game-object/game-object';
 
 /**
  * How many times to add the objects that have been created
@@ -37,7 +37,7 @@ export class GameLoop {
         }
 
         if (iterations === maxCreationDepth) {
-            console.error("Recursive object creation detected. Some object is probably creating itself in its `create`.");
+            console.error('Recursive object creation detected. Some object is probably creating itself in its `create`.');
         }
     }
 

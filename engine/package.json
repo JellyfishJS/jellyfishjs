@@ -6,7 +6,8 @@
     "scripts": {
         "build": "tsc",
         "lint": "tslint --project .",
-        "test": "npm run -s lint"
+        "test": "npm run -s lint",
+        "fix": "npm run -s lint -- --fix"
     },
     "repository": {
         "type": "git",

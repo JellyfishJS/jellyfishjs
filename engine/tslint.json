@@ -66,7 +66,8 @@
         "ordered-imports": true,
         "quotemark": [
             true,
-            "double",
+            "single",
+            "avoid-escape",
             "avoid-template"
         ],
         "semicolon": [

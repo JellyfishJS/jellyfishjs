@@ -1,5 +1,5 @@
-import { GameLoop } from "../game-loop/game-loop";
-import { GameObject } from "../game-object/game-object";
+import { GameLoop } from '../game-loop/game-loop';
+import { GameObject } from '../game-object/game-object';
 
 /**
  * Represents separate games.
