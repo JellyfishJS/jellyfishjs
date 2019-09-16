@@ -57,6 +57,7 @@
             "allow-fast-null-checks",
             "allow-new"
         ],
+        "no-var-requires": false,
         "object-literal-key-quotes": [
             true,
             "as-needed"
