@@ -2,6 +2,6 @@ language: node_js
 node_js:
   - 12
 install:
-  - cd engine && npm install
+  - (cd engine && npm install)
 script:
-  - cd engine && npm run build && npm test
+  - (cd engine && npm run build && npm test)
