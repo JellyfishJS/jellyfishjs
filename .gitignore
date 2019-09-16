@@ -62,3 +62,10 @@ typings/
 
 # next.js build output
 .next
+
+# WebStorm
+.idea
+*.iml
+
+# VS Code
+.vscode
