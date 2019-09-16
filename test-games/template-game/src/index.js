@@ -21,6 +21,7 @@ class Player extends Engine.GameObject {
         sprite.beginFill(0xaaaaaa);
         sprite.drawCircle(this.x, 120, 30);
     }
+
 }
 
 Engine.game.setCanvasByID("game");
