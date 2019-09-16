@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+import * as PIXI from 'pixi.js';
 
 /**
  * The symbol used to access containers.
@@ -7,7 +7,7 @@ import * as PIXI from "pixi.js";
  * since user code will subclass this class,
  * so private variables can collide.
  */
-export const containerKey = Symbol("container");
+export const containerKey = Symbol('container');
 
 /**
  * The symbol used to access sprites.
@@ -16,7 +16,7 @@ export const containerKey = Symbol("container");
  * since user code will subclass this class,
  * so private variables can collide.
  */
-export const spriteKey = Symbol("sprite");
+export const spriteKey = Symbol('sprite');
 
 /**
  * The superclass of any objects that appear in the game.

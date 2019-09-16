@@ -1,6 +1,6 @@
-import { GameLoop } from "../game-loop/game-loop";
-import { GameObject } from "../game-object/game-object";
-import { PIXISetup } from "../pixi-setup/pixi-setup";
+import { GameLoop } from '../game-loop/game-loop';
+import { GameObject } from '../game-object/game-object';
+import { PIXISetup } from '../pixi-setup/pixi-setup';
 
 /**
  * Represents separate games.

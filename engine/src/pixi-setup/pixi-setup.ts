@@ -1,9 +1,9 @@
-import * as PIXIForType from "pixi.js";
+import * as PIXIForType from 'pixi.js';
 
 let PIXI: typeof PIXIForType | undefined;
 
 try {
-    PIXI = require("pixi.js") as typeof PIXIForType;
+    PIXI = require('pixi.js') as typeof PIXIForType;
 
     // PIXI puts a fancy message in the console,
     // unless you disable it.
