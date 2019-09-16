@@ -85,7 +85,12 @@ export class GameLoop {
      * Runs a single game loop.
      */
     public runLoop(pixiSetup?: PIXISetup | undefined) {
+        this._gameObjects.forEach((gameObject) => gameObject.beforeStep && gameObject.beforeStep());
+
         this._handleCreation(pixiSetup);
+
+        this._gameObjects.forEach((gameObject) => gameObject.beforePhysics && gameObject.beforePhysics());
+        this._gameObjects.forEach((gameObject) => gameObject.afterPhysics && gameObject.afterPhysics());
 
         this._gameObjects.forEach((gameObject) => gameObject.step && gameObject.step());
 
@@ -101,6 +106,8 @@ export class GameLoop {
                 }
             });
         }
+
+        this._gameObjects.forEach((gameObject) => gameObject.endStep && gameObject.endStep());
     }
 
 }

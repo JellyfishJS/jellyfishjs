@@ -56,11 +56,39 @@ export abstract class GameObject<Sprite = unknown> {
     public abstract getSprite(pixi: typeof PIXI, container: PIXI.Container): Sprite;
 
     /**
+     * Called before every step.
+     *
+     * Meant to be overridden.
+     */
+    public beforeStep?(): void;
+
+    /**
+     * Called before performing physics calculations.
+     *
+     * Meant to be overridden.
+     */
+    public beforePhysics?(): void;
+
+    /**
+     * Called after performing physics calculations.
+     *
+     * Meant to be overridden.
+     */
+    public afterPhysics?(): void;
+
+    /**
      * Called every step.
      *
      * Meant to be overridden.
      */
     public step?(): void;
+
+    /**
+     * Called at the end of every step.
+     *
+     * Meant to be overridden.
+     */
+    public endStep?(): void;
 
     /**
      * Called every step, to do drawing actions.
