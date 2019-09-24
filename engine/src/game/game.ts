@@ -31,6 +31,7 @@ export class Game {
     ) {
         const newObject = new Class(...args);
         this._gameLoop.addGameObject(newObject);
+        return newObject;
     }
 
     /**
