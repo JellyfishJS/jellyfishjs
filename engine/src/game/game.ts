@@ -1,7 +1,7 @@
 import { GameLoop } from '../game-loop/game-loop';
 import { GameObject } from '../game-object/game-object';
+import { Keyboard } from '../keyboard/keyboard';
 import { PIXISetup } from '../pixi-setup/pixi-setup';
-import {Keyboard} from "../keyboard/keyboard";
 
 /**
  * Represents separate games.

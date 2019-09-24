@@ -1,6 +1,6 @@
 import { containerKey, GameObject, spriteKey } from '../game-object/game-object';
+import { Keyboard } from '../keyboard/keyboard';
 import { PIXI, PIXISetup } from '../pixi-setup/pixi-setup';
-import {Keyboard} from "../keyboard/keyboard";
 
 /**
  * How many times to add the objects that have been created

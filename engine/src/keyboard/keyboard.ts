@@ -13,9 +13,13 @@ export class Keyboard {
      */
     private keyboardEvents: { keyCode: number, state: boolean }[];
 
-    constructor() {
-        (window && window.document).addEventListener("keydown", (event) => { this.keyboardEvents.push({keyCode: event.keyCode, state: true})});
-        (window && window.document).addEventListener("keyup", (event) => {this.keyboardEvents.push({keyCode: event.keyCode, state: false})});
+    public constructor() {
+        (window && window.document).addEventListener(
+            'keydown', (event) => { this.keyboardEvents.push({keyCode: event.keyCode, state: true}); },
+        );
+        (window && window.document).addEventListener(
+            'keyup', (event) => {this.keyboardEvents.push({keyCode: event.keyCode, state: false}); },
+        );
         this.keyboardState = new Map();
         this.keyboardEvents = [];
     }
@@ -24,16 +28,11 @@ export class Keyboard {
      * Loops through all of the key events in keyboardEvents, updates the keyboardState based
      * on each event and removes the event from the queue.
      */
-    public processEvents(): void
-    {
-        for(const keyboardEvent of this.keyboardEvents)
-        {
-            if(keyboardEvent.state)
-            {
+    public processEvents(): void {
+        for (const keyboardEvent of this.keyboardEvents) {
+            if (keyboardEvent.state) {
                 this.keyboardState.set(keyboardEvent.keyCode, keyboardEvent.state);
-            }
-            else
-            {
+            } else {
                 this.keyboardState.delete(keyboardEvent.keyCode);
             }
         }
@@ -44,8 +43,7 @@ export class Keyboard {
      * Returns true if the key with the keycode is currently up, false otherwise.
      * @param keyCode The keycode to check the state of.
      */
-    public isUp(keyCode: number): boolean
-    {
+    public isUp(keyCode: number): boolean {
         return !this.keyboardState.get(keyCode);
     }
 
@@ -53,8 +51,7 @@ export class Keyboard {
      * Returns true if the key with the keycode is currently down, false otherwise.
      * @param keyCode The keycode to check the state of.
      */
-    public isDown(keyCode: number): boolean
-    {
+    public isDown(keyCode: number): boolean {
         return this.keyboardState.get(keyCode) || false;
     }
 }
