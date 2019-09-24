@@ -108,6 +108,10 @@ export class GameLoop {
         }
 
         this._gameObjects.forEach((gameObject) => gameObject.endStep && gameObject.endStep());
+
+        if (this._gameObjects.some((gameObject) => gameObject.toBeDestroyed)) {
+            this._gameObjects = this._gameObjects.filter((gameObject) => !gameObject.toBeDestroyed);
+        }
     }
 
 }
