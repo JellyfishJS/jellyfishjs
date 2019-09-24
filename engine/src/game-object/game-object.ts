@@ -32,7 +32,7 @@ export abstract class GameObject<Sprite = unknown> {
      * Whether this object should be destroyed by the end of the current
      * iteration of the game loop.
      */
-    public toBeDestroyed : boolean = false;
+    public toBeDestroyed = false;
 
     /**
      * Sets the container in which to draw sprites
