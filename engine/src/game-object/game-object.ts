@@ -29,8 +29,7 @@ export abstract class GameObject<Sprite = unknown> {
     public [containerKey]: PIXI.Container | undefined;
 
     /**
-     * Whether this object should be destroyed by the end of the current
-     * iteration of the game loop.
+     * Whether this object should be destroyed by the end of the current step.
      */
     public toBeDestroyed = false;
 
@@ -106,8 +105,7 @@ export abstract class GameObject<Sprite = unknown> {
     public draw?(pixi: typeof PIXI, sprite: Sprite, container: PIXI.Container): void;
 
     /**
-     * Schedule the game object for destruction at the end of the current
-     * iteration of the game loop.
+     * Schedule the game object for destruction at the end of the current step.
      */
     public destroy(): void {
         this.toBeDestroyed = true;
