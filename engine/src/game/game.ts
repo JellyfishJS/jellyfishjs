@@ -1,5 +1,6 @@
 import { GameLoop } from '../game-loop/game-loop';
 import { GameObject } from '../game-object/game-object';
+import { Matter } from '../matter-setup/matter-setup';
 import { PIXISetup } from '../pixi-setup/pixi-setup';
 
 /**
@@ -18,6 +19,8 @@ export class Game {
     private readonly _gameLoop = new GameLoop();
 
     private _pixiSetup: PIXISetup | undefined;
+
+    private _physicsEngine: Matter.Engine | undefined;
 
     /**
      * Creates an instance of a specified subclass of GameObject,
@@ -57,6 +60,10 @@ export class Game {
     public start() {
         if (!this._pixiSetup) {
             this._pixiSetup = new PIXISetup();
+        }
+
+        if (!this._physicsEngine && Matter) {
+            this._physicsEngine = Matter.Engine.create();
         }
 
         this._pixiSetup.onInterval(() => this._gameLoop.runLoop(this._pixiSetup));

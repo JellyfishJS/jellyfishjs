@@ -27,8 +27,5 @@
     },
     "dependencies": {
         "pixi.js": "^5.1.3"
-    },
-    "optionalDependencies": {
-        "matter-js": "^0.14.2"
     }
 }
