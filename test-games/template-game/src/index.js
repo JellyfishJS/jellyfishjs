@@ -1,10 +1,7 @@
 const Engine = require("engine");
+const Matter = require("matter-js");
 
 class Player extends Engine.GameObject {
-
-    onCreate() {
-        this.x = 10;
-    }
 
     getSprite(pixi, container) {
         const sprite = new pixi.Graphics();
@@ -12,15 +9,18 @@ class Player extends Engine.GameObject {
         return sprite;
     }
 
+    setUpPhysicsBody() {
+        return Matter.Bodies.circle(40, 20, 20);
+    }
+
     step() {
-        this.x += 0.1;
-        console.log(this.x);
+        Matter.Body.applyForce(this.physicsBody, { x: 0, y: 0 }, { x: 0, y: 0.001 });
     }
 
     draw(pixi, sprite, container) {
         sprite.clear();
         sprite.beginFill(0xaaaaaa);
-        sprite.drawCircle(this.x, 120, 30);
+        sprite.drawCircle(this.physicsBody.position.x, this.physicsBody.position.y, 20);
     }
 
 }
