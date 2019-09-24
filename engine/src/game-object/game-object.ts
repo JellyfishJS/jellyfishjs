@@ -22,7 +22,7 @@ export const spriteKey = Symbol('sprite');
 /**
  * The superclass of any objects that appear in the game.
  */
-export abstract class GameObject<Sprite = unknown> {
+export abstract class GameObject<Sprite = unknown, Body extends undefined | Matter.Body | Matter.Body[] = undefined> {
 
     /**
      * The container for this GameObject.
@@ -52,6 +52,11 @@ export abstract class GameObject<Sprite = unknown> {
     public physicsWorld: Matter.World = undefined as any;
 
     /**
+     * The physics body this GameObject uses.
+     */
+    public physicsBody: Body | undefined;
+
+    /**
      * Called when the object is created.
      *
      * Meant to be overridden.
@@ -64,6 +69,18 @@ export abstract class GameObject<Sprite = unknown> {
      * Meant to be overridden.
      */
     public abstract getSprite(pixi: typeof PIXI, container: PIXI.Container): Sprite;
+
+    /**
+     * If this GameObject needs any physics bodies,
+     * override this and return them.
+     *
+     * A single `Matter.Body`, and array of `Matter.Body`s,
+     * or `undefined` can be returned.
+     *
+     * Only called if the optional dependency "matter-js" is installed.
+     * Run `npm i matter-js` to install this dependency.
+     */
+    public setUpPhysicsBody?(world: Matter.World): Body;
 
     /**
      * Called before every step.
