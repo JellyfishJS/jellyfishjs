@@ -1,5 +1,5 @@
 import * as MatterType from 'matter-js';
-import { containerKey, GameObject, spriteKey } from '../game-object/game-object';
+import { containerKey, GameObject, GameObjectBody, spriteKey } from '../game-object/game-object';
 import { Matter } from '../matter-setup/matter-setup';
 import { PIXI, PIXISetup } from '../pixi-setup/pixi-setup';
 
@@ -31,7 +31,7 @@ export class GameLoop {
      */
     private _initializeGameObject<
         Sprite,
-        Body extends undefined | Matter.Body | Matter.Body[],
+        Body extends GameObjectBody,
         Subclass extends GameObject<Sprite, Body>,
     >(
         gameObject: Subclass,
@@ -57,7 +57,7 @@ export class GameLoop {
      */
     private _initializeGameObjectPhysics<
         Sprite,
-        Body extends undefined | Matter.Body | Matter.Body[],
+        Body extends GameObjectBody,
         Subclass extends GameObject<Sprite, Body>,
     >(
         gameObject: Subclass,
@@ -66,7 +66,7 @@ export class GameLoop {
         if (!gameObject.setUpPhysicsBody) { return; }
 
         gameObject.physicsBody = gameObject.setUpPhysicsBody();
-        const bodyOrBodies: undefined | Matter.Body | Matter.Body[] = gameObject.physicsBody;
+        const bodyOrBodies: GameObjectBody = gameObject.physicsBody;
         if (!bodyOrBodies) { return; }
 
         if (Array.isArray(bodyOrBodies)) {
@@ -83,7 +83,7 @@ export class GameLoop {
      */
     private _initializeGameObjectPIXI<
         Sprite,
-        Body extends undefined | Matter.Body | Matter.Body[],
+        Body extends GameObjectBody,
         Subclass extends GameObject<Sprite, Body>,
     >(
         gameObject: Subclass,

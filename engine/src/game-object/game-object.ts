@@ -20,9 +20,14 @@ export const containerKey = Symbol('container');
 export const spriteKey = Symbol('sprite');
 
 /**
+ * Allowable types for GameObject bodies.
+ */
+export type GameObjectBody = undefined | Matter.Body | Matter.Body[];
+
+/**
  * The superclass of any objects that appear in the game.
  */
-export abstract class GameObject<Sprite = unknown, Body extends undefined | Matter.Body | Matter.Body[] = undefined> {
+export abstract class GameObject<Sprite = unknown, Body extends GameObjectBody = undefined> {
 
     /**
      * The container for this GameObject.
