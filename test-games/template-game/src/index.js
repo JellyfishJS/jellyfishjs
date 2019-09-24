@@ -3,6 +3,12 @@ const Matter = require("matter-js");
 
 class Player extends Engine.GameObject {
 
+    constructor(position, force) {
+        super();
+        this.position = position || { x: 0, y: 0 };
+        this.force = force || { x: 0, y: 0 };
+    }
+
     getSprite(pixi, container) {
         const sprite = new pixi.Graphics();
         container.addChild(sprite);
@@ -10,11 +16,11 @@ class Player extends Engine.GameObject {
     }
 
     setUpPhysicsBody() {
-        return Matter.Bodies.circle(40, 20, 20);
+        return Matter.Bodies.circle(this.position.x, this.position.y, 20);
     }
 
     step() {
-        Matter.Body.applyForce(this.physicsBody, { x: 0, y: 0 }, { x: 0, y: 0.001 });
+        Matter.Body.applyForce(this.physicsBody, { x: 0, y: 0 }, this.force);
     }
 
     draw(pixi, sprite, container) {
@@ -26,5 +32,6 @@ class Player extends Engine.GameObject {
 }
 
 Engine.game.setCanvasByID("game");
-Engine.game.createObject(Player);
+Engine.game.createObject(Player, { x: 200, y: 30 }, { x: 0, y: -0.001 });
+Engine.game.createObject(Player, { x: 220, y: 250 }, { x: 0, y: -0.0015 });
 Engine.game.start();
