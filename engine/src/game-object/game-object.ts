@@ -54,6 +54,13 @@ export abstract class GameObject<Sprite = unknown> {
     public onCreate?(): void;
 
     /**
+     * Called when the object is destroyed.
+     *
+     * Meant to be overridden.
+     */
+    public onDestroy?(): void;
+
+    /**
      * Sets up and returns the sprite for this GameObject.
      *
      * Meant to be overridden.
