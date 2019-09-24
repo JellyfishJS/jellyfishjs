@@ -93,12 +93,13 @@ export class GameLoop {
     /**
      * Runs a single game loop.
      */
-    public runLoop(pixiSetup: PIXISetup | undefined, world: Matter.World | undefined) {
+    public runLoop(pixiSetup: PIXISetup | undefined, engine: Matter.Engine | undefined) {
         this._gameObjects.forEach((gameObject) => gameObject.beforeStep && gameObject.beforeStep());
 
-        this._handleCreation(pixiSetup, world);
+        this._handleCreation(pixiSetup, engine && engine.world);
 
         this._gameObjects.forEach((gameObject) => gameObject.beforePhysics && gameObject.beforePhysics());
+        Matter && engine && Matter.Engine.update(engine);
         this._gameObjects.forEach((gameObject) => gameObject.afterPhysics && gameObject.afterPhysics());
 
         this._gameObjects.forEach((gameObject) => gameObject.step && gameObject.step());
