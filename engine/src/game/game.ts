@@ -33,6 +33,11 @@ export class Game {
         ...args: Args
     ) {
         const newObject = new Class(...args);
+
+        if (this._physicsEngine) {
+            newObject.physicsWorld = this._physicsEngine.world;
+        }
+
         this._gameLoop.addGameObject(newObject);
     }
 

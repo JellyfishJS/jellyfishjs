@@ -1,3 +1,4 @@
+import * as Matter from 'matter-js';
 import * as PIXI from 'pixi.js';
 
 /**
@@ -40,6 +41,15 @@ export abstract class GameObject<Sprite = unknown> {
      * The sprites for this GameObject.
      */
     public [spriteKey]: Sprite | undefined;
+
+    /**
+     * The world in which any physics objects exist.
+     *
+     * Can be `undefined` if the "matter-js" optional dependency isn't installed.
+     * If it were optional, it would be very inconvenient in projects with physics,
+     * since for them it will never be `undefined`.
+     */
+    public physicsWorld: Matter.World = undefined as any;
 
     /**
      * Called when the object is created.
