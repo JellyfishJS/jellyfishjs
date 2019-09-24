@@ -1,3 +1,4 @@
+import * as MatterType from 'matter-js';
 import { containerKey, GameObject, spriteKey } from '../game-object/game-object';
 import { Matter } from '../matter-setup/matter-setup';
 import { PIXI, PIXISetup } from '../pixi-setup/pixi-setup';
@@ -42,33 +43,63 @@ export class GameLoop {
 
         // Apparently type narrowing doesn't work on imports.
         const matter = Matter;
-        if (matter && gameObject.setUpPhysicsBody) {
-            gameObject.physicsBody = gameObject.setUpPhysicsBody();
-            const bodyOrBodies: undefined | Matter.Body | Matter.Body[] = gameObject.physicsBody;
-            if (bodyOrBodies) {
-                if (Array.isArray(bodyOrBodies)) {
-                    bodyOrBodies.forEach((body) => {
-                        matter.World.addBody(gameObject.physicsWorld, body);
-                    });
-                } else {
-                    matter.World.addBody(gameObject.physicsWorld, bodyOrBodies);
-                }
-            }
+        if (matter) {
+            this._initializeGameObjectPhysics(gameObject, matter);
         }
 
         if (pixiSetup) {
-            const mainContainer = pixiSetup.getContainer();
+            this._initializeGameObjectPIXI(gameObject, pixiSetup);
+        }
+    }
 
-            if (!mainContainer || !PIXI) { return; }
+    /**
+     * Sets up the parts of the passed GameObject related to physics.
+     */
+    private _initializeGameObjectPhysics<
+        Sprite,
+        Body extends undefined | Matter.Body | Matter.Body[],
+        Subclass extends GameObject<Sprite, Body>,
+    >(
+        gameObject: Subclass,
+        matter: typeof MatterType,
+    ) {
+        if (!gameObject.setUpPhysicsBody) { return; }
 
-            if (!gameObject[containerKey]) {
-                gameObject.setContainer(mainContainer);
-            }
+        gameObject.physicsBody = gameObject.setUpPhysicsBody();
+        const bodyOrBodies: undefined | Matter.Body | Matter.Body[] = gameObject.physicsBody;
+        if (!bodyOrBodies) { return; }
 
-            const container = gameObject[containerKey];
-            if (gameObject.getSprite && container) {
-                gameObject[spriteKey] = gameObject.getSprite(PIXI, container);
-            }
+        if (Array.isArray(bodyOrBodies)) {
+            bodyOrBodies.forEach((body) => {
+                matter.World.addBody(gameObject.physicsWorld, body);
+            });
+        } else {
+            matter.World.addBody(gameObject.physicsWorld, bodyOrBodies);
+        }
+    }
+
+    /**
+     * Sets up the PIXI related aspects of the passed game object.
+     */
+    private _initializeGameObjectPIXI<
+        Sprite,
+        Body extends undefined | Matter.Body | Matter.Body[],
+        Subclass extends GameObject<Sprite, Body>,
+    >(
+        gameObject: Subclass,
+        pixiSetup: PIXISetup,
+    ) {
+        const mainContainer = pixiSetup.getContainer();
+
+        if (!mainContainer || !PIXI) { return; }
+
+        if (!gameObject[containerKey]) {
+            gameObject.setContainer(mainContainer);
+        }
+
+        const container = gameObject[containerKey];
+        if (gameObject.getSprite && container) {
+            gameObject[spriteKey] = gameObject.getSprite(PIXI, container);
         }
     }
 
