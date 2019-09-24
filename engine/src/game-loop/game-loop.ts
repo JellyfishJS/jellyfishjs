@@ -1,4 +1,5 @@
 import { containerKey, GameObject, spriteKey } from '../game-object/game-object';
+import { Matter } from '../matter-setup/matter-setup';
 import { PIXI, PIXISetup } from '../pixi-setup/pixi-setup';
 
 /**
@@ -27,24 +28,32 @@ export class GameLoop {
      * Calls the appropriate initializers and sets the appropriate defaults
      * on a new GameObject that is to be added to the game loop.
      */
-    private _initializeGameObject(gameObject: GameObject, pixiSetup: PIXISetup | undefined) {
+    private _initializeGameObject(
+        gameObject: GameObject,
+        pixiSetup: PIXISetup | undefined,
+        world: Matter.World | undefined,
+    ) {
         if (gameObject.onCreate) {
             gameObject.onCreate();
         }
 
-        if (!pixiSetup) { return; }
-
-        const mainContainer = pixiSetup.getContainer();
-
-        if (!mainContainer || !PIXI) { return; }
-
-        if (!gameObject[containerKey]) {
-            gameObject.setContainer(mainContainer);
+        if (world && gameObject.setUpPhysicsBody) {
+            gameObject.physicsBody = gameObject.setUpPhysicsBody(world);
         }
 
-        const container = gameObject[containerKey];
-        if (gameObject.getSprite && container) {
-            gameObject[spriteKey] = gameObject.getSprite(PIXI, container);
+        if (pixiSetup) {
+            const mainContainer = pixiSetup.getContainer();
+
+            if (!mainContainer || !PIXI) { return; }
+
+            if (!gameObject[containerKey]) {
+                gameObject.setContainer(mainContainer);
+            }
+
+            const container = gameObject[containerKey];
+            if (gameObject.getSprite && container) {
+                gameObject[spriteKey] = gameObject.getSprite(PIXI, container);
+            }
         }
     }
 
@@ -52,7 +61,7 @@ export class GameLoop {
      * Adds all the game objects that have been created the previous loop
      * to the game objects to be handled this loop.
      */
-    private _handleCreation(pixiSetup: PIXISetup | undefined) {
+    private _handleCreation(pixiSetup: PIXISetup | undefined, world: Matter.World | undefined) {
         let iterations = 0;
 
         while (this._gameObjectsToBeCreated.length !== 0 && ++iterations < maxCreationDepth) {
@@ -61,7 +70,7 @@ export class GameLoop {
             this._gameObjectsToBeCreated = [];
 
             gameObjectsCreatedThisIteration
-                .forEach((gameObject) => this._initializeGameObject(gameObject, pixiSetup));
+                .forEach((gameObject) => this._initializeGameObject(gameObject, pixiSetup, world));
         }
 
         if (iterations === maxCreationDepth) {
@@ -84,10 +93,10 @@ export class GameLoop {
     /**
      * Runs a single game loop.
      */
-    public runLoop(pixiSetup?: PIXISetup | undefined) {
+    public runLoop(pixiSetup: PIXISetup | undefined, world: Matter.World | undefined) {
         this._gameObjects.forEach((gameObject) => gameObject.beforeStep && gameObject.beforeStep());
 
-        this._handleCreation(pixiSetup);
+        this._handleCreation(pixiSetup, world);
 
         this._gameObjects.forEach((gameObject) => gameObject.beforePhysics && gameObject.beforePhysics());
         this._gameObjects.forEach((gameObject) => gameObject.afterPhysics && gameObject.afterPhysics());

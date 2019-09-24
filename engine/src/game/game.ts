@@ -71,7 +71,9 @@ export class Game {
             this._physicsEngine = Matter.Engine.create();
         }
 
-        this._pixiSetup.onInterval(() => this._gameLoop.runLoop(this._pixiSetup));
+        this._pixiSetup.onInterval(() => {
+            this._gameLoop.runLoop(this._pixiSetup, this._physicsEngine && this._physicsEngine.world);
+        });
     }
 
 }
