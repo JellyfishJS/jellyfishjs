@@ -1,6 +1,7 @@
 import { GameLoop } from '../game-loop/game-loop';
 import { GameObject } from '../game-object/game-object';
 import { PIXISetup } from '../pixi-setup/pixi-setup';
+import {Keyboard} from "../keyboard/keyboard";
 
 /**
  * Represents separate games.
@@ -16,6 +17,11 @@ export class Game {
      * Holds the GameObjects and performs appropriate actions on them.
      */
     private readonly _gameLoop = new GameLoop();
+
+    /**
+     * Keyboard for this games, contains the current state of the keys in the keyboard.
+     */
+    public readonly _keyboard = new Keyboard();
 
     private _pixiSetup: PIXISetup | undefined;
 
@@ -60,7 +66,7 @@ export class Game {
             this._pixiSetup = new PIXISetup();
         }
 
-        this._pixiSetup.onInterval(() => this._gameLoop.runLoop(this._pixiSetup));
+        this._pixiSetup.onInterval(() => this._gameLoop.runLoop(this._keyboard, this._pixiSetup));
     }
 
 }
