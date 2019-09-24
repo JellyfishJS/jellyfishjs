@@ -20,7 +20,7 @@ export class Game {
 
     private _pixiSetup: PIXISetup | undefined;
 
-    private _physicsEngine: Matter.Engine | undefined;
+    private _physicsEngine: Matter.Engine | undefined = Matter && Matter.Engine.create();
 
     /**
      * Creates an instance of a specified subclass of GameObject,
@@ -65,10 +65,6 @@ export class Game {
     public start() {
         if (!this._pixiSetup) {
             this._pixiSetup = new PIXISetup();
-        }
-
-        if (!this._physicsEngine && Matter) {
-            this._physicsEngine = Matter.Engine.create();
         }
 
         this._pixiSetup.onInterval(() => {

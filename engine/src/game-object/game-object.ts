@@ -80,7 +80,7 @@ export abstract class GameObject<Sprite = unknown, Body extends undefined | Matt
      * Only called if the optional dependency "matter-js" is installed.
      * Run `npm i matter-js` to install this dependency.
      */
-    public setUpPhysicsBody?(world: Matter.World): Body;
+    public setUpPhysicsBody?(): Body;
 
     /**
      * Called before every step.

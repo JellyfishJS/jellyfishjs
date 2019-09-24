@@ -28,17 +28,32 @@ export class GameLoop {
      * Calls the appropriate initializers and sets the appropriate defaults
      * on a new GameObject that is to be added to the game loop.
      */
-    private _initializeGameObject(
-        gameObject: GameObject,
+    private _initializeGameObject<
+        Sprite,
+        Body extends undefined | Matter.Body | Matter.Body[],
+        Subclass extends GameObject<Sprite, Body>,
+    >(
+        gameObject: Subclass,
         pixiSetup: PIXISetup | undefined,
-        world: Matter.World | undefined,
     ) {
         if (gameObject.onCreate) {
             gameObject.onCreate();
         }
 
-        if (world && gameObject.setUpPhysicsBody) {
-            gameObject.physicsBody = gameObject.setUpPhysicsBody(world);
+        // Apparently type narrowing doesn't work on imports.
+        const matter = Matter;
+        if (matter && gameObject.setUpPhysicsBody) {
+            gameObject.physicsBody = gameObject.setUpPhysicsBody();
+            const bodyOrBodies: undefined | Matter.Body | Matter.Body[] = gameObject.physicsBody;
+            if (bodyOrBodies) {
+                if (Array.isArray(bodyOrBodies)) {
+                    bodyOrBodies.forEach((body) => {
+                        matter.World.addBody(gameObject.physicsWorld, body);
+                    });
+                } else {
+                    matter.World.addBody(gameObject.physicsWorld, bodyOrBodies);
+                }
+            }
         }
 
         if (pixiSetup) {
@@ -61,7 +76,7 @@ export class GameLoop {
      * Adds all the game objects that have been created the previous loop
      * to the game objects to be handled this loop.
      */
-    private _handleCreation(pixiSetup: PIXISetup | undefined, world: Matter.World | undefined) {
+    private _handleCreation(pixiSetup: PIXISetup | undefined) {
         let iterations = 0;
 
         while (this._gameObjectsToBeCreated.length !== 0 && ++iterations < maxCreationDepth) {
@@ -70,7 +85,7 @@ export class GameLoop {
             this._gameObjectsToBeCreated = [];
 
             gameObjectsCreatedThisIteration
-                .forEach((gameObject) => this._initializeGameObject(gameObject, pixiSetup, world));
+                .forEach((gameObject) => this._initializeGameObject(gameObject, pixiSetup));
         }
 
         if (iterations === maxCreationDepth) {
@@ -96,7 +111,7 @@ export class GameLoop {
     public runLoop(pixiSetup: PIXISetup | undefined, engine: Matter.Engine | undefined) {
         this._gameObjects.forEach((gameObject) => gameObject.beforeStep && gameObject.beforeStep());
 
-        this._handleCreation(pixiSetup, engine && engine.world);
+        this._handleCreation(pixiSetup);
 
         this._gameObjects.forEach((gameObject) => gameObject.beforePhysics && gameObject.beforePhysics());
         Matter && engine && Matter.Engine.update(engine);
