@@ -19,9 +19,9 @@ export class Game {
     private readonly _gameLoop = new GameLoop();
 
     /**
-     * Keyboard for this games, contains the current state of the keys in the keyboard.
+     * Keyboard for this game, contains the current state of the keys in the keyboard.
      */
-    public readonly _keyboard = new Keyboard();
+    public readonly keyboard = new Keyboard();
 
     private _pixiSetup: PIXISetup | undefined;
 
@@ -66,7 +66,7 @@ export class Game {
             this._pixiSetup = new PIXISetup();
         }
 
-        this._pixiSetup.onInterval(() => this._gameLoop.runLoop(this._keyboard, this._pixiSetup));
+        this._pixiSetup.onInterval(() => this._gameLoop.runLoop(this.keyboard, this._pixiSetup));
     }
 
 }

@@ -13,7 +13,7 @@ class Player extends Engine.GameObject {
     }
 
     step() {
-        if (Engine.game._keyboard.isDown(65))
+        if (Engine.game.keyboard.isDown(65))
         {
             this.x += 0.1;
         }
