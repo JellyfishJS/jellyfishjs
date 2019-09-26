@@ -3,6 +3,7 @@ import { containerKey, GameObject, GameObjectBody, spriteKey } from '../game-obj
 import { Keyboard } from '../keyboard/keyboard';
 import { Matter } from '../matter-setup/matter-setup';
 import { PIXI, PIXISetup } from '../pixi-setup/pixi-setup';
+import { asArray } from '../util/as-array';
 
 /**
  * How many times to add the objects that have been created
@@ -70,13 +71,9 @@ export class GameLoop {
         const bodyOrBodies: GameObjectBody = gameObject.physicsBody;
         if (!bodyOrBodies) { return; }
 
-        if (Array.isArray(bodyOrBodies)) {
-            bodyOrBodies.forEach((body) => {
-                matter.World.addBody(gameObject.physicsWorld, body);
-            });
-        } else {
-            matter.World.addBody(gameObject.physicsWorld, bodyOrBodies);
-        }
+        asArray(bodyOrBodies).forEach((body) => {
+            matter.World.addBody(gameObject.physicsWorld, body);
+        });
     }
 
     /**
