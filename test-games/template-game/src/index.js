@@ -13,7 +13,11 @@ class Player extends Engine.GameObject {
     }
 
     step() {
-        this.x += 0.1;
+        if (Engine.game.keyboard.isDown(65))
+        {
+            this.x += 0.1;
+        }
+
         console.log(this.x);
     }
 

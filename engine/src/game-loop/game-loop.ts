@@ -1,4 +1,5 @@
 import { containerKey, GameObject, spriteKey } from '../game-object/game-object';
+import { Keyboard } from '../keyboard/keyboard';
 import { PIXI, PIXISetup } from '../pixi-setup/pixi-setup';
 
 /**
@@ -84,7 +85,8 @@ export class GameLoop {
     /**
      * Runs a single game loop.
      */
-    public runLoop(pixiSetup?: PIXISetup | undefined) {
+    public runLoop(keyboard: Keyboard, pixiSetup?: PIXISetup | undefined) {
+        keyboard.processEvents();
         this._gameObjects.forEach((gameObject) => gameObject.beforeStep && gameObject.beforeStep());
 
         this._handleCreation(pixiSetup);
