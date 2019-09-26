@@ -1,5 +1,6 @@
 import { GameLoop } from '../game-loop/game-loop';
 import { GameObject } from '../game-object/game-object';
+import { Keyboard } from '../keyboard/keyboard';
 import { Matter } from '../matter-setup/matter-setup';
 import { PIXISetup } from '../pixi-setup/pixi-setup';
 
@@ -17,6 +18,11 @@ export class Game {
      * Holds the GameObjects and performs appropriate actions on them.
      */
     private readonly _gameLoop = new GameLoop();
+
+    /**
+     * Keyboard for this game, contains the current state of the keys in the keyboard.
+     */
+    public readonly keyboard = new Keyboard();
 
     private _pixiSetup: PIXISetup | undefined;
 
@@ -39,6 +45,7 @@ export class Game {
         }
 
         this._gameLoop.addGameObject(newObject);
+        return newObject;
     }
 
     /**
@@ -68,7 +75,7 @@ export class Game {
         }
 
         this._pixiSetup.onInterval(() => {
-            this._gameLoop.runLoop(this._pixiSetup, this._physicsEngine);
+            this._gameLoop.runLoop(this.keyboard, this._pixiSetup, this._physicsEngine);
         });
     }
 

@@ -20,7 +20,11 @@ class Player extends Engine.GameObject {
     }
 
     step() {
-        Matter.Body.applyForce(this.physicsBody, { x: 0, y: 0 }, this.force);
+        if (Engine.game.keyboard.isDown(65)) {
+            Matter.Body.applyForce(this.physicsBody, { x: 0, y: 0 }, this.force);
+        }
+
+        console.log(this.x, this.y);
     }
 
     draw(pixi, sprite, container) {

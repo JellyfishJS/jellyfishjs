@@ -7,7 +7,7 @@
         "outDir": "dist",
         "removeComments": false,
         "strict": true,
-        "target": "ES5",
+        "target": "ES6",
         "typeRoots": ["node_modules/@types"]
     },
     "include": [

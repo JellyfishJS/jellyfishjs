@@ -1,5 +1,6 @@
 import * as MatterType from 'matter-js';
 import { containerKey, GameObject, GameObjectBody, spriteKey } from '../game-object/game-object';
+import { Keyboard } from '../keyboard/keyboard';
 import { Matter } from '../matter-setup/matter-setup';
 import { PIXI, PIXISetup } from '../pixi-setup/pixi-setup';
 
@@ -139,7 +140,9 @@ export class GameLoop {
     /**
      * Runs a single game loop.
      */
-    public runLoop(pixiSetup: PIXISetup | undefined, engine: Matter.Engine | undefined) {
+    public runLoop(keyboard: Keyboard, pixiSetup: PIXISetup | undefined, engine: Matter.Engine | undefined) {
+        keyboard.processEvents();
+
         this._gameObjects.forEach((gameObject) => gameObject.beforeStep && gameObject.beforeStep());
 
         this._handleCreation(pixiSetup);
@@ -164,6 +167,16 @@ export class GameLoop {
         }
 
         this._gameObjects.forEach((gameObject) => gameObject.endStep && gameObject.endStep());
+
+        if (this._gameObjects.some((gameObject) => gameObject.toBeDestroyed)) {
+            this._gameObjects = this._gameObjects.filter((gameObject) => {
+                if (!gameObject.toBeDestroyed) {
+                    return true;
+                }
+                gameObject.onDestroy && gameObject.onDestroy();
+                return false;
+            });
+        }
     }
 
 }

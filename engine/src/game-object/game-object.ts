@@ -35,6 +35,11 @@ export abstract class GameObject<Sprite = unknown, Body extends GameObjectBody =
     public [containerKey]: PIXI.Container | undefined;
 
     /**
+     * Whether this object should be destroyed by the end of the current step.
+     */
+    public toBeDestroyed = false;
+
+    /**
      * Sets the container in which to draw sprites
      * of this GameObject.
      */
@@ -67,6 +72,13 @@ export abstract class GameObject<Sprite = unknown, Body extends GameObjectBody =
      * Meant to be overridden.
      */
     public onCreate?(): void;
+
+    /**
+     * Called when the object is destroyed.
+     *
+     * Meant to be overridden.
+     */
+    public onDestroy?(): void;
 
     /**
      * Sets up and returns the sprite for this GameObject.
@@ -131,4 +143,10 @@ export abstract class GameObject<Sprite = unknown, Body extends GameObjectBody =
      */
     public draw?(pixi: typeof PIXI, sprite: Sprite, container: PIXI.Container): void;
 
+    /**
+     * Schedule the game object for destruction at the end of the current step.
+     */
+    public destroy(): void {
+        this.toBeDestroyed = true;
+    }
 }
