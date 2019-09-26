@@ -14,12 +14,14 @@ export class Keyboard {
     private keyboardEvents: { keyCode: number, state: boolean }[] = [];
 
     public constructor() {
-        window && window.document.addEventListener(
-            'keydown', (event) => { this.keyboardEvents.push( {keyCode: event.keyCode, state: true} ); },
-        );
-        window && window.document.addEventListener(
-            'keyup', (event) => {this.keyboardEvents.push( {keyCode: event.keyCode, state: false} ); },
-        );
+        if (typeof window !== 'undefined') {
+            window.document.addEventListener(
+                'keydown', (event) => { this.keyboardEvents.push( {keyCode: event.keyCode, state: true} ); },
+            );
+            window.document.addEventListener(
+                'keyup', (event) => {this.keyboardEvents.push( {keyCode: event.keyCode, state: false} ); },
+            );
+        }
     }
 
     /**
