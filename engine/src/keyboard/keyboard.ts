@@ -16,10 +16,10 @@ export class Keyboard {
     public constructor() {
         if (typeof window !== 'undefined') {
             window.document.addEventListener(
-                'keydown', (event) => { this.keyboardEvents.push( {keyCode: event.keyCode, state: true} ); },
+                'keydown', (event) => { this.keyboardEvents.push({ keyCode: event.keyCode, state: true }); },
             );
             window.document.addEventListener(
-                'keyup', (event) => {this.keyboardEvents.push( {keyCode: event.keyCode, state: false} ); },
+                'keyup', (event) => { this.keyboardEvents.push({ keyCode: event.keyCode, state: false }); },
             );
         }
     }
