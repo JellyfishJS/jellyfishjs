@@ -9,7 +9,7 @@ class Player extends Engine.GameObject {
         this.force = force || { x: 0, y: 0 };
     }
 
-    getSprite(pixi, container) {
+    setUpSprite(pixi, container) {
         const sprite = new pixi.Graphics();
         container.addChild(sprite);
         return sprite;

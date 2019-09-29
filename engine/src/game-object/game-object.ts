@@ -26,6 +26,11 @@ export const spriteKey = Symbol('sprite');
 export type GameObjectBody = AnyAmountOf<Matter.Body>;
 
 /**
+ * Allowable types for GameObject sprites.
+ */
+export type GameObjectSprite = AnyAmountOf<PIXI.DisplayObject>;
+
+/**
  * The superclass of any objects that appear in the game.
  */
 export abstract class GameObject<Sprite = unknown, Body extends GameObjectBody = undefined> {
@@ -86,7 +91,7 @@ export abstract class GameObject<Sprite = unknown, Body extends GameObjectBody =
      *
      * Meant to be overridden.
      */
-    public abstract getSprite(pixi: typeof PIXI, container: PIXI.Container): Sprite;
+    public abstract setUpSprite(pixi: typeof PIXI, container: PIXI.Container): Sprite;
 
     /**
      * If this GameObject needs any physics bodies,

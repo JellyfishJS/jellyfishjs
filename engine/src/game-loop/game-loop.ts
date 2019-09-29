@@ -96,8 +96,8 @@ export class GameLoop {
         }
 
         const container = gameObject[containerKey];
-        if (gameObject.getSprite && container) {
-            gameObject[spriteKey] = gameObject.getSprite(PIXI, container);
+        if (gameObject.setUpSprite && container) {
+            gameObject[spriteKey] = gameObject.setUpSprite(PIXI, container);
         }
     }
 
