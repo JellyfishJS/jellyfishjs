@@ -1,5 +1,6 @@
 import * as Matter from 'matter-js';
 import * as PIXI from 'pixi.js';
+import { AnyAmountOf } from '../util/as-array';
 
 /**
  * The symbol used to access containers.
@@ -22,7 +23,7 @@ export const spriteKey = Symbol('sprite');
 /**
  * Allowable types for GameObject bodies.
  */
-export type GameObjectBody = undefined | Matter.Body | Matter.Body[];
+export type GameObjectBody = AnyAmountOf<Matter.Body>;
 
 /**
  * The superclass of any objects that appear in the game.

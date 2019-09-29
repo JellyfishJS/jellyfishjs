@@ -1,8 +1,13 @@
 /**
- * Takes undefined, a thing, or an array of things,
- * and returns an array containing any things passed to it.
+ * An array of `T`, a single `T`, or `undefined`.
  */
-export function asArray<T>(value: undefined | T | T[]): T[] {
+export type AnyAmountOf<T> = undefined | T | T[];
+
+/**
+ * Takes `undefined`, a `T`, or an array of `T`,
+ * and returns an array containing any `T` passed to it.
+ */
+export function asArray<T>(value: AnyAmountOf<T>): T[] {
     if (Array.isArray(value)) { return value; }
     if (value) { return [value]; }
     return [];
