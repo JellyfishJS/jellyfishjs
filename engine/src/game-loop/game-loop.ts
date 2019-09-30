@@ -1,5 +1,5 @@
 import { containerKey, GameObject, spriteKey } from '../game-object/game-object';
-import { Keyboard } from '../keyboard/keyboard';
+import { Keyboard, KeyEvent } from '../keyboard/keyboard';
 import { PIXI, PIXISetup } from '../pixi-setup/pixi-setup';
 
 /**
@@ -83,10 +83,29 @@ export class GameLoop {
     }
 
     /**
+     * Calls the appropriate hook for every game object in the games loops based on the key pressed
+     * @param keyCode the keycode of the key of the event
+     * @param eventType the type of the keyboard hook to call
+     */
+    public dispatchKeyEvent(keyCode: number, eventType: KeyEvent): void {
+        switch (eventType) {
+            case KeyEvent.Pressed:
+                this._gameObjects.forEach((gameObject) => gameObject.keyPressed && gameObject.keyPressed(keyCode));
+                break;
+            case KeyEvent.Released:
+                this._gameObjects.forEach((gameObject) => gameObject.keyReleased && gameObject.keyReleased(keyCode));
+                break;
+            case KeyEvent.HeldDown:
+                this._gameObjects.forEach((gameObject) => gameObject.keyHeld && gameObject.keyHeld(keyCode));
+                break;
+        }
+    }
+
+    /**
      * Runs a single game loop.
      */
     public runLoop(keyboard: Keyboard, pixiSetup?: PIXISetup | undefined) {
-        keyboard.processEvents();
+        keyboard.processEvents(this);
         this._gameObjects.forEach((gameObject) => gameObject.beforeStep && gameObject.beforeStep());
 
         this._handleCreation(pixiSetup);

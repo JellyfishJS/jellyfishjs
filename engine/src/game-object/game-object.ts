@@ -103,6 +103,27 @@ export abstract class GameObject<Sprite = unknown> {
     public endStep?(): void;
 
     /**
+     * Called once for each time a key is pressed during the processEvents portion of the game loop
+     *
+     * Meant to be overridden.
+     */
+    public keyPressed?(keyCode: number): void;
+
+    /**
+     * Called once for each time a key is released during the processEvents portion of the game loop
+     *
+     * Meant to be overridden.
+     */
+    public keyReleased?(keyCode: number): void;
+
+    /**
+     * Called once for each time held down on each step of the gameLoop
+     *
+     * Meant to be overridden.
+     */
+    public keyHeld?(keyCode: number): void;
+
+    /**
      * Called every step, to do drawing actions.
      *
      * Put any code that manipulates sprites here.
