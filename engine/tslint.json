@@ -2,6 +2,7 @@
     "extends": [
         "tslint:recommended"
     ],
+    "rulesDirectory": "./lint-rules",
     "rules": {
         "align": [
             true,
@@ -85,6 +86,7 @@
                 "named": "never"
             }
         ],
+        "space-in-curly-brackets": true,
         "triple-equals": true,
         "unified-signatures": false,
         "variable-name": [
