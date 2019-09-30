@@ -106,7 +106,7 @@ export abstract class GameObject<Sprite = unknown, Body extends GameObjectBody =
      *
      * Meant to be overridden.
      */
-    public abstract setUpSprite(pixi: typeof PIXI, container: PIXI.Container): Sprite;
+    public setUpSprite?(pixi: typeof PIXI, container: PIXI.Container): Sprite;
 
     /**
      * If this GameObject needs any physics bodies,
