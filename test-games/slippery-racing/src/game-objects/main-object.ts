@@ -1,7 +1,8 @@
-import * as Engine from 'engine';
+import { game, GameObject } from 'engine';
+import { Car } from './car';
 
-export class MainObject extends Engine.GameObject {
-    public step() {
-        console.log('Running');
+export class MainObject extends GameObject {
+    public onCreate() {
+        (game.createObject as any)(Car, { x: 60, y: 30 });
     }
 }
