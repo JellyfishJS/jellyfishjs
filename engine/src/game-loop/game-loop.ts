@@ -1,5 +1,5 @@
 import * as MatterType from 'matter-js';
-import { containerKey, GameObject, GameObjectBody, spriteKey } from '../game-object/game-object';
+import { containerKey, GameObject, GameObjectBody, spriteKey, toBeDestroyedKey } from '../game-object/game-object';
 import { Keyboard } from '../keyboard/keyboard';
 import { Matter } from '../matter-setup/matter-setup';
 import { PIXI, PIXISetup } from '../pixi-setup/pixi-setup';
@@ -165,9 +165,9 @@ export class GameLoop {
 
         this._gameObjects.forEach((gameObject) => gameObject.endStep && gameObject.endStep());
 
-        if (this._gameObjects.some((gameObject) => gameObject.toBeDestroyed)) {
+        if (this._gameObjects.some((gameObject) => gameObject[toBeDestroyedKey])) {
             this._gameObjects = this._gameObjects.filter((gameObject) => {
-                if (!gameObject.toBeDestroyed) {
+                if (!gameObject[toBeDestroyedKey]) {
                     return true;
                 }
                 gameObject.onDestroy && gameObject.onDestroy();
