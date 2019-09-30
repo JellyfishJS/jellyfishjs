@@ -8,7 +8,9 @@ popd > /dev/null
 
 for game in test-games/*; do
     pushd "$game" > /dev/null
-    npm install
-    npm run build
+    if [ -f package.json ]; then
+        npm install
+        npm run build
+    fi
     popd > /dev/null
 done
