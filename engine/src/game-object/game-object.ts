@@ -26,6 +26,11 @@ export const spriteKey = Symbol('sprite');
 export const toBeDestroyedKey = Symbol('to-be-destroyed');
 
 /**
+ * The symbol used to access the object's destroyed status.
+ */
+export const wasDestroyedKey = Symbol('was-destroyed');
+
+/**
  * Allowable types for GameObject bodies.
  */
 export type GameObjectBody = AnyAmountOf<Matter.Body>;
@@ -49,6 +54,11 @@ export abstract class GameObject<Sprite = unknown, Body extends GameObjectBody =
      * Whether this object should be destroyed by the end of the current step.
      */
     public [toBeDestroyedKey] = false;
+
+    /**
+     * Whether this object was destroyed.
+     */
+    public [wasDestroyedKey] = false;
 
     /**
      * Sets the container in which to draw sprites
@@ -159,5 +169,9 @@ export abstract class GameObject<Sprite = unknown, Body extends GameObjectBody =
      */
     public destroy(): void {
         this[toBeDestroyedKey] = true;
+    }
+
+    public wasDestroyed(): boolean {
+        return this[wasDestroyedKey];
     }
 }
