@@ -1,5 +1,6 @@
 import * as Matter from 'matter-js';
 import * as PIXI from 'pixi.js';
+import { AnyAmountOf } from '../util/as-array';
 
 /**
  * The symbol used to access containers.
@@ -22,7 +23,12 @@ export const spriteKey = Symbol('sprite');
 /**
  * Allowable types for GameObject bodies.
  */
-export type GameObjectBody = undefined | Matter.Body | Matter.Body[];
+export type GameObjectBody = AnyAmountOf<Matter.Body>;
+
+/**
+ * Allowable types for GameObject sprites.
+ */
+export type GameObjectSprite = AnyAmountOf<PIXI.DisplayObject>;
 
 /**
  * The superclass of any objects that appear in the game.
@@ -85,7 +91,7 @@ export abstract class GameObject<Sprite = unknown, Body extends GameObjectBody =
      *
      * Meant to be overridden.
      */
-    public abstract getSprite(pixi: typeof PIXI, container: PIXI.Container): Sprite;
+    public abstract setUpSprite(pixi: typeof PIXI, container: PIXI.Container): Sprite;
 
     /**
      * If this GameObject needs any physics bodies,
