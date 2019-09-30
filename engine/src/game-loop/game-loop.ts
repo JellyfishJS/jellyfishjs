@@ -5,7 +5,7 @@ import {
     GameObjectBody,
     spriteKey,
     toBeDestroyedKey,
-    wasDestroyedKey
+    wasDestroyedKey,
 } from '../game-object/game-object';
 import { Keyboard } from '../keyboard/keyboard';
 import { Matter } from '../matter-setup/matter-setup';
