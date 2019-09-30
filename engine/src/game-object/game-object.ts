@@ -43,7 +43,10 @@ export type GameObjectSprite = AnyAmountOf<PIXI.DisplayObject>;
 /**
  * The superclass of any objects that appear in the game.
  */
-export abstract class GameObject<Sprite = unknown, Body extends GameObjectBody = undefined> {
+export abstract class GameObject<
+    Sprite extends GameObjectSprite = undefined,
+    Body extends GameObjectBody = undefined
+> {
 
     /**
      * The container for this GameObject.
