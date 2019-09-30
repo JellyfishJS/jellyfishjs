@@ -24,7 +24,7 @@ class Player extends Engine.GameObject {
             Matter.Body.applyForce(this.physicsBody, { x: 0, y: 0 }, this.force);
         }
 
-        console.log(this.physicsBody.position.x, this.physicsBody.position.y);
+        console.log(this.wasDestroyed(), this.physicsBody.position.x, this.physicsBody.position.y);
     }
 
     draw(pixi, sprite, container) {

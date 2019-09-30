@@ -1,5 +1,12 @@
 import * as MatterType from 'matter-js';
-import { containerKey, GameObject, GameObjectBody, spriteKey, toBeDestroyedKey } from '../game-object/game-object';
+import {
+    containerKey,
+    GameObject,
+    GameObjectBody,
+    spriteKey,
+    toBeDestroyedKey,
+    wasDestroyedKey,
+} from '../game-object/game-object';
 import { Keyboard } from '../keyboard/keyboard';
 import { Matter } from '../matter-setup/matter-setup';
 import { PIXI, PIXISetup } from '../pixi-setup/pixi-setup';
@@ -171,6 +178,7 @@ export class GameLoop {
                     return true;
                 }
                 gameObject.onDestroy && gameObject.onDestroy();
+                gameObject[wasDestroyedKey] = true;
                 return false;
             });
         }
