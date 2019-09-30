@@ -3,6 +3,7 @@ import {
     containerKey,
     GameObject,
     GameObjectBody,
+    GameObjectSprite,
     spriteKey,
     toBeDestroyedKey,
     wasDestroyedKey,
@@ -39,7 +40,7 @@ export class GameLoop {
      * on a new GameObject that is to be added to the game loop.
      */
     private _initializeGameObject<
-        Sprite,
+        Sprite extends GameObjectSprite,
         Body extends GameObjectBody,
         Subclass extends GameObject<Sprite, Body>,
     >(
@@ -65,7 +66,7 @@ export class GameLoop {
      * Sets up the parts of the passed GameObject related to physics.
      */
     private _initializeGameObjectPhysics<
-        Sprite,
+        Sprite extends GameObjectSprite,
         Body extends GameObjectBody,
         Subclass extends GameObject<Sprite, Body>,
     >(
@@ -87,7 +88,7 @@ export class GameLoop {
      * Sets up the PIXI related aspects of the passed game object.
      */
     private _initializeGameObjectPIXI<
-        Sprite,
+        Sprite extends GameObjectSprite,
         Body extends GameObjectBody,
         Subclass extends GameObject<Sprite, Body>,
     >(
