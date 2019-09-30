@@ -1,7 +1,7 @@
 {
-    "name": "slippery-racing",
+    "name": "template-typed-game",
     "version": "0.0.0",
-    "description": "Racing, but it's slippery",
+    "description": "A template game to use with typescript",
     "main": "./dist/index.js",
     "scripts": {
         "start": "node ./dist/index.js",
