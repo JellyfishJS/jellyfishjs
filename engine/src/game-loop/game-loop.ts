@@ -172,7 +172,7 @@ export class GameLoop {
 
         this._gameObjects.forEach((gameObject) => gameObject.endStep && gameObject.endStep());
 
-        if (this._gameObjects.some((gameObject) => gameObject[toBeDestroyedKey])) {
+        while (this._gameObjects.some((gameObject) => gameObject[toBeDestroyedKey])) {
             this._gameObjects = this._gameObjects.filter((gameObject) => {
                 if (!gameObject[toBeDestroyedKey]) {
                     return true;
