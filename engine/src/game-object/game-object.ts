@@ -171,6 +171,9 @@ export abstract class GameObject<Sprite = unknown, Body extends GameObjectBody =
         this[toBeDestroyedKey] = true;
     }
 
+    /**
+     * Returns whether this object has been destroyed.
+     */
     public wasDestroyed(): boolean {
         return this[wasDestroyedKey];
     }
