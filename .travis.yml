@@ -1,7 +1,22 @@
 language: node_js
 node_js:
-  - 12
+  - '12'
 install:
   - (cd engine && npm install)
 script:
   - (cd engine && npm run build && npm test)
+  - >
+    for game in test-games/*; do
+      echo
+      printf '%*s\n' "$COLUMNS" '' | tr ' ' -
+      echo "Testing game: $game"
+      pushd "$game" > /dev/null
+      npm install
+      npm run build
+      timeout 5 npm start > /dev/null
+      if [ ! "$?" -eq 124 ]; then
+        echo "Game $game failed to run for 5 seconds without errors"
+        exit 1
+      fi
+      popd > /dev/null
+    done

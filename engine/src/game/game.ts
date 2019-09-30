@@ -1,6 +1,7 @@
 import { GameLoop } from '../game-loop/game-loop';
 import { GameObject } from '../game-object/game-object';
 import { Keyboard } from '../keyboard/keyboard';
+import { Matter } from '../matter-setup/matter-setup';
 import { PIXISetup } from '../pixi-setup/pixi-setup';
 
 /**
@@ -19,11 +20,13 @@ export class Game {
     private readonly _gameLoop = new GameLoop();
 
     /**
-     * Keyboard for this games, contains the current state of the keys in the keyboard.
+     * Keyboard for this game, contains the current state of the keys in the keyboard.
      */
-    public readonly _keyboard = new Keyboard();
+    public readonly keyboard = new Keyboard();
 
     private _pixiSetup: PIXISetup | undefined;
+
+    private _physicsEngine: Matter.Engine | undefined = Matter && Matter.Engine.create();
 
     /**
      * Creates an instance of a specified subclass of GameObject,
@@ -36,6 +39,11 @@ export class Game {
         ...args: Args
     ) {
         const newObject = new Class(...args);
+
+        if (this._physicsEngine) {
+            newObject.physicsWorld = this._physicsEngine.world;
+        }
+
         this._gameLoop.addGameObject(newObject);
         return newObject;
     }
@@ -66,7 +74,9 @@ export class Game {
             this._pixiSetup = new PIXISetup();
         }
 
-        this._pixiSetup.onInterval(() => this._gameLoop.runLoop(this._keyboard, this._pixiSetup));
+        this._pixiSetup.onInterval(() => {
+            this._gameLoop.runLoop(this.keyboard, this._pixiSetup, this._physicsEngine);
+        });
     }
 
 }

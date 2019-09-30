@@ -1,6 +1,17 @@
-import { containerKey, GameObject, spriteKey } from '../game-object/game-object';
+import * as MatterType from 'matter-js';
+import {
+    containerKey,
+    GameObject,
+    GameObjectBody,
+    GameObjectSprite,
+    spriteKey,
+    toBeDestroyedKey,
+    wasDestroyedKey,
+} from '../game-object/game-object';
 import { Keyboard, KeyEvent } from '../keyboard/keyboard';
+import { Matter } from '../matter-setup/matter-setup';
 import { PIXI, PIXISetup } from '../pixi-setup/pixi-setup';
+import { asArray } from '../util/as-array';
 
 /**
  * How many times to add the objects that have been created
@@ -28,13 +39,62 @@ export class GameLoop {
      * Calls the appropriate initializers and sets the appropriate defaults
      * on a new GameObject that is to be added to the game loop.
      */
-    private _initializeGameObject(gameObject: GameObject, pixiSetup: PIXISetup | undefined) {
+    private _initializeGameObject<
+        Sprite extends GameObjectSprite,
+        Body extends GameObjectBody,
+        Subclass extends GameObject<Sprite, Body>,
+    >(
+        gameObject: Subclass,
+        pixiSetup: PIXISetup | undefined,
+    ) {
         if (gameObject.onCreate) {
             gameObject.onCreate();
         }
 
-        if (!pixiSetup) { return; }
+        // Apparently type narrowing doesn't work on imports.
+        const matter = Matter;
+        if (matter) {
+            this._initializeGameObjectPhysics(gameObject, matter);
+        }
 
+        if (pixiSetup) {
+            this._initializeGameObjectPIXI(gameObject, pixiSetup);
+        }
+    }
+
+    /**
+     * Sets up the parts of the passed GameObject related to physics.
+     */
+    private _initializeGameObjectPhysics<
+        Sprite extends GameObjectSprite,
+        Body extends GameObjectBody,
+        Subclass extends GameObject<Sprite, Body>,
+    >(
+        gameObject: Subclass,
+        matter: typeof MatterType,
+    ) {
+        if (!gameObject.setUpPhysicsBody) { return; }
+
+        gameObject.physicsBody = gameObject.setUpPhysicsBody();
+        const bodyOrBodies: GameObjectBody = gameObject.physicsBody;
+        if (!bodyOrBodies) { return; }
+
+        asArray(bodyOrBodies).forEach((body) => {
+            matter.World.addBody(gameObject.physicsWorld, body);
+        });
+    }
+
+    /**
+     * Sets up the PIXI related aspects of the passed game object.
+     */
+    private _initializeGameObjectPIXI<
+        Sprite extends GameObjectSprite,
+        Body extends GameObjectBody,
+        Subclass extends GameObject<Sprite, Body>,
+    >(
+        gameObject: Subclass,
+        pixiSetup: PIXISetup,
+    ) {
         const mainContainer = pixiSetup.getContainer();
 
         if (!mainContainer || !PIXI) { return; }
@@ -44,8 +104,8 @@ export class GameLoop {
         }
 
         const container = gameObject[containerKey];
-        if (gameObject.getSprite && container) {
-            gameObject[spriteKey] = gameObject.getSprite(PIXI, container);
+        if (gameObject.setUpSprite && container) {
+            gameObject[spriteKey] = gameObject.setUpSprite(PIXI, container);
         }
     }
 
@@ -104,13 +164,15 @@ export class GameLoop {
     /**
      * Runs a single game loop.
      */
-    public runLoop(keyboard: Keyboard, pixiSetup?: PIXISetup | undefined) {
+    public runLoop(keyboard: Keyboard, pixiSetup: PIXISetup | undefined, engine: Matter.Engine | undefined) {
         keyboard.processEvents(this);
+
         this._gameObjects.forEach((gameObject) => gameObject.beforeStep && gameObject.beforeStep());
 
         this._handleCreation(pixiSetup);
 
         this._gameObjects.forEach((gameObject) => gameObject.beforePhysics && gameObject.beforePhysics());
+        Matter && engine && Matter.Engine.update(engine);
         this._gameObjects.forEach((gameObject) => gameObject.afterPhysics && gameObject.afterPhysics());
 
         this._gameObjects.forEach((gameObject) => gameObject.step && gameObject.step());
@@ -130,12 +192,13 @@ export class GameLoop {
 
         this._gameObjects.forEach((gameObject) => gameObject.endStep && gameObject.endStep());
 
-        if (this._gameObjects.some((gameObject) => gameObject.toBeDestroyed)) {
+        while (this._gameObjects.some((gameObject) => gameObject[toBeDestroyedKey])) {
             this._gameObjects = this._gameObjects.filter((gameObject) => {
-                if (!gameObject.toBeDestroyed) {
+                if (!gameObject[toBeDestroyedKey]) {
                     return true;
                 }
                 gameObject.onDestroy && gameObject.onDestroy();
+                gameObject[wasDestroyedKey] = true;
                 return false;
             });
         }

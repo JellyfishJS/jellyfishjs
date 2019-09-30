@@ -1,55 +1,41 @@
 const Engine = require("engine");
+const Matter = require("matter-js");
 
 class Player extends Engine.GameObject {
 
-    onCreate() {
-        this.x = 200;
-        this.y = 100;
+    constructor(position, force) {
+        super();
+        this.position = position || { x: 0, y: 0 };
+        this.force = force || { x: 0, y: 0 };
     }
 
-    getSprite(pixi, container) {
+    setUpSprite(pixi, container) {
         const sprite = new pixi.Graphics();
         container.addChild(sprite);
         return sprite;
     }
 
+    setUpPhysicsBody() {
+        return Matter.Bodies.circle(this.position.x, this.position.y, 20);
+    }
+
     step() {
-        this.y += 0.5;
-    }
-
-    keyHeld(keyCode) {
-        switch(keyCode)
-        {
-            case 87: // W
-                this.y -= 0.5;
-                break;
-            case 65: // A
-                this.x -= 0.5;
-                break;
-            case 68: // D
-                this.x += 0.5;
-                break;
-            case 83: // S
-                this.y += 0.5;
-                break;
+        if (!Engine.game.keyboard.isDown(65)) {
+            Matter.Body.applyForce(this.physicsBody, { x: 0, y: 0 }, this.force);
         }
-    }
 
-    keyPressed(keyCode) {
-        if(keyCode == 32)
-        {
-            this.y -= 10;
-        }
+        console.log(this.wasDestroyed(), this.physicsBody.position.x, this.physicsBody.position.y);
     }
 
     draw(pixi, sprite, container) {
         sprite.clear();
         sprite.beginFill(0xaaaaaa);
-        sprite.drawCircle(this.x, this.y, 30);
+        sprite.drawCircle(this.physicsBody.position.x, this.physicsBody.position.y, 20);
     }
 
 }
 
 Engine.game.setCanvasByID("game");
-Engine.game.createObject(Player);
+Engine.game.createObject(Player, { x: 200, y: 30 }, { x: 0, y: -0.001 });
+Engine.game.createObject(Player, { x: 220, y: 250 }, { x: 0, y: -0.0015 });
 Engine.game.start();
