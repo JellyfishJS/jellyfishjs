@@ -1,0 +1,14 @@
+#!/bin/bash -e
+cd "$( dirname "${BASH_SOURCE[0]}" )"
+
+pushd engine > /dev/null
+npm install
+npm run build
+popd > /dev/null
+
+for game in test-games/*; do
+    pushd "$game" > /dev/null
+    npm install
+    npm run build
+    popd > /dev/null
+done
