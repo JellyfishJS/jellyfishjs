@@ -6,4 +6,6 @@ module.exports = {
         filename: "index.js",
         path: path.join(__dirname, "/dist"),
     },
+    mode: "development",
+    devtool: "cheap-eval-source-map",
 }
