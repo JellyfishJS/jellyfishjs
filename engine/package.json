@@ -5,10 +5,10 @@
     "main": "dist/index.js",
     "scripts": {
         "build": "tsc",
-        "lint": "tslint --project .",
+        "lint": "tslint --project . && tslint --project ./test",
         "unit-tests": "mocha",
         "test": "npm run -s lint && npm run -s unit-tests",
-        "fix": "npm run -s lint -- --fix"
+        "fix": "tslint --project . --fix && tslint --project ./test --fix"
     },
     "repository": {
         "type": "git",
