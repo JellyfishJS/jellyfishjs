@@ -55,4 +55,12 @@ export class Angle {
         return this._radians / Math.PI * 180;
     }
 
+    /**
+     * Returns `true` if this angle equals the specified angle,
+     * otherwise `false`.
+     */
+    public equals(angle: Angle): boolean {
+        return this.radians() === angle.radians();
+    }
+
 }
