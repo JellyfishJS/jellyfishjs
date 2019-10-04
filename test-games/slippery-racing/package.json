@@ -15,6 +15,7 @@
     "license": "UNLICENSED",
     "dependencies": {
         "engine": "file:../../engine",
+        "keycode": "^2.2.0",
         "matter-js": "^0.14.2"
     },
     "devDependencies": {
