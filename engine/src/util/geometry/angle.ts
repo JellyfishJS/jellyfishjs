@@ -5,7 +5,7 @@ export class Angle {
 
     /**
      * The size of this angle in radians.
-     * 
+     *
      * Private and readonly to prevent it from being modified incorrectly,
      * and to avoid accidentally modifying shared angles.
      */
@@ -13,12 +13,12 @@ export class Angle {
 
     /**
      * Constructs an angle with the specified number of radians.
-     * 
+     *
      * Use the static factory `Angle.radians` to be more clear about units.
-     * 
+     *
      * Automatically normalizes the angle to be in (-pi, pi].
      */
-    private constructor (radians: number) {
+    private constructor(radians: number) {
         const tau = 2 * Math.PI;
         let boundedRadians = (radians % tau + tau) % tau; // In [0, 2 * pi)
         if (boundedRadians > Math.PI) {
