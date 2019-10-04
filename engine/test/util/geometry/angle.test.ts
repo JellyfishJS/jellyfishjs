@@ -42,4 +42,17 @@ describe('Angle', function () {
         assert.isTrue(Angle.radians(Math.PI / 3).equals(Angle.radians(Math.PI / 3)));
     });
 
+    it('should negate correctly', function () {
+        assert.isTrue(Angle.radians(Math.PI).negated().equals(Angle.radians(Math.PI))); // PI is its own negation.
+        assert.isTrue(Angle.radians(1.2).negated().equals(Angle.radians(-1.2)));
+    });
+
+    it('should add correctly', function () {
+        assert.isTrue(Angle.radians(1.3).plus(Angle.radians(1.2)).equals(Angle.radians(2.5)));
+    });
+
+    it('should subtract correctly', function () {
+        assert.isTrue(Angle.radians(1.3).minus(Angle.radians(1.2)).equals(Angle.radians(0.1)));
+    });
+
 });

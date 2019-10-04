@@ -63,4 +63,25 @@ export class Angle {
         return this.radians() === angle.radians();
     }
 
+    /**
+     * Returns the negation of this angle.
+     */
+    public negated(): Angle {
+        return Angle.radians(-this.radians());
+    }
+
+    /**
+     * Returns the sum of this angle and the specified angle.
+     */
+    public plus(angle: Angle): Angle {
+        return Angle.radians(this.radians() + angle.radians());
+    }
+
+    /**
+     * Returns the angle from the specified angle to this angle.
+     */
+    public minus(angle: Angle): Angle {
+        return this.plus(angle.negated());
+    }
+
 }
