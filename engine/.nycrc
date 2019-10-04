@@ -1,0 +1,19 @@
+{
+    "extension": [
+        ".ts"
+    ],
+    "include": [
+        "src/**/*"
+    ],
+    "reporter": [
+        "html",
+        "text"
+    ],
+    "watermarks": {
+        "lines": [80, 100],
+        "functions": [80, 100],
+        "branches": [80, 100],
+        "statements": [80, 100]
+    },
+    "all": true
+}
