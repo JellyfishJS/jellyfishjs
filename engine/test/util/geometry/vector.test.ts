@@ -19,4 +19,10 @@ describe('Vector', function () {
         assert.approximately(vector.y(), 1, 0.001);
     });
 
+    it('should support unit vectors in arbitrary directions', function () {
+        const vector = Vector.unit(Angle.degrees(30));
+        assert.approximately(vector.x(), Math.sqrt(3) / 2, 0.001);
+        assert.approximately(vector.y(), 1 / 2, 0.001);
+    });
+
 });
