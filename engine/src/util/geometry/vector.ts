@@ -54,6 +54,43 @@ export class Vector {
     }
 
     /**
+     * Returns a unit vector in the specified direction.
+     */
+    public static unit(direction: Angle): Vector {
+        return Vector.lengthAndDirection(1, direction);
+    }
+
+    /**
+     * A unit vector that points right.
+     */
+    public static readonly right = Vector.unit(Angle.right);
+
+    /**
+     * A unit vector that points right.
+     */
+    public static readonly left = Vector.unit(Angle.left);
+
+    /**
+     * A unit vector that points up.
+     */
+    public static readonly up = Vector.unit(Angle.up);
+
+    /**
+     * A unit vector that points down.
+     */
+    public static readonly down = Vector.unit(Angle.down);
+
+    /**
+     * A unit vector on the x axis.
+     */
+    public static readonly x = Vector.right;
+
+    /**
+     * A unit vector on the y axis.
+     */
+    public static readonly y = Vector.up;
+
+    /**
      * Returns the x coordinate of this vector.
      */
     public x(): number {
