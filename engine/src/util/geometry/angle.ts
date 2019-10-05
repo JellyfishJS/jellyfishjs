@@ -44,27 +44,27 @@ export class Angle {
     /**
      * An angle pointing right.
      */
-    public static right = Angle.radians(0);
+    public static readonly right = Angle.radians(0);
 
     /**
      * An angle pointing up.
      */
-    public static up = Angle.radians(Math.PI / 2);
+    public static readonly up = Angle.radians(Math.PI / 2);
 
     /**
      * An angle pointing left.
      */
-    public static left = Angle.radians(Math.PI);
+    public static readonly left = Angle.radians(Math.PI);
 
     /**
      * An angle pointing down.
      */
-    public static down = Angle.radians(Math.PI / 2);
+    public static readonly down = Angle.radians(Math.PI / 2);
 
     /**
      * An angle representing turning halfway around — 180°.
      */
-    public static halfTurn = Angle.radians(Math.PI);
+    public static readonly halfTurn = Angle.radians(Math.PI);
 
     /**
      * Returns the size of this angle in radians.
