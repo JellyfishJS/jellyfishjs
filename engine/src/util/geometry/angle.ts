@@ -109,4 +109,25 @@ export class Angle {
         return this.plus(angle.negated());
     }
 
+    /**
+     * Returns the sine of this angle.
+     */
+    public sin(): number {
+        return Math.sin(this.radians());
+    }
+
+    /**
+     * Returns the cosine of this angle.
+     */
+    public cos(): number {
+        return Math.cos(this.radians());
+    }
+
+    /**
+     * Returns the tangent of this angle.
+     */
+    public tan(): number {
+        return Math.tan(this.radians());
+    }
+
 }

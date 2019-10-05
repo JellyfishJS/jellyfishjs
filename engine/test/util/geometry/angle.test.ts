@@ -55,4 +55,10 @@ describe('Angle', function () {
         assert.isTrue(Angle.radians(1.3).minus(Angle.radians(1.2)).equals(Angle.radians(0.1)));
     });
 
+    it('should correctly perform trigonometry', function () {
+        assert.approximately(Angle.degrees(30).sin(), 0.5, 0.001);
+        assert.approximately(Angle.degrees(30).cos(), Math.sqrt(3) / 2, 0.001);
+        assert.approximately(Angle.degrees(30).tan(), Math.sqrt(3) / 3, 0.001);
+    });
+
 });
