@@ -11,8 +11,8 @@ export class MainObject extends GameObject {
             {
                 topSpeed: 0.02,
                 acceleration: 0.001,
-                spinning: 0.00005,
-                cornering: 0.00003,
+                spinning: 0.00003,
+                cornering: 0.000015,
                 handling: 0.3,
             },
         );
