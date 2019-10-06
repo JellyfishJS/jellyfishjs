@@ -239,4 +239,13 @@ export class Vector {
         return { x: this.x(), y: this.y() };
     }
 
+    /**
+     * Returns a string describing this vector.
+     * 
+     * For debug purposes only.
+     */
+    public toString(): string {
+        return `Vector(${this.x()}, ${this.y()})`;
+    }
+
 }

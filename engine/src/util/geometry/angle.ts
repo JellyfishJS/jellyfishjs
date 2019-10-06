@@ -130,4 +130,13 @@ export class Angle {
         return Math.tan(this.radians());
     }
 
+    /**
+     * Returns a description of this angle.
+     *
+     * For debug purposes only.
+     */
+    public toString(): string {
+        return `Angle(${this.degrees()}°)`;
+    }
+
 }
