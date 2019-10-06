@@ -73,6 +73,12 @@ describe('Vector', function () {
         assert.approximately(vector.direction().degrees(), -30, 0.001);
     });
 
+    it('should support conversion to unit vectors', function () {
+        const vector = Vector.xy(3, 4).unit();
+        assert.approximately(vector.x(), 0.6, 0.001);
+        assert.approximately(vector.y(), 0.8, 0.001);
+    });
+
     it('should support dot product', function () {
         assert.approximately(Vector.xy(3, 4).dot(Vector.xy(-2, 5)), 14, 0.001);
     });

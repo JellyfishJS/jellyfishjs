@@ -166,6 +166,13 @@ export class Vector {
     }
 
     /**
+     * Returns a unit vector with the same direction as this vector.
+     */
+    public unit(): Vector {
+        return this.withLength(1);
+    }
+
+    /**
      * Returns the dot product of this vector and the specified vector.
      */
     public dot(vector: Vector): number {
