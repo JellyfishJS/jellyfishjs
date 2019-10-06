@@ -40,8 +40,8 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
         const body = Bodies.rectangle(
             this.initialPosition.x(),
             this.initialPosition.y(),
-            50,
-            16,
+            80,
+            32,
             {
                 frictionAir: 0, // Friction is handled manually.
                 restitution: 0.3,
