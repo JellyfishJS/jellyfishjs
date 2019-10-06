@@ -1,11 +1,10 @@
-import { Angle, game, GameObject, Vector } from 'engine';
-import * as keycode from 'keycode';
+import { Angle, GameObject, Vector } from 'engine';
 import { Bodies, Body } from 'matter-js';
 
-export class LooseTire extends GameObject<PIXI.Graphics, Body> {
+export class LooseTire extends GameObject<PIXI.Sprite, Body> {
 
     private readonly initialPosition: Vector;
-    private readonly radius = 15;
+    private readonly radius = 20;
 
     public constructor(position: Vector) {
         super();
@@ -27,17 +26,17 @@ export class LooseTire extends GameObject<PIXI.Graphics, Body> {
     }
 
     public setUpSprite(pixi: typeof PIXI, container: PIXI.Container) {
-        const sprite = new pixi.Graphics();
+        const sprite = pixi.Sprite.from('./assets/tire.png');
+        sprite.anchor.set(0.5);
         container.addChild(sprite);
         return sprite;
     }
 
-    public draw(pixi: typeof PIXI, sprite: PIXI.Graphics) {
+    public draw(pixi: typeof PIXI, sprite: PIXI.Sprite) {
         if (!this.physicsBody) { return; }
 
-        sprite.clear();
-        sprite.beginFill(0xff0000);
-        sprite.drawCircle(this.physicsBody.position.x, this.physicsBody.position.y, this.radius);
+        [sprite.x, sprite.y] = [this.physicsBody.position.x, this.physicsBody.position.y];
+        sprite.angle = Angle.radians(this.physicsBody.angle).plus(Angle.degrees(90)).degrees();
     }
 
 }
