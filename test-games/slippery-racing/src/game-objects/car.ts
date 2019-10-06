@@ -64,7 +64,6 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
         if (!this.physicsBody) { return; }
 
         [sprite.x, sprite.y] = [this.physicsBody.position.x, this.physicsBody.position.y];
-        sprite.scale = new pixi.Point(0.1, 0.1);
         sprite.angle = Angle.radians(this.physicsBody.angle).plus(Angle.degrees(90)).degrees();
     }
 
