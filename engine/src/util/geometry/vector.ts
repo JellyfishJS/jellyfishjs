@@ -229,6 +229,14 @@ export class Vector {
     }
 
     /**
+     * Returns the vector projection onto the specified surface.
+     */
+    public projection(surface: Vector): Vector {
+        const surfaceUnit = surface.unit();
+        return surfaceUnit.times(this.dot(surfaceUnit));
+    }
+
+    /**
      * Returns `true` if this vector is strictly equal to the other vector,
      * otherwise `false`.
      */

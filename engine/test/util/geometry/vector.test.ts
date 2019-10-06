@@ -115,6 +115,14 @@ describe('Vector', function () {
         assert.approximately(vector.y(), 2 + Math.sqrt(3), 0.001);
     });
 
+    it('should support vector projection', function () {
+        const vector = Vector.xy(5, 6);
+        const surface = Vector.xy(1, 1);
+        const projection = vector.projection(surface);
+        assert.approximately(projection.x(), 5.5, 0.001);
+        assert.approximately(projection.y(), 5.5, 0.001);
+    });
+
     it('should support conversion to arrays', function () {
         assert.deepEqual(Vector.xy(6, -12).array(), [6, -12]);
     });
