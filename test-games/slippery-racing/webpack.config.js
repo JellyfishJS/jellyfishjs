@@ -18,6 +18,6 @@ module.exports = {
     resolve: {
         extensions: ['.ts', '.js']
     },
-    mode: "development",
+    mode: process.env.NODE_ENV || "development",
     devtool: "cheap-eval-source-map",
 }
