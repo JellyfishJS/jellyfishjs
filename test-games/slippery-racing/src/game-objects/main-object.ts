@@ -1,11 +1,20 @@
-import { game, GameObject, Vector } from 'engine';
+import { Angle, game, GameObject, Vector } from 'engine';
 import { Camera } from './camera';
 import { Car } from './car';
+import { Decoration } from './decoration';
 import { LooseTire } from './loose-tire';
 
 export class MainObject extends GameObject {
 
     public onCreate() {
+
+        const center = Vector.xy(400, 1000);
+
+        (game.createObject as any)(Decoration, center, 660, 0x888888);
+        (game.createObject as any)(Decoration, center, 650, 0xd7d7d7);
+        (game.createObject as any)(Decoration, center, 500, 0x44bf4d);
+        (game.createObject as any)(Decoration, center, 200, 0x45824a);
+
         const camera = (game.createObject as any)(Camera) as Camera;
         (game.createObject as any)(
             Car,
@@ -19,10 +28,14 @@ export class MainObject extends GameObject {
             },
             camera,
         );
-        (game.createObject as any)(
-            LooseTire,
-            Vector.xy(400, 500),
-        );
+
+        for (let i = 0; i < 360; i += 30) {
+            (game.createObject as any)(
+                LooseTire,
+                center.plus(Vector.lengthAndDirection(800, Angle.degrees(i))),
+            );
+        }
+
         this.physicsWorld.gravity = { x: 0, y: 0, scale: 0 };
     }
 

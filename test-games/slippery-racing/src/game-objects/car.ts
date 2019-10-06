@@ -61,7 +61,7 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
         container.addChild(sprite);
         const application = game.getPIXIApplication();
         if (application) {
-            application.renderer.backgroundColor = 0x44bf4d;
+            application.renderer.backgroundColor = 0x4b4e4c;
         }
         return sprite;
     }
