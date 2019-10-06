@@ -140,6 +140,20 @@ export class Vector {
     }
 
     /**
+     * Returns this vector multiplied by the specified constant.
+     */
+    public times(factor: number): Vector {
+        return Vector.xy(this.x() * factor, this.y() * factor);
+    }
+
+    /**
+     * Returns this vector divided by the specified constant.
+     */
+    public dividedBy(divisor: number): Vector {
+        return this.times(1 / divisor);
+    }
+
+    /**
      * Returns `true` if this vector is strictly equal to the other vector,
      * otherwise `false`.
      */

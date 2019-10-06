@@ -45,4 +45,12 @@ describe('Vector', function () {
         assert.isTrue(Vector.xy(3, -7).minus(Vector.xy(5, 4)).equals(Vector.xy(-2, -11)));
     });
 
+    it('should support multiplication', function () {
+        assert.isTrue(Vector.xy(3, -7).times(3).equals(Vector.xy(9, -21)));
+    });
+
+    it('should support division', function () {
+        assert.isTrue(Vector.xy(6, -12).dividedBy(3).equals(Vector.xy(2, -4)));
+    });
+
 });
