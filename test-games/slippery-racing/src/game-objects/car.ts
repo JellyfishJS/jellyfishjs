@@ -55,7 +55,6 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
         const sprite = pixi.Sprite.from('./assets/car.png');
         sprite.anchor.set(0.5);
         container.addChild(sprite);
-        sprite.texture.baseTexture.mipmap = pixi.settings.MIPMAP_TEXTURES;
         container.scale.set(0.5);
         return sprite;
     }
