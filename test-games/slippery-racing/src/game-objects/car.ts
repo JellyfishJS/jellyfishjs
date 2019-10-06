@@ -37,10 +37,17 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
     }
 
     public setUpPhysicsBody() {
-        const body = Bodies.rectangle(this.initialPosition.x(), this.initialPosition.y(), 30, 20);
-        Body.rotate(body, -90);
-        // Friction is handled manually.
-        body.frictionAir = 0;
+        const body = Bodies.rectangle(
+            this.initialPosition.x(),
+            this.initialPosition.y(),
+            50,
+            16,
+            {
+                frictionAir: 0, // Friction is handled manually.
+                restitution: 0.3,
+                angle: Angle.degrees(-90).radians(),
+            },
+        );
         return body;
     }
 
@@ -58,7 +65,7 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
 
         [sprite.x, sprite.y] = [this.physicsBody.position.x, this.physicsBody.position.y];
         sprite.scale = new pixi.Point(0.1, 0.1);
-        sprite.angle = this.physicsBody.angle + 90;
+        sprite.angle = Angle.radians(this.physicsBody.angle).plus(Angle.degrees(90)).degrees();
     }
 
     public beforePhysics() {
@@ -66,7 +73,7 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
 
         const mainForce = Vector.lengthAndDirection(
             this.performance.acceleration * this.physicsBody.mass,
-            Angle.degrees(this.physicsBody.angle),
+            Angle.radians(this.physicsBody.angle),
         );
 
         if (game.keyboard.isDown(keycode('up'))) {
@@ -119,7 +126,7 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
         );
         const sidewaysVelocity = Vector.object(this.physicsBody.velocity)
             .projection(Vector.unit(
-                Angle.degrees(this.physicsBody.angle).plus(Angle.degrees(90)),
+                Angle.radians(this.physicsBody.angle).plus(Angle.degrees(90)),
             ));
         const sidewaysFriction = sidewaysVelocity.times(-sidewaysFrictionCoefficient);
         Body.applyForce(
