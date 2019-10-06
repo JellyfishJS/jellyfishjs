@@ -12,27 +12,32 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
     }
 
     public setUpPhysicsBody() {
-        return Bodies.rectangle(this.initialPosition.x, this.initialPosition.y, 20, 30);
+        const body = Bodies.rectangle(this.initialPosition.x, this.initialPosition.y, 30, 20);
+        Body.rotate(body, -90);
+        return body;
     }
 
     public setUpSprite(pixi: typeof PIXI, container: PIXI.Container) {
         const sprite = pixi.Sprite.from('./assets/car.png');
+        sprite.anchor.set(0.5);
         container.addChild(sprite);
+        sprite.texture.baseTexture.mipmap = pixi.settings.MIPMAP_TEXTURES;
+        container.scale.set(0.5);
         return sprite;
     }
 
-    public draw(pixi: typeof PIXI, sprite: PIXI.DisplayObject) {
+    public draw(pixi: typeof PIXI, sprite: PIXI.Sprite) {
         if (!this.physicsBody) { return; }
 
-        sprite.x = this.physicsBody.position.x;
-        sprite.y = this.physicsBody.position.y;
+        [sprite.x, sprite.y] = [this.physicsBody.position.x, this.physicsBody.position.y];
         sprite.scale = new pixi.Point(0.1, 0.1);
+        sprite.angle = this.physicsBody.angle + 90;
     }
 
     public step() {
         if (!this.physicsBody) { return; }
 
-        const force = Vector.lengthAndDirection(0.001, Angle.radians(this.physicsBody.angle));
+        const force = Vector.lengthAndDirection(0.0003, Angle.degrees(this.physicsBody.angle));
 
         if (game.keyboard.isDown(keycode('up'))) {
             Body.applyForce(
@@ -48,6 +53,14 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
                 this.physicsBody.position,
                 force.negated().object(),
             );
+        }
+
+        if (game.keyboard.isDown(keycode('left'))) {
+            this.physicsBody.torque -= 0.3;
+        }
+
+        if (game.keyboard.isDown(keycode('right'))) {
+            this.physicsBody.torque += 0.3;
         }
     }
 
