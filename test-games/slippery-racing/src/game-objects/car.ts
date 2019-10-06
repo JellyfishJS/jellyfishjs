@@ -112,6 +112,21 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
         );
         const rotationalFriction = this.physicsBody.angularVelocity * -rotationalFrictionCoefficient;
         this.physicsBody.torque += rotationalFriction;
+
+        const sidewaysFrictionCoefficient = Math.min(
+            generalFrictionCoefficient * this.performance.handling,
+            0.01,
+        );
+        const sidewaysVelocity = Vector.object(this.physicsBody.velocity)
+            .projection(Vector.unit(
+                Angle.degrees(this.physicsBody.angle).plus(Angle.degrees(90)),
+            ));
+        const sidewaysFriction = sidewaysVelocity.times(-sidewaysFrictionCoefficient);
+        Body.applyForce(
+            this.physicsBody,
+            this.physicsBody.position,
+            sidewaysFriction.object(),
+        );
     }
 
 }
