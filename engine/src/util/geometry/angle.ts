@@ -110,6 +110,20 @@ export class Angle {
     }
 
     /**
+     * Returns this angle multiplied by the specified factor.
+     */
+    public times(factor: number): Angle {
+        return Angle.radians(this.radians() * factor);
+    }
+
+    /**
+     * Returns this angle divided by the specified divisor.
+     */
+    public dividedBy(divisor: number): Angle {
+        return this.times(1 / divisor);
+    }
+
+    /**
      * Returns the sine of this angle.
      */
     public sin(): number {

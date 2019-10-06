@@ -55,6 +55,14 @@ describe('Angle', function () {
         assert.isTrue(Angle.radians(1.3).minus(Angle.radians(1.2)).equals(Angle.radians(0.1)));
     });
 
+    it('should multiply correctly', function () {
+        assert.isTrue(Angle.radians(1.3).times(2).equals(Angle.radians(2.6)));
+    });
+
+    it('should divide correctly', function () {
+        assert.isTrue(Angle.radians(1.4).dividedBy(2).equals(Angle.radians(0.7)));
+    });
+
     it('should correctly perform trigonometry', function () {
         assert.approximately(Angle.degrees(30).sin(), 0.5, 0.001);
         assert.approximately(Angle.degrees(30).cos(), Math.sqrt(3) / 2, 0.001);
