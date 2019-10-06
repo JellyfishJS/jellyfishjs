@@ -2,18 +2,45 @@ import { Angle, game, GameObject, Vector } from 'engine';
 import * as keycode from 'keycode';
 import { Bodies, Body } from 'matter-js';
 
+interface Performance {
+    /**
+     * How fast the car can go.
+     */
+    topSpeed: number;
+    /**
+     * How quickly the car can accelerate.
+     */
+    acceleration: number;
+    /**
+     * How fast the car can spin.
+     */
+    spinning: number;
+    /**
+     * How fast the car can start spinning.
+     */
+    cornering: number;
+    /**
+     * How much the car resists sliding sideways.
+     */
+    handling: number;
+}
+
 export class Car extends GameObject<PIXI.Sprite, Body> {
 
     private readonly initialPosition: { x: number, y: number };
+    private readonly performance: Performance;
 
-    public constructor(position: { x: number, y: number }) {
+    public constructor(position: { x: number, y: number }, performance: Performance) {
         super();
         this.initialPosition = position;
+        this.performance = performance;
     }
 
     public setUpPhysicsBody() {
         const body = Bodies.rectangle(this.initialPosition.x, this.initialPosition.y, 30, 20);
         Body.rotate(body, -90);
+        // Friction is handled manually.
+        body.frictionAir = 0;
         return body;
     }
 
@@ -34,16 +61,19 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
         sprite.angle = this.physicsBody.angle + 90;
     }
 
-    public step() {
+    public beforePhysics() {
         if (!this.physicsBody) { return; }
 
-        const force = Vector.lengthAndDirection(0.0003, Angle.degrees(this.physicsBody.angle));
+        const mainForce = Vector.lengthAndDirection(
+            this.performance.acceleration * this.physicsBody.mass,
+            Angle.degrees(this.physicsBody.angle),
+        );
 
         if (game.keyboard.isDown(keycode('up'))) {
             Body.applyForce(
                 this.physicsBody,
                 this.physicsBody.position,
-                force.object(),
+                mainForce.object(),
             );
         }
 
@@ -51,17 +81,37 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
             Body.applyForce(
                 this.physicsBody,
                 this.physicsBody.position,
-                force.negated().object(),
+                mainForce.negated().object(),
             );
         }
 
+        const mainTorque = this.performance.cornering * this.physicsBody.inertia;
+
         if (game.keyboard.isDown(keycode('left'))) {
-            this.physicsBody.torque -= 0.3;
+            this.physicsBody.torque -= mainTorque;
         }
 
         if (game.keyboard.isDown(keycode('right'))) {
-            this.physicsBody.torque += 0.3;
+            this.physicsBody.torque += mainTorque;
         }
+
+        const generalFrictionCoefficient = Math.min(
+            0.001 * this.physicsBody.mass * this.performance.acceleration / this.performance.topSpeed,
+            0.01,
+        );
+        const generalFriction = Vector.object(this.physicsBody.velocity).times(-generalFrictionCoefficient);
+        Body.applyForce(
+            this.physicsBody,
+            this.physicsBody.position,
+            generalFriction.object(),
+        );
+
+        const rotationalFrictionCoefficient = Math.min(
+            0.001 * this.physicsBody.inertia * this.performance.cornering / this.performance.spinning,
+            0.1,
+        );
+        const rotationalFriction = this.physicsBody.angularVelocity * -rotationalFrictionCoefficient;
+        this.physicsBody.torque += rotationalFriction;
     }
 
 }
