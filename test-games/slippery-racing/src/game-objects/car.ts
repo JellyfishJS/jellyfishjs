@@ -1,4 +1,4 @@
-import { game, GameObject } from 'engine';
+import { Angle, game, GameObject, Vector } from 'engine';
 import * as keycode from 'keycode';
 import { Bodies, Body } from 'matter-js';
 
@@ -32,15 +32,13 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
     public step() {
         if (!this.physicsBody) { return; }
 
-        const angle = this.physicsBody.angle;
-        const xComponent = Math.cos(angle);
-        const yComponent = Math.sin(angle);
+        const force = Vector.lengthAndDirection(0.001, Angle.radians(this.physicsBody.angle));
 
         if (game.keyboard.isDown(keycode('up'))) {
             Body.applyForce(
                 this.physicsBody,
                 this.physicsBody.position,
-                { x: 0.001 * xComponent, y: 0.001 * yComponent },
+                force.object(),
             );
         }
 
@@ -48,7 +46,7 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
             Body.applyForce(
                 this.physicsBody,
                 this.physicsBody.position,
-                { x: -0.001 * xComponent, y: -0.001 * yComponent },
+                force.negated().object(),
             );
         }
     }
