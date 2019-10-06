@@ -73,6 +73,16 @@ describe('Vector', function () {
         assert.approximately(vector.direction().degrees(), -30, 0.001);
     });
 
+    it('should support conversion to unit vectors', function () {
+        const vector = Vector.xy(3, 4).unit();
+        assert.approximately(vector.x(), 0.6, 0.001);
+        assert.approximately(vector.y(), 0.8, 0.001);
+    });
+
+    it('should support dot product', function () {
+        assert.approximately(Vector.xy(3, 4).dot(Vector.xy(-2, 5)), 14, 0.001);
+    });
+
     it('should support equality', function () {
         assert.isTrue(Vector.xy(3, -7).equals(Vector.xy(3, -7)));
     });
@@ -99,10 +109,18 @@ describe('Vector', function () {
         assert.approximately(vector.y(), Math.sqrt(3), 0.001);
     });
 
-    it('support rotation around arbitrary points', function () {
+    it('should support rotation around arbitrary points', function () {
         const vector = Vector.xy(3 + Math.sqrt(3), 3).rotatedAround(Angle.degrees(30), Vector.xy(3, 2));
         assert.approximately(vector.x(), 4, 0.001);
         assert.approximately(vector.y(), 2 + Math.sqrt(3), 0.001);
+    });
+
+    it('should support vector projection', function () {
+        const vector = Vector.xy(5, 6);
+        const surface = Vector.xy(1, 1);
+        const projection = vector.projection(surface);
+        assert.approximately(projection.x(), 5.5, 0.001);
+        assert.approximately(projection.y(), 5.5, 0.001);
     });
 
     it('should support conversion to arrays', function () {

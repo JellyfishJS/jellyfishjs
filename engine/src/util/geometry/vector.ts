@@ -127,7 +127,7 @@ export class Vector {
      * Returns the length of this vector.
      */
     public length(): number {
-        return Math.sqrt(this.x() ** 2 + this.y() ** 2);
+        return Math.sqrt(this.dot(this));
     }
 
     /**
@@ -163,6 +163,20 @@ export class Vector {
      */
     public withDirection(direction: Angle): Vector {
         return Vector.lengthAndDirection(this.length(), direction);
+    }
+
+    /**
+     * Returns a unit vector with the same direction as this vector.
+     */
+    public unit(): Vector {
+        return this.withLength(1);
+    }
+
+    /**
+     * Returns the dot product of this vector and the specified vector.
+     */
+    public dot(vector: Vector): number {
+        return this.x() * vector.x() + this.y() * vector.y();
     }
 
     /**
@@ -215,6 +229,14 @@ export class Vector {
     }
 
     /**
+     * Returns the vector projection onto the specified surface.
+     */
+    public projection(surface: Vector): Vector {
+        const surfaceUnit = surface.unit();
+        return surfaceUnit.times(this.dot(surfaceUnit));
+    }
+
+    /**
      * Returns `true` if this vector is strictly equal to the other vector,
      * otherwise `false`.
      */
@@ -241,7 +263,7 @@ export class Vector {
 
     /**
      * Returns a string describing this vector.
-     * 
+     *
      * For debug purposes only.
      */
     public toString(): string {
