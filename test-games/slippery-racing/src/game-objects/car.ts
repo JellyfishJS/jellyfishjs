@@ -27,17 +27,17 @@ interface Performance {
 
 export class Car extends GameObject<PIXI.Sprite, Body> {
 
-    private readonly initialPosition: { x: number, y: number };
+    private readonly initialPosition: Vector;
     private readonly performance: Performance;
 
-    public constructor(position: { x: number, y: number }, performance: Performance) {
+    public constructor(position: Vector, performance: Performance) {
         super();
         this.initialPosition = position;
         this.performance = performance;
     }
 
     public setUpPhysicsBody() {
-        const body = Bodies.rectangle(this.initialPosition.x, this.initialPosition.y, 30, 20);
+        const body = Bodies.rectangle(this.initialPosition.x(), this.initialPosition.y(), 30, 20);
         Body.rotate(body, -90);
         // Friction is handled manually.
         body.frictionAir = 0;

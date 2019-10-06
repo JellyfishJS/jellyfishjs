@@ -1,4 +1,4 @@
-import { game, GameObject } from 'engine';
+import { game, GameObject, Vector } from 'engine';
 import { Car } from './car';
 
 export class MainObject extends GameObject {
@@ -6,7 +6,7 @@ export class MainObject extends GameObject {
     public onCreate() {
         (game.createObject as any)(
             Car,
-            { x: 60, y: 30 },
+            Vector.xy(60, 500),
             {
                 topSpeed: 0.01,
                 acceleration: 0.0005,
