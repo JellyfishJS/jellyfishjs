@@ -5,7 +5,7 @@ import { Bodies, Body } from 'matter-js';
 export class LooseTire extends GameObject<PIXI.Graphics, Body> {
 
     private readonly initialPosition: Vector;
-    private readonly radius = 10;
+    private readonly radius = 15;
 
     public constructor(position: Vector) {
         super();

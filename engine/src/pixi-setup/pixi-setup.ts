@@ -47,7 +47,7 @@ export class PIXISetup {
             view: canvas || undefined,
             height: canvas && canvas.height || 300,
             width: canvas && canvas.width || 300,
-            resolution: window && window.devicePixelRatio || 1,
+            resolution: 1,
             antialias: true,
         });
     }
