@@ -19,6 +19,22 @@ describe('Vector', function () {
         assert.approximately(vector.y(), 1, 0.001);
     });
 
+    it('should support array initialization', function () {
+        const x = 12;
+        const y = -3.12;
+        const vector = Vector.array([x, y]);
+        assert.strictEqual(vector.x(), x);
+        assert.strictEqual(vector.y(), y);
+    });
+
+    it('should support object initialization', function () {
+        const x = 12;
+        const y = -3.12;
+        const vector = Vector.object({ x, y });
+        assert.strictEqual(vector.x(), x);
+        assert.strictEqual(vector.y(), y);
+    });
+
     it('should support unit vectors in arbitrary directions', function () {
         const vector = Vector.unit(Angle.degrees(30));
         assert.approximately(vector.x(), Math.sqrt(3) / 2, 0.001);
@@ -75,6 +91,14 @@ describe('Vector', function () {
 
     it('should support division', function () {
         assert.isTrue(Vector.xy(6, -12).dividedBy(3).equals(Vector.xy(2, -4)));
+    });
+
+    it('should support conversion to arrays', function () {
+        assert.deepEqual(Vector.xy(6, -12).array(), [6, -12]);
+    });
+
+    it('should support conversion to object', function () {
+        assert.deepEqual(Vector.xy(6, -12).object(), { x: 6, y: -12 });
     });
 
 });

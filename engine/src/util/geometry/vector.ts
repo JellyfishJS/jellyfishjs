@@ -54,6 +54,20 @@ export class Vector {
     }
 
     /**
+     * Returns a vector represented by the specified array.
+     */
+    public static array([x, y]: [number, number]) {
+        return Vector.xy(x, y);
+    }
+
+    /**
+     * Returns a vector represented by the specified object.
+     */
+    public static object({ x, y }: { x: number, y: number }) {
+        return Vector.xy(x, y);
+    }
+
+    /**
      * Returns a unit vector in the specified direction.
      */
     public static unit(direction: Angle): Vector {
@@ -187,6 +201,23 @@ export class Vector {
      */
     public equals(vector: Vector): boolean {
         return this.x() === vector.x() && this.y() === vector.y();
+    }
+
+    /**
+     * Returns the vector as an array.
+     *
+     * Specifically, returns a tuple
+     * containing the x value then the y value.
+     */
+    public array(): [number, number] {
+        return [this.x(), this.y()];
+    }
+
+    /**
+     * Returns the vector as an object.
+     */
+    public object(): { x: number, y: number } {
+        return { x: this.x(), y: this.y() };
     }
 
 }
