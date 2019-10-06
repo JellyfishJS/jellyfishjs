@@ -104,4 +104,33 @@ export class Vector {
         return this._y;
     }
 
+    /**
+     * Returns the sum of this vector and the specified vector.
+     */
+    public negated(): Vector {
+        return Vector.xy(-this.x(), -this.y());
+    }
+
+    /**
+     * Returns the sum of this vector and the specified vector.
+     */
+    public plus(vector: Vector): Vector {
+        return Vector.xy(this.x() + vector.x(), this.y() + vector.y());
+    }
+
+    /**
+     * Returns the sum of this vector and the specified vector.
+     */
+    public minus(vector: Vector): Vector {
+        return this.plus(vector.negated());
+    }
+
+    /**
+     * Returns `true` if this vector is strictly equal to the other vector,
+     * otherwise `false`.
+     */
+    public equals(vector: Vector): boolean {
+        return this.x() === vector.x() && this.y() === vector.y();
+    }
+
 }

@@ -25,4 +25,16 @@ describe('Vector', function () {
         assert.approximately(vector.y(), 1 / 2, 0.001);
     });
 
+    it('should support equality', function () {
+        assert.isTrue(Vector.xy(3, -7).equals(Vector.xy(3, -7)));
+    });
+
+    it('should support addition', function () {
+        assert.isTrue(Vector.xy(3, -7).plus(Vector.xy(5, 4)).equals(Vector.xy(8, -3)));
+    });
+
+    it('should support subtraction', function () {
+        assert.isTrue(Vector.xy(3, -7).minus(Vector.xy(5, 4)).equals(Vector.xy(-2, -11)));
+    });
+
 });
