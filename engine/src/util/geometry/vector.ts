@@ -241,7 +241,7 @@ export class Vector {
 
     /**
      * Returns a string describing this vector.
-     * 
+     *
      * For debug purposes only.
      */
     public toString(): string {
