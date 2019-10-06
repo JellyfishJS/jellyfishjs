@@ -59,10 +59,10 @@ export class Angle {
     /**
      * An angle pointing down.
      */
-    public static readonly down = Angle.radians(Math.PI / 2);
+    public static readonly down = Angle.radians(-Math.PI / 2);
 
     /**
-     * An angle representing turning halfway around — 180°.
+     * An angle representing turning halfway around - 180°.
      */
     public static readonly halfTurn = Angle.radians(Math.PI);
 
