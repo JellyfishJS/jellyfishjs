@@ -109,7 +109,7 @@ describe('Vector', function () {
         assert.approximately(vector.y(), Math.sqrt(3), 0.001);
     });
 
-    it('support rotation around arbitrary points', function () {
+    it('should support rotation around arbitrary points', function () {
         const vector = Vector.xy(3 + Math.sqrt(3), 3).rotatedAround(Angle.degrees(30), Vector.xy(3, 2));
         assert.approximately(vector.x(), 4, 0.001);
         assert.approximately(vector.y(), 2 + Math.sqrt(3), 0.001);
