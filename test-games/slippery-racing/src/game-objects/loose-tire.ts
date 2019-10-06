@@ -18,7 +18,7 @@ export class LooseTire extends GameObject<PIXI.Graphics, Body> {
             this.initialPosition.y(),
             this.radius,
             {
-                frictionAir: 0.05,
+                frictionAir: 0.01,
                 restitution: 0.5,
                 density: 0.003,
             },
