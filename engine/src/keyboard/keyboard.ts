@@ -20,21 +20,25 @@ export class Keyboard {
      * The current state of each key in the keyboard, true means a key is down
      * a falsey value means the key is up
      */
-    private keyboardState: Map<number, KeyState>;
+    private keyboardState: Map<number, KeyState> = new Map();
     /**
      * The queue of all keyboard events that occurred since the last time processEvents was called
      */
-    private keyboardEvents: { keyCode: number, keyState: KeyState }[];
+    private keyboardEvents: { keyCode: number, keyState: KeyState }[] = [];
 
     public constructor() {
-        window && window.document.addEventListener(
-            'keydown', (event) => { this.addEvent(event, KeyState.Down); },
-        );
-        window && window.document.addEventListener(
-            'keyup', (event) => { this.addEvent(event, KeyState.Up); },
-        );
-        this.keyboardState = new Map();
-        this.keyboardEvents = [];
+        if (typeof window !== 'undefined') {
+            window.document.addEventListener(
+                'keydown', (event) => {
+                    this.addEvent(event, KeyState.Down);
+                },
+            );
+            window.document.addEventListener(
+                'keyup', (event) => {
+                    this.addEvent(event, KeyState.Up);
+                },
+            );
+        }
     }
 
     /**
