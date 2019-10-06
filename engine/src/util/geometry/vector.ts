@@ -201,10 +201,17 @@ export class Vector {
     }
 
     /**
-     * Returns this vector rotated by some amount.
+     * Returns this vector rotated by the specified amount.
      */
     public rotatedBy(angle: Angle): Vector {
         return this.withDirection(this.direction().plus(angle));
+    }
+
+    /**
+     * Returns this vector rotated by the specified amount around the specified point.
+     */
+    public rotatedAround(angle: Angle, around: Vector): Vector {
+        return this.minus(around).rotatedBy(angle).plus(around);
     }
 
     /**

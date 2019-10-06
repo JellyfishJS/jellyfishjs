@@ -93,10 +93,16 @@ describe('Vector', function () {
         assert.isTrue(Vector.xy(6, -12).dividedBy(3).equals(Vector.xy(2, -4)));
     });
 
-    it('support rotation', function () {
+    it('support rotation around the origin', function () {
         const vector = Vector.xy(Math.sqrt(3), 1).rotatedBy(Angle.degrees(30));
         assert.approximately(vector.x(), 1, 0.001);
         assert.approximately(vector.y(), Math.sqrt(3), 0.001);
+    });
+
+    it('support rotation around arbitrary points', function () {
+        const vector = Vector.xy(3 + Math.sqrt(3), 3).rotatedAround(Angle.degrees(30), Vector.xy(3, 2));
+        assert.approximately(vector.x(), 4, 0.001);
+        assert.approximately(vector.y(), 2 + Math.sqrt(3), 0.001);
     });
 
     it('should support conversion to arrays', function () {
