@@ -1,0 +1,32 @@
+{
+    "name": "slippery-racing",
+    "version": "0.0.0",
+    "description": "Racing, but it's slippery",
+    "main": "./dist/index.js",
+    "scripts": {
+        "start": "node ./dist/index.js",
+        "serve": "serve",
+        "build": "webpack --config webpack.config.js",
+        "lint": "tslint --project .",
+        "test": "npm run -s lint",
+        "fix": "npm run -s lint -- --fix"
+    },
+    "author": "",
+    "license": "UNLICENSED",
+    "dependencies": {
+        "engine": "file:../../engine",
+        "keycode": "^2.2.0",
+        "matter-js": "^0.14.2"
+    },
+    "devDependencies": {
+        "@types/matter-js": "^0.10.2",
+        "@types/node": "^12.7.5",
+        "pixi.js": "^5.1.5",
+        "serve": "^11.2.0",
+        "ts-loader": "^6.2.0",
+        "tslint": "^5.20.0",
+        "typescript": "^3.6.3",
+        "webpack": "^4.41.0",
+        "webpack-cli": "^3.3.9"
+    }
+}
