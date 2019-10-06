@@ -196,6 +196,13 @@ export class Vector {
     }
 
     /**
+     * Returns this vector rotated by some amount.
+     */
+    public rotatedBy(angle: Angle): Vector {
+        return this.withDirection(this.direction().plus(angle));
+    }
+
+    /**
      * Returns `true` if this vector is strictly equal to the other vector,
      * otherwise `false`.
      */
