@@ -25,8 +25,8 @@ export class Camera extends GameObject<[], Body> {
 
     public draw(pixi: typeof PIXI, sprite: [], container: PIXI.Container) {
         const realOffset = this.position
-        .times(-container.scale.x)
-        .plus(Vector.xy(400, 300));
+            .times(-container.scale.x)
+            .plus(Vector.xy(400, 300));
         container.setTransform(
             realOffset.x(),
             realOffset.y(),
