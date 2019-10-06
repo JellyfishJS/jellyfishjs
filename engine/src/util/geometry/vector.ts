@@ -105,6 +105,20 @@ export class Vector {
     }
 
     /**
+     * Returns the length of this vector.
+     */
+    public length(): number {
+        return Math.sqrt(this.x() ** 2 + this.y() ** 2);
+    }
+
+    /**
+     * Returns the direction of this vector.
+     */
+    public direction(): Angle {
+        return Angle.radians(Math.atan2(this.y(), this.x()));
+    }
+
+    /**
      * Returns the sum of this vector and the specified vector.
      */
     public negated(): Vector {

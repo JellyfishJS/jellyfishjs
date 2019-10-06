@@ -25,6 +25,14 @@ describe('Vector', function () {
         assert.approximately(vector.y(), 1 / 2, 0.001);
     });
 
+    it('should support length', function () {
+        assert.approximately(Vector.xy(3, 4).length(), 5, 0.001);
+    });
+
+    it('should support direction', function () {
+        assert.approximately(Vector.xy(Math.sqrt(3), 1).direction().degrees(), 30, 0.001);
+    });
+
     it('should support equality', function () {
         assert.isTrue(Vector.xy(3, -7).equals(Vector.xy(3, -7)));
     });
