@@ -105,6 +105,11 @@ export class Vector {
     public static readonly y = Vector.up;
 
     /**
+     * A unit vector on the y axis.
+     */
+    public static readonly zero = Vector.xy(0, 0);
+
+    /**
      * Returns the x coordinate of this vector.
      */
     public x(): number {
