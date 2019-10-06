@@ -73,6 +73,10 @@ describe('Vector', function () {
         assert.approximately(vector.direction().degrees(), -30, 0.001);
     });
 
+    it('should support dot product', function () {
+        assert.approximately(Vector.xy(3, 4).dot(Vector.xy(-2, 5)), 14, 0.001);
+    });
+
     it('should support equality', function () {
         assert.isTrue(Vector.xy(3, -7).equals(Vector.xy(3, -7)));
     });
