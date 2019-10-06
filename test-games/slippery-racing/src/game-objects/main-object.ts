@@ -1,10 +1,12 @@
 import { game, GameObject, Vector } from 'engine';
+import { Camera } from './camera';
 import { Car } from './car';
 import { LooseTire } from './loose-tire';
 
 export class MainObject extends GameObject {
 
     public onCreate() {
+        const camera = (game.createObject as any)(Camera) as Camera;
         (game.createObject as any)(
             Car,
             Vector.xy(60, 1000),
@@ -15,6 +17,7 @@ export class MainObject extends GameObject {
                 cornering: 0.000015,
                 handling: 0.3,
             },
+            camera,
         );
         (game.createObject as any)(
             LooseTire,
