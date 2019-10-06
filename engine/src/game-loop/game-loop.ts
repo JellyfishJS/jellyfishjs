@@ -63,6 +63,11 @@ export class GameLoop {
     }
 
     /**
+     * A mapping from bodies to GameObjects that exist in this game loop.
+     */
+    private _bodiesToGameObjects: WeakMap<Matter.Body, GameObject<GameObjectSprite, GameObjectBody>> = new WeakMap();
+
+    /**
      * Sets up the parts of the passed GameObject related to physics.
      */
     private _initializeGameObjectPhysics<
@@ -77,10 +82,10 @@ export class GameLoop {
 
         gameObject.physicsBody = gameObject.setUpPhysicsBody();
         const bodyOrBodies: GameObjectBody = gameObject.physicsBody;
-        if (!bodyOrBodies) { return; }
 
         asArray(bodyOrBodies).forEach((body) => {
             matter.World.addBody(gameObject.physicsWorld, body);
+            this._bodiesToGameObjects.set(body, gameObject);
         });
     }
 
