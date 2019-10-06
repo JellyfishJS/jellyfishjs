@@ -44,7 +44,7 @@ export class Keyboard {
      */
     private addEvent(event: KeyboardEvent, keyState: KeyState) {
         if (!event.repeat) {
-            this.keyboardEvents.push({keyCode: event.keyCode, keyState});
+            this.keyboardEvents.push({ keyCode: event.keyCode, keyState });
         }
     }
 
