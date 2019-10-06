@@ -33,6 +33,30 @@ describe('Vector', function () {
         assert.approximately(Vector.xy(Math.sqrt(3), 1).direction().degrees(), 30, 0.001);
     });
 
+    it('should support new x values', function () {
+        assert.isTrue(Vector.xy(3, 5).withX(6).equals(Vector.xy(6, 5)));
+    });
+
+    it('should support new y values', function () {
+        assert.isTrue(Vector.xy(3, 5).withY(6).equals(Vector.xy(3, 6)));
+    });
+
+    it('should support new lengths', function () {
+        assert.isTrue(
+            Vector.lengthAndDirection(3, Angle.degrees(40))
+                .withLength(6)
+                .equals(
+                    Vector.lengthAndDirection(6, Angle.degrees(40)),
+                ),
+        );
+    });
+
+    it('should support new directions', function () {
+        const vector = Vector.lengthAndDirection(3, Angle.degrees(40)).withDirection(Angle.degrees(-30));
+        assert.approximately(vector.length(), 3, 0.001);
+        assert.approximately(vector.direction().degrees(), -30, 0.001);
+    });
+
     it('should support equality', function () {
         assert.isTrue(Vector.xy(3, -7).equals(Vector.xy(3, -7)));
     });

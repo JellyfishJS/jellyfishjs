@@ -119,6 +119,34 @@ export class Vector {
     }
 
     /**
+    * Returns a vector with this vector's y coordinate but a new x coordinate.
+     */
+    public withX(x: number): Vector {
+        return Vector.xy(x, this.y());
+    }
+
+    /**
+     * Returns a vector with this vector's x coordinate but a new y coordinate.
+     */
+    public withY(y: number): Vector {
+        return Vector.xy(this.x(), y);
+    }
+
+    /**
+     * Returns a vector with this vector's direction, but a new length.
+     */
+    public withLength(length: number): Vector {
+        return Vector.lengthAndDirection(length, this.direction());
+    }
+
+    /**
+     * Returns a vector with this vector's length, but a new direction.
+     */
+    public withDirection(direction: Angle): Vector {
+        return Vector.lengthAndDirection(this.length(), direction);
+    }
+
+    /**
      * Returns the sum of this vector and the specified vector.
      */
     public negated(): Vector {
