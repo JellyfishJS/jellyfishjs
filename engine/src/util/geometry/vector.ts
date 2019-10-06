@@ -105,7 +105,7 @@ export class Vector {
     public static readonly y = Vector.up;
 
     /**
-     * A unit vector on the y axis.
+     * A zero vector.
      */
     public static readonly zero = Vector.xy(0, 0);
 
@@ -180,7 +180,7 @@ export class Vector {
     }
 
     /**
-     * Returns the sum of this vector and the specified vector.
+     * Returns the negation of this vector.
      */
     public negated(): Vector {
         return Vector.xy(-this.x(), -this.y());
@@ -194,7 +194,7 @@ export class Vector {
     }
 
     /**
-     * Returns the sum of this vector and the specified vector.
+     * Returns the difference between this vector and the specified vector.
      */
     public minus(vector: Vector): Vector {
         return this.plus(vector.negated());
