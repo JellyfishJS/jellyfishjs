@@ -3,6 +3,7 @@ import { GameObject } from '../game-object/game-object';
 import { Keyboard } from '../keyboard/keyboard';
 import { Matter } from '../matter-setup/matter-setup';
 import { PIXISetup } from '../pixi-setup/pixi-setup';
+import { Vector } from '../util/geometry';
 
 /**
  * Represents separate games.
@@ -64,6 +65,32 @@ export class Game {
         }
 
         return this._pixiSetup.getCanvas();
+    }
+
+    /**
+     * Returns the height of the canvas
+     */
+    public getHeight() {
+        const canvas = this.getCanvas();
+        return canvas && canvas.height;
+    }
+
+    /**
+     * Returns the width of the canvas
+     */
+    public getWidth() {
+        const canvas = this.getCanvas();
+        return canvas && canvas.width;
+    }
+
+    /**
+     * Returns a vector containing the height and width of the canvas.
+     * The x coordinate of the vector is the width, the y coordinate of the vector
+     * is the height.
+     */
+    public getSize() {
+        const canvas = this.getCanvas();
+        return canvas && Vector.xy(canvas.width, canvas.height);
     }
 
     /**
