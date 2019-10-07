@@ -60,6 +60,13 @@ export class PIXISetup {
     }
 
     /**
+     * Returns the canvas element that the PIXI application this contains uses.
+     */
+    public getApplication() {
+        return this._application;
+    }
+
+    /**
      * Returns the container at the root of the canvas.
      */
     public getContainer() {

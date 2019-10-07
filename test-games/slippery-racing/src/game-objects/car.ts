@@ -47,6 +47,8 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
             32,
             {
                 frictionAir: 0, // Friction is handled manually.
+                friction: 0.4,
+                frictionStatic: 0.4,
                 restitution: 0.3,
                 angle: Angle.degrees(-90).radians(),
             },
@@ -59,6 +61,10 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
         const sprite = pixi.Sprite.from('./assets/car.png');
         sprite.anchor.set(0.5);
         container.addChild(sprite);
+        const application = game.getPIXIApplication();
+        if (application) {
+            application.renderer.backgroundColor = 0x4b4e4c;
+        }
         return sprite;
     }
 

@@ -68,6 +68,17 @@ export class Game {
     }
 
     /**
+     * Returns the PIXI application.
+     */
+    public getPIXIApplication() {
+        if (!this._pixiSetup) {
+            this._pixiSetup = new PIXISetup();
+        }
+
+        return this._pixiSetup.getApplication();
+    }
+
+    /**
      * Returns the height of the canvas
      */
     public getHeight() {
