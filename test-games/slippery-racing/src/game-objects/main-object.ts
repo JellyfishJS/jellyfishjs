@@ -13,7 +13,8 @@ export class MainObject extends GameObject {
         (game.createObject as any)(Decoration, center, 660, 0x888888);
         (game.createObject as any)(Decoration, center, 650, 0xd7d7d7);
         (game.createObject as any)(Decoration, center, 500, 0x44bf4d);
-        (game.createObject as any)(Decoration, center, 200, 0x45824a, true);
+        (game.createObject as any)(Decoration, center, 210, 0x3e7242, true);
+        (game.createObject as any)(Decoration, center, 200, 0x45824a);
 
         const camera = (game.createObject as any)(Camera) as Camera;
         (game.createObject as any)(
@@ -29,10 +30,17 @@ export class MainObject extends GameObject {
             camera,
         );
 
-        for (let i = 0; i < 360; i += 30) {
+        for (let i = 0; i < 360; i += 15) {
             (game.createObject as any)(
                 LooseTire,
                 center.plus(Vector.lengthAndDirection(800, Angle.degrees(i))),
+            );
+        }
+
+        for (let i = 7.5; i < 360; i += 15) {
+            (game.createObject as any)(
+                LooseTire,
+                center.plus(Vector.lengthAndDirection(900, Angle.degrees(i))),
             );
         }
 

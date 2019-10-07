@@ -20,6 +20,7 @@ export class LooseTire extends GameObject<PIXI.Sprite, Body> {
                 frictionAir: 0.01,
                 restitution: 0.5,
                 density: 0.003,
+                inertia: 100,
             },
         );
         return body;
@@ -36,7 +37,7 @@ export class LooseTire extends GameObject<PIXI.Sprite, Body> {
         if (!this.physicsBody) { return; }
 
         [sprite.x, sprite.y] = [this.physicsBody.position.x, this.physicsBody.position.y];
-        sprite.angle = Angle.radians(this.physicsBody.angle).plus(Angle.degrees(90)).degrees();
+        sprite.angle = Angle.radians(this.physicsBody.angle).degrees();
     }
 
 }

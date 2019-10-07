@@ -47,6 +47,8 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
             32,
             {
                 frictionAir: 0, // Friction is handled manually.
+                friction: 0.4,
+                frictionStatic: 0.4,
                 restitution: 0.3,
                 angle: Angle.degrees(-90).radians(),
             },
