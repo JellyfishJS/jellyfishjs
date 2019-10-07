@@ -3,6 +3,7 @@ import { Camera } from './camera';
 import { Car } from './car';
 import { Decoration } from './decoration';
 import { LooseTire } from './loose-tire';
+import { SoccerBall } from './soccer-ball';
 
 export class MainObject extends GameObject {
 
@@ -46,7 +47,7 @@ export class MainObject extends GameObject {
             {
                 topSpeed: 0.02,
                 acceleration: 0.001,
-                spinning: 0.0003,
+                spinning: 0.0006,
                 cornering: 0.000015,
                 handling: 0.3,
             },
@@ -55,6 +56,11 @@ export class MainObject extends GameObject {
 
         this.generateTireCircle(Vector.zero, 800, 24);
         this.generateTireCircle(Vector.xy(-2900, -2700), 300, 48);
+
+        (game.createObject as any)(
+            SoccerBall,
+            Vector.xy(0, -1400),
+        );
 
         this.physicsWorld.gravity = { x: 0, y: 0, scale: 0 };
     }
