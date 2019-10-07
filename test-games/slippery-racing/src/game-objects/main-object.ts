@@ -13,7 +13,7 @@ export class MainObject extends GameObject {
         (game.createObject as any)(Decoration, center, 660, 0x888888);
         (game.createObject as any)(Decoration, center, 650, 0xd7d7d7);
         (game.createObject as any)(Decoration, center, 500, 0x44bf4d);
-        (game.createObject as any)(Decoration, center, 200, 0x45824a);
+        (game.createObject as any)(Decoration, center, 200, 0x45824a, true);
 
         const camera = (game.createObject as any)(Camera) as Camera;
         (game.createObject as any)(
