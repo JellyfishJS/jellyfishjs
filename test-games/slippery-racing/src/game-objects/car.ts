@@ -112,7 +112,7 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
 
         const generalFrictionCoefficient = Math.min(
             0.001 * this.physicsBody.mass * this.performance.acceleration / this.performance.topSpeed,
-            0.01,
+            0.001 * this.physicsBody.mass,
         );
         const generalFriction = Vector.object(this.physicsBody.velocity).times(-generalFrictionCoefficient);
         Body.applyForce(
@@ -123,7 +123,7 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
 
         const rotationalFrictionCoefficient = Math.min(
             0.001 * this.physicsBody.inertia * this.performance.cornering / this.performance.spinning,
-            0.1,
+            0.001 * this.physicsBody.inertia,
         );
         const rotationalFriction = this.physicsBody.angularVelocity * -rotationalFrictionCoefficient;
         this.physicsBody.torque += rotationalFriction;
