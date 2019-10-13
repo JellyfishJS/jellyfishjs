@@ -267,7 +267,7 @@ export class GameLoop {
      *  - Any game objects that have been destroyed are cleaned up, and have their `onDestroy` hook called.
      *  - Every `endStep` hook is called.
      */
-    public runLoop(keyboard: Keyboard, pixiSetup: PIXISetup | undefined, engine: Matter.Engine | undefined) {
+    public runStep(keyboard: Keyboard, pixiSetup: PIXISetup | undefined, engine: Matter.Engine | undefined) {
         this._beforeStep();
         this._handleCreation(pixiSetup);
         this._keyboardEvents(keyboard);
