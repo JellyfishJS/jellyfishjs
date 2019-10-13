@@ -35,11 +35,13 @@ export class Game {
      *
      * Any arguments after the first are passed to the GameObject subclass's constructor.
      */
-    public createObject<Subclass extends GameObject, Args extends readonly []>(
-        Class: new (...args: Args) => Subclass,
-        ...args: Args
-    ) {
-        const newObject = new Class(...args);
+    public createObject<
+        Subclass extends new (...args: any[]) => GameObject,
+    >(
+        Class: Subclass,
+        ...args: ConstructorParameters<Subclass>
+    ): InstanceType<Subclass> {
+        const newObject = new Class(...args) as InstanceType<Subclass>;
 
         if (this._physicsEngine) {
             newObject.physicsWorld = this._physicsEngine.world;
