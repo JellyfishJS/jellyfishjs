@@ -246,10 +246,10 @@ export class GameLoop {
     }
 
     /**
-     * Calls the `endStep` hook on every initialized game object.
+     * Calls the `afterStep` hook on every initialized game object.
      */
     private _endStep() {
-        this._gameObjects.forEach((gameObject) => gameObject.endStep && gameObject.endStep());
+        this._gameObjects.forEach((gameObject) => gameObject.afterStep && gameObject.afterStep());
     }
 
     /**
@@ -265,7 +265,7 @@ export class GameLoop {
      *  - Every `step` hook is run.
      *  - If this is client-side, every `draw` hook is run on every game object that has a sprite and container.
      *  - Any game objects that have been destroyed are cleaned up, and have their `onDestroy` hook called.
-     *  - Every `endStep` hook is called.
+     *  - Every `afterStep` hook is called.
      */
     public runStep(keyboard: Keyboard, pixiSetup: PIXISetup | undefined, engine: Matter.Engine | undefined) {
         this._beforeStep();
