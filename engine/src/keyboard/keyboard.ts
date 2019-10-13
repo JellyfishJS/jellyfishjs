@@ -55,22 +55,22 @@ export class Keyboard {
     /**
      * Loops through all of the key events in keyboardEvents, updates the keyboardState based
      * on each event and removes the event from the queue.
-     * @param gameLoop: the gameloop to dispatch the processed keyboard events to
+     * @param dispatchKeyEvent: the callback to call with the processed keyboard events
      */
-    public processEvents(gameLoop: GameLoop): void {
+    public processEvents(dispatchKeyEvent: (keyCode: number, eventType: KeyEvent) => void): void {
         for (const keyboardEvent of this.keyboardEvents) {
             if (keyboardEvent.keyState === KeyState.Down) {
-                gameLoop.dispatchKeyEvent(keyboardEvent.keyCode, KeyEvent.Pressed);
+                dispatchKeyEvent(keyboardEvent.keyCode, KeyEvent.Pressed);
                 this.keyboardState.set(keyboardEvent.keyCode, keyboardEvent.keyState);
             } else { // Key is up
-                gameLoop.dispatchKeyEvent(keyboardEvent.keyCode, KeyEvent.Released);
+                dispatchKeyEvent(keyboardEvent.keyCode, KeyEvent.Released);
                 this.keyboardState.delete(keyboardEvent.keyCode);
             }
         }
 
         for (const [keyCode, keyState] of this.keyboardState) {
             if (keyState === KeyState.Down) {
-                gameLoop.dispatchKeyEvent(keyCode, KeyEvent.HeldDown);
+                dispatchKeyEvent(keyCode, KeyEvent.HeldDown);
             }
         }
         this.keyboardEvents = [];

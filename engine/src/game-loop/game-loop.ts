@@ -30,10 +30,34 @@ const maxCreationDepth = 1000;
 export class GameLoop {
 
     /**
+     * An array of the GameObjects that exist in this game loop.
+     */
+    private _gameObjects: GameObject[] = [];
+
+    /**
      * An array of the GameObjects in this GameLoop
      * that will be created on the next step.
      */
     private _gameObjectsToBeCreated: GameObject[] = [];
+
+    /**
+     * A mapping from bodies to GameObjects that exist in this game loop.
+     */
+    private _bodiesToGameObjects: WeakMap<Matter.Body, GameObject<GameObjectSprite, GameObjectBody>> = new WeakMap();
+
+    /**
+     * Adds the specified GameObject to this GameLoop.
+     */
+    public addGameObject(object: GameObject) {
+        this._gameObjectsToBeCreated.push(object);
+    }
+
+    /**
+     * Calls the `beforeStep` hook on every initialized game object.
+     */
+    private _beforeStep() {
+        this._gameObjects.forEach((gameObject) => gameObject.beforeStep && gameObject.beforeStep());
+    }
 
     /**
      * Calls the appropriate initializers and sets the appropriate defaults
@@ -61,11 +85,6 @@ export class GameLoop {
             this._initializeGameObjectPIXI(gameObject, pixiSetup);
         }
     }
-
-    /**
-     * A mapping from bodies to GameObjects that exist in this game loop.
-     */
-    private _bodiesToGameObjects: WeakMap<Matter.Body, GameObject<GameObjectSprite, GameObjectBody>> = new WeakMap();
 
     /**
      * Sets up the parts of the passed GameObject related to physics.
@@ -136,23 +155,11 @@ export class GameLoop {
     }
 
     /**
-     * An array of the GameObjects that exist in this game loop.
-     */
-    private _gameObjects: GameObject[] = [];
-
-    /**
-     * Adds the specified GameObject to this GameLoop.
-     */
-    public addGameObject(object: GameObject) {
-        this._gameObjectsToBeCreated.push(object);
-    }
-
-    /**
      * Calls the appropriate hook for every game object in the games loops based on the key pressed
      * @param keyCode the keycode of the key of the event
      * @param eventType the type of the keyboard hook to call
      */
-    public dispatchKeyEvent(keyCode: number, eventType: KeyEvent): void {
+    private _dispatchKeyEvent(keyCode: number, eventType: KeyEvent): void {
         switch (eventType) {
             case KeyEvent.Pressed:
                 this._gameObjects.forEach((gameObject) => gameObject.keyPressed && gameObject.keyPressed(keyCode));
@@ -167,36 +174,65 @@ export class GameLoop {
     }
 
     /**
-     * Runs a single game loop.
+     * Updates the keyboard's state,
+     * and calls all keyboard hooks on every initialized game object.
      */
-    public runLoop(keyboard: Keyboard, pixiSetup: PIXISetup | undefined, engine: Matter.Engine | undefined) {
-        keyboard.processEvents(this);
+    private _keyboardEvents(keyboard: Keyboard) {
+        keyboard.processEvents((keyCode: number, eventType: KeyEvent) => this._dispatchKeyEvent(keyCode, eventType));
+    }
 
-        this._gameObjects.forEach((gameObject) => gameObject.beforeStep && gameObject.beforeStep());
-
-        this._handleCreation(pixiSetup);
-
+    /**
+     * Calls the `beforePhysics` hook on every initialized game object.
+     */
+    private _beforePhysics() {
         this._gameObjects.forEach((gameObject) => gameObject.beforePhysics && gameObject.beforePhysics());
+    }
+
+    /**
+     * Runs one step of the physics engine.
+     */
+    private _physics(engine: Matter.Engine | undefined) {
         Matter && engine && Matter.Engine.update(engine);
+    }
+
+    /**
+     * Calls the `afterPhysics` hook on every initialized game object.
+     */
+    private _afterPhysics() {
         this._gameObjects.forEach((gameObject) => gameObject.afterPhysics && gameObject.afterPhysics());
+    }
 
+    /**
+     * Calls the `step` hook on every initialized game object.
+     */
+    private _step() {
         this._gameObjects.forEach((gameObject) => gameObject.step && gameObject.step());
+    }
 
+    /**
+     * Calls the `draw` hook on every initialized game object that has a sprite and container
+     * if this is running client-side.
+     */
+    private _draw() {
         // For some reason Typescript doesn't handle type narrowing on imported constants,
         // so it needs to be reassigned.
         const pixi = PIXI;
-        if (pixi) {
-            this._gameObjects.forEach((gameObject) => {
-                const sprite = gameObject[spriteKey];
-                const container = gameObject[containerKey];
-                if (gameObject.draw && sprite && container) {
-                    gameObject.draw(pixi, sprite, container);
-                }
-            });
-        }
+        if (!pixi) { return; }
 
-        this._gameObjects.forEach((gameObject) => gameObject.endStep && gameObject.endStep());
+        this._gameObjects.forEach((gameObject) => {
+            const sprite = gameObject[spriteKey];
+            const container = gameObject[containerKey];
+            if (gameObject.draw && sprite && container) {
+                gameObject.draw(pixi, sprite, container);
+            }
+        });
+    }
 
+    /**
+     * Cleans up destroyed objects,
+     * and calls their `onDestroy` hook.
+     */
+    private _handleDestruction() {
         while (this._gameObjects.some((gameObject) => gameObject[toBeDestroyedKey])) {
             this._gameObjects = this._gameObjects.filter((gameObject) => {
                 if (!gameObject[toBeDestroyedKey]) {
@@ -207,6 +243,41 @@ export class GameLoop {
                 return false;
             });
         }
+    }
+
+    /**
+     * Calls the `afterStep` hook on every initialized game object.
+     */
+    private _endStep() {
+        this._gameObjects.forEach((gameObject) => gameObject.afterStep && gameObject.afterStep());
+    }
+
+    /**
+     * Runs a single step.
+     *
+     * Events happen in this order:
+     *  - Every `beforeStep` hook is called.
+     *  - Any objects that have been created are initialized, and have their `onCreate` hook called.
+     *  - Keyboard events are processed, and keyboard hooks are called in order.
+     *  - Every `beforePhysics` hook is called.
+     *  - The physics engine's step is run.
+     *  - Every `afterPhysics` hook is run.
+     *  - Every `step` hook is run.
+     *  - If this is client-side, every `draw` hook is run on every game object that has a sprite and container.
+     *  - Any game objects that have been destroyed are cleaned up, and have their `onDestroy` hook called.
+     *  - Every `afterStep` hook is called.
+     */
+    public runStep(keyboard: Keyboard, pixiSetup: PIXISetup | undefined, engine: Matter.Engine | undefined) {
+        this._beforeStep();
+        this._handleCreation(pixiSetup);
+        this._keyboardEvents(keyboard);
+        this._beforePhysics();
+        this._physics(engine);
+        this._afterPhysics();
+        this._step();
+        this._draw();
+        this._handleDestruction();
+        this._endStep();
     }
 
 }

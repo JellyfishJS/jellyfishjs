@@ -115,7 +115,7 @@ export class Game {
         }
 
         this._pixiSetup.onInterval(() => {
-            this._gameLoop.runLoop(this.keyboard, this._pixiSetup, this._physicsEngine);
+            this._gameLoop.runStep(this.keyboard, this._pixiSetup, this._physicsEngine);
         });
     }
 

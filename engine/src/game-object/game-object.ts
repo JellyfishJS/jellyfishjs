@@ -156,7 +156,7 @@ export abstract class GameObject<
      *
      * Meant to be overridden.
      */
-    public endStep?(): void;
+    public afterStep?(): void;
 
     /**
      * Called once for each time a key is pressed during the processEvents portion of the game loop
