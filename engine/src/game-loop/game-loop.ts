@@ -178,7 +178,7 @@ export class GameLoop {
      * and calls all keyboard hooks on every initialized game object.
      */
     private _keyboardEvents(keyboard: Keyboard) {
-        keyboard.processEvents(this);
+        keyboard.processEvents((keyCode: number, eventType: KeyEvent) => this.dispatchKeyEvent(keyCode, eventType));
     }
 
     /**
