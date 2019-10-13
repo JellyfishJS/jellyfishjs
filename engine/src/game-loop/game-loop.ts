@@ -167,14 +167,26 @@ export class GameLoop {
     }
 
     /**
-     * Runs a single game loop.
+     * Runs a single step.
+     *
+     * Events happen in this order:
+     *  - Every `beforeStep` hook is called.
+     *  - Any objects that have been created are initialized, and have their `onCreate` hook called.
+     *  - Keyboard events are processed, and keyboard hooks are called in order.
+     *  - Every `beforePhysics` hook is called.
+     *  - The physics engine's step is run.
+     *  - Every `afterPhysics` hook is run.
+     *  - Every `step` hook is run.
+     *  - If this is client-side, every `draw` hook is run.
+     *  - Any game objects that have been destroyed are cleaned up, and have their `onDestroy` hook called.
+     *  - Every `endStep` hook is called.
      */
     public runLoop(keyboard: Keyboard, pixiSetup: PIXISetup | undefined, engine: Matter.Engine | undefined) {
-        keyboard.processEvents(this);
-
         this._gameObjects.forEach((gameObject) => gameObject.beforeStep && gameObject.beforeStep());
 
         this._handleCreation(pixiSetup);
+
+        keyboard.processEvents(this);
 
         this._gameObjects.forEach((gameObject) => gameObject.beforePhysics && gameObject.beforePhysics());
         Matter && engine && Matter.Engine.update(engine);
@@ -195,8 +207,6 @@ export class GameLoop {
             });
         }
 
-        this._gameObjects.forEach((gameObject) => gameObject.endStep && gameObject.endStep());
-
         while (this._gameObjects.some((gameObject) => gameObject[toBeDestroyedKey])) {
             this._gameObjects = this._gameObjects.filter((gameObject) => {
                 if (!gameObject[toBeDestroyedKey]) {
@@ -207,6 +217,8 @@ export class GameLoop {
                 return false;
             });
         }
+
+        this._gameObjects.forEach((gameObject) => gameObject.endStep && gameObject.endStep());
     }
 
 }
