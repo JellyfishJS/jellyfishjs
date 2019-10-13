@@ -152,7 +152,7 @@ export class GameLoop {
      * @param keyCode the keycode of the key of the event
      * @param eventType the type of the keyboard hook to call
      */
-    public dispatchKeyEvent(keyCode: number, eventType: KeyEvent): void {
+    private _dispatchKeyEvent(keyCode: number, eventType: KeyEvent): void {
         switch (eventType) {
             case KeyEvent.Pressed:
                 this._gameObjects.forEach((gameObject) => gameObject.keyPressed && gameObject.keyPressed(keyCode));
@@ -178,7 +178,7 @@ export class GameLoop {
      * and calls all keyboard hooks on every initialized game object.
      */
     private _keyboardEvents(keyboard: Keyboard) {
-        keyboard.processEvents((keyCode: number, eventType: KeyEvent) => this.dispatchKeyEvent(keyCode, eventType));
+        keyboard.processEvents((keyCode: number, eventType: KeyEvent) => this._dispatchKeyEvent(keyCode, eventType));
     }
 
     /**
