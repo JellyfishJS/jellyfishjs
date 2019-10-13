@@ -30,10 +30,34 @@ const maxCreationDepth = 1000;
 export class GameLoop {
 
     /**
+     * An array of the GameObjects that exist in this game loop.
+     */
+    private _gameObjects: GameObject[] = [];
+
+    /**
      * An array of the GameObjects in this GameLoop
      * that will be created on the next step.
      */
     private _gameObjectsToBeCreated: GameObject[] = [];
+
+    /**
+     * A mapping from bodies to GameObjects that exist in this game loop.
+     */
+    private _bodiesToGameObjects: WeakMap<Matter.Body, GameObject<GameObjectSprite, GameObjectBody>> = new WeakMap();
+
+    /**
+     * Adds the specified GameObject to this GameLoop.
+     */
+    public addGameObject(object: GameObject) {
+        this._gameObjectsToBeCreated.push(object);
+    }
+
+    /**
+     * Calls the `beforeStep` hook on every initialized game object.
+     */
+    private _beforeStep() {
+        this._gameObjects.forEach((gameObject) => gameObject.beforeStep && gameObject.beforeStep());
+    }
 
     /**
      * Calls the appropriate initializers and sets the appropriate defaults
@@ -61,11 +85,6 @@ export class GameLoop {
             this._initializeGameObjectPIXI(gameObject, pixiSetup);
         }
     }
-
-    /**
-     * A mapping from bodies to GameObjects that exist in this game loop.
-     */
-    private _bodiesToGameObjects: WeakMap<Matter.Body, GameObject<GameObjectSprite, GameObjectBody>> = new WeakMap();
 
     /**
      * Sets up the parts of the passed GameObject related to physics.
@@ -136,18 +155,6 @@ export class GameLoop {
     }
 
     /**
-     * An array of the GameObjects that exist in this game loop.
-     */
-    private _gameObjects: GameObject[] = [];
-
-    /**
-     * Adds the specified GameObject to this GameLoop.
-     */
-    public addGameObject(object: GameObject) {
-        this._gameObjectsToBeCreated.push(object);
-    }
-
-    /**
      * Calls the appropriate hook for every game object in the games loops based on the key pressed
      * @param keyCode the keycode of the key of the event
      * @param eventType the type of the keyboard hook to call
@@ -164,13 +171,6 @@ export class GameLoop {
                 this._gameObjects.forEach((gameObject) => gameObject.keyHeld && gameObject.keyHeld(keyCode));
                 break;
         }
-    }
-
-    /**
-     * Calls the `beforeStep` hook on every initialized game object.
-     */
-    private _beforeStep() {
-        this._gameObjects.forEach((gameObject) => gameObject.beforeStep && gameObject.beforeStep());
     }
 
     /**
