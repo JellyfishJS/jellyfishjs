@@ -217,15 +217,15 @@ export class GameLoop {
         // For some reason Typescript doesn't handle type narrowing on imported constants,
         // so it needs to be reassigned.
         const pixi = PIXI;
-        if (pixi) {
-            this._gameObjects.forEach((gameObject) => {
-                const sprite = gameObject[spriteKey];
-                const container = gameObject[containerKey];
-                if (gameObject.draw && sprite && container) {
-                    gameObject.draw(pixi, sprite, container);
-                }
-            });
-        }
+        if (!pixi) { return; }
+
+        this._gameObjects.forEach((gameObject) => {
+            const sprite = gameObject[spriteKey];
+            const container = gameObject[containerKey];
+            if (gameObject.draw && sprite && container) {
+                gameObject.draw(pixi, sprite, container);
+            }
+        });
     }
 
     /**
