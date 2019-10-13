@@ -276,6 +276,7 @@ export class GameLoop {
         this._afterPhysics();
         this._step();
         this._draw();
+        this._handleDestruction();
         this._endStep();
     }
 
