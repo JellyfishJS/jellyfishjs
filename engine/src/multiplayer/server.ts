@@ -11,6 +11,11 @@ import { User } from './user';
 export class Server extends GameObject {
 
     /**
+     * The default port to use.
+     */
+    public static readonly DEFAULT_PORT = 17771;
+
+    /**
      * The socket.io server this `Server` is using.
      */
     private _socketIOServer: SocketIO.Server | undefined;
@@ -32,7 +37,7 @@ export class Server extends GameObject {
      *
      * Do not override.
      */
-    public start(port: number = 17771) {
+    public start(port: number = Server.DEFAULT_PORT) {
         if (this._socketIOServer) { return; }
 
         this._socketIOServer = SocketIO(port);
