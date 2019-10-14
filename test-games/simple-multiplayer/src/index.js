@@ -1,16 +1,29 @@
-const Jellyfish = require("engine");
+const Jellyfish = require('engine');
 
-class MainServer extends Jellyfish.Server {
+class Server extends Jellyfish.Server {
 
     onCreate() {
         this.start();
     }
 
     onMessage(user, message) {
-        console.log(`User ${user.id()} said "${message}"`);
+        console.log(`User ${user.id()} said '${message}'`);
     }
 
 }
 
-Jellyfish.game.createObject(MainServer);
+class Client extends Jellyfish.Client {
+
+    onCreate() {
+        this.connect('http://localhost');
+    }
+
+    keyPressed(keyCode) {
+        this.sendMessage(`${keyCode}`);
+    }
+
+}
+
+Jellyfish.game.createObject(Server);
+Jellyfish.game.createObject(Client);
 Jellyfish.game.start();
