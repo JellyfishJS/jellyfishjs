@@ -24,6 +24,10 @@ class Client extends Jellyfish.Client {
 
 }
 
-Jellyfish.game.createObject(Server);
-Jellyfish.game.createObject(Client);
+if (Jellyfish.isServer) {
+    Jellyfish.game.createObject(Server);
+} else {
+    Jellyfish.game.createObject(Client);
+}
+
 Jellyfish.game.start();
