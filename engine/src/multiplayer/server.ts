@@ -1,5 +1,6 @@
-import * as SocketIO from 'socket.io';
+import * as SocketIOForType from 'socket.io';
 import { GameObject } from '../game-object/game-object';
+import { SocketIO } from './socket';
 import { User } from './user';
 
 /**
@@ -18,12 +19,12 @@ export class Server extends GameObject {
     /**
      * The socket.io server this `Server` is using.
      */
-    private _socketIOServer: SocketIO.Server | undefined;
+    private _socketIOServer: SocketIOForType.Server | undefined;
 
     /**
      * A map from user ids to sockets.
      */
-    private readonly _userToSocket: Map<string, SocketIO.Socket> = new Map();
+    private readonly _userToSocket: Map<string, SocketIOForType.Socket> = new Map();
 
     /**
      * A map from user ids to sockets.
@@ -38,7 +39,7 @@ export class Server extends GameObject {
      * Do not override.
      */
     public start(port: number = Server.DEFAULT_PORT) {
-        if (this._socketIOServer) { return; }
+        if (!SocketIO || this._socketIOServer) { return; }
 
         this._socketIOServer = SocketIO(port);
         this._socketIOServer.on('connect', (socket) => {
