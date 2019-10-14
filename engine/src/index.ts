@@ -1,4 +1,4 @@
 export { Game, game } from './game/game';
 export { GameObject } from './game-object/game-object';
 export { Angle, Vector } from './util/geometry';
-export { User } from './multiplayer';
+export { User, Server } from './multiplayer';
