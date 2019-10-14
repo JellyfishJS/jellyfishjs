@@ -63,7 +63,7 @@ export class Server extends GameObject {
     /**
      * Handles a message from the client.
      *
-     * If it's not formated properly,
+     * If it's not formatted properly,
      * logs an error but doesn't throw,
      * since this might be caused by a client trying to mess with the server.
      */
