@@ -1,7 +1,7 @@
 import * as SocketIOForType from 'socket.io';
 import { beforeStepKey, GameObject } from '../game-object/game-object';
 import { MessageType, ServerEvent, ServerEventType } from './event';
-import { SocketIO } from './socket';
+import { getSocketIO } from './socket';
 import { User } from './user';
 
 /**
@@ -97,6 +97,7 @@ export class Server extends GameObject {
      * Do not override.
      */
     public start(port: number = Server.DEFAULT_PORT) {
+        const SocketIO = getSocketIO();
         if (!SocketIO || this._socketIOServer) { return; }
 
         this._socketIOServer = SocketIO(port);
