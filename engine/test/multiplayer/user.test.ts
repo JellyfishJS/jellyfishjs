@@ -13,7 +13,7 @@ describe('User', function () {
         // Theoretically this will cause tests to fail every 10 trillion years or so.
         const userA = new User();
         const userB = new User();
-        assert.strictEqual(userA.id(), userB.id());
+        assert.notStrictEqual(userA.id(), userB.id());
     });
 
 });
