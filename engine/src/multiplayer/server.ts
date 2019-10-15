@@ -102,6 +102,8 @@ export class Server extends GameObject {
 
         this._socketIOServer = SocketIO(port);
         this._socketIOServer.on('connect', (socket) => {
+            // this._userToSocket changes aren't queued,
+            // to avoid using sockets that are dead.
             const user = new User();
             this._userToSocket.set(user.id(), socket);
             this._eventQueue.push({ type: ServerEventType.Connect, user });
