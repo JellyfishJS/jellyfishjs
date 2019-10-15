@@ -31,10 +31,10 @@ export class Client extends GameObject {
         eventsToHandle.forEach((event) => {
             switch (event.type) {
                 case ClientEventType.Connect:
-                    this.onConnect && this.onConnect();
+                    this.onConnected && this.onConnected();
                     break;
                 case ClientEventType.Disconnect:
-                    this.onDisconnect && this.onDisconnect(event.reason);
+                    this.onDisconnected && this.onDisconnected(event.reason);
                     break;
                 case ClientEventType.Message:
                     this._onMessage(event.message.type, event.message.contents);
@@ -117,7 +117,7 @@ export class Client extends GameObject {
      *
      * Meant to be overridden.
      */
-    public onConnect?(): void;
+    public onConnected?(): void;
 
     /**
      * Called when successfully connected to the server.
@@ -134,6 +134,6 @@ export class Client extends GameObject {
      *
      * Meant to be overridden.
      */
-    public onDisconnect?(reason: string): void;
+    public onDisconnected?(reason: string): void;
 
 }
