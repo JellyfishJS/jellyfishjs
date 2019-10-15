@@ -22,35 +22,25 @@ export class Client extends GameObject {
     private _eventQueue: ClientEvent[] = [];
 
     /**
-     * Connects this client to the server with the specified host and port.
-     *
-     * If no port is specified, defaults to `17771`.
+     * Handles the events in the event queue.
      */
-    public connect(host: string, port: number = Server.DEFAULT_PORT) {
-        if (isServer) { return; }
+    private _handleEvents() {
+        const eventsToHandle = this._eventQueue; // Moved in case ._eventQueue is modified during execution.
+        this._eventQueue = [];
 
-        this._socketIOClient = SocketIOClient(`${host}:${port}`);
-
-        this._socketIOClient.on('connect', () => {
-            this._eventQueue.push({ type: ClientEventType.Connect });
+        eventsToHandle.forEach((event) => {
+            switch (event.type) {
+                case ClientEventType.Connect:
+                    this.onConnect && this.onConnect();
+                    break;
+                case ClientEventType.Disconnect:
+                    this.onDisconnect && this.onDisconnect(event.reason);
+                    break;
+                case ClientEventType.Message:
+                    this._onMessage(event.message.type, event.message.contents);
+                    break;
+            }
         });
-
-        this._socketIOClient.on('disconnect', (reason: string) => {
-            this._eventQueue.push({ type: ClientEventType.Disconnect, reason });
-        });
-
-        this._socketIOClient.on('message', (type: unknown, contents: string) => {
-            this._eventQueue.push({ type: ClientEventType.Message, message: { type, contents } });
-        });
-    }
-
-    /**
-     * Sends the specified message to the server.
-     */
-    public sendMessage(message: string) {
-        if (!this._socketIOClient) { return; }
-
-        this._socketIOClient.send(MessageType.String, message);
     }
 
     /**
@@ -82,25 +72,35 @@ export class Client extends GameObject {
     }
 
     /**
-     * Handles the events in the event queue.
+     * Connects this client to the server with the specified host and port.
+     *
+     * If no port is specified, defaults to `17771`.
      */
-    private _handleEvents() {
-        const eventsToHandle = this._eventQueue; // Moved in case ._eventQueue is modified during execution.
-        this._eventQueue = [];
+    public connect(host: string, port: number = Server.DEFAULT_PORT) {
+        if (isServer) { return; }
 
-        eventsToHandle.forEach((event) => {
-            switch (event.type) {
-                case ClientEventType.Connect:
-                    this.onConnect && this.onConnect();
-                    break;
-                case ClientEventType.Disconnect:
-                    this.onDisconnect && this.onDisconnect(event.reason);
-                    break;
-                case ClientEventType.Message:
-                    this._onMessage(event.message.type, event.message.contents);
-                    break;
-            }
+        this._socketIOClient = SocketIOClient(`${host}:${port}`);
+
+        this._socketIOClient.on('connect', () => {
+            this._eventQueue.push({ type: ClientEventType.Connect });
         });
+
+        this._socketIOClient.on('disconnect', (reason: string) => {
+            this._eventQueue.push({ type: ClientEventType.Disconnect, reason });
+        });
+
+        this._socketIOClient.on('message', (type: unknown, contents: string) => {
+            this._eventQueue.push({ type: ClientEventType.Message, message: { type, contents } });
+        });
+    }
+
+    /**
+     * Sends the specified message to the server.
+     */
+    public sendMessage(message: string) {
+        if (!this._socketIOClient) { return; }
+
+        this._socketIOClient.send(MessageType.String, message);
     }
 
     /**

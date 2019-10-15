@@ -38,33 +38,6 @@ export class Server extends GameObject {
     private _eventQueue: ServerEvent[] = [];
 
     /**
-     * Starts the server on the specified port.
-     *
-     * If no port is specified, uses port `17771`.
-     *
-     * Do not override.
-     */
-    public start(port: number = Server.DEFAULT_PORT) {
-        if (!SocketIO || this._socketIOServer) { return; }
-
-        this._socketIOServer = SocketIO(port);
-        this._socketIOServer.on('connect', (socket) => {
-            const user = new User();
-            this._userToSocket.set(user.id(), socket);
-            this._eventQueue.push({ type: ServerEventType.Connect, user });
-
-            socket.on('message', (type: unknown, contents: unknown) => {
-                this._eventQueue.push({ type: ServerEventType.Message, user, message: { type, contents } });
-            });
-
-            socket.on('disconnect', (reason: string) => {
-                this._userToSocket.delete(user.id());
-                this._eventQueue.push({ type: ServerEventType.Disconnect, user, reason });
-            });
-        });
-    }
-
-    /**
      * Handles the events in the event queue.
      */
     private _handleEvents() {
@@ -117,12 +90,30 @@ export class Server extends GameObject {
     }
 
     /**
-     * Before every step, handles all the events and calls the appropriate callbacks.
+     * Starts the server on the specified port.
+     *
+     * If no port is specified, uses port `17771`.
+     *
+     * Do not override.
      */
-    public [beforeStepKey]() {
-        super[beforeStepKey] && super[beforeStepKey]!();
+    public start(port: number = Server.DEFAULT_PORT) {
+        if (!SocketIO || this._socketIOServer) { return; }
 
-        this._handleEvents();
+        this._socketIOServer = SocketIO(port);
+        this._socketIOServer.on('connect', (socket) => {
+            const user = new User();
+            this._userToSocket.set(user.id(), socket);
+            this._eventQueue.push({ type: ServerEventType.Connect, user });
+
+            socket.on('message', (type: unknown, contents: unknown) => {
+                this._eventQueue.push({ type: ServerEventType.Message, user, message: { type, contents } });
+            });
+
+            socket.on('disconnect', (reason: string) => {
+                this._userToSocket.delete(user.id());
+                this._eventQueue.push({ type: ServerEventType.Disconnect, user, reason });
+            });
+        });
     }
 
     /**
@@ -143,6 +134,15 @@ export class Server extends GameObject {
         if (!socket) { return; }
 
         socket.broadcast.send(MessageType.String, message);
+    }
+
+    /**
+     * Before every step, handles all the events and calls the appropriate callbacks.
+     */
+    public [beforeStepKey]() {
+        super[beforeStepKey] && super[beforeStepKey]!();
+
+        this._handleEvents();
     }
 
     /**
