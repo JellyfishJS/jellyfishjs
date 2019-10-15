@@ -1,0 +1,61 @@
+import { User } from './user';
+
+/**
+ * Represents the various kinds of events that can happen to a server.
+ */
+export type ServerEvent =
+    | ServerConnectEvent
+    | ServerMessageEvent
+    | ServerDisconnectEvent;
+
+/**
+ * Represents a client connecting to the server.
+ */
+export interface ServerConnectEvent {
+    type: ServerEventType.Connect;
+    user: User;
+}
+
+/**
+ * Represents a client disconnecting from the server.
+ */
+export interface ServerDisconnectEvent {
+    type: ServerEventType.Disconnect;
+    user: User;
+    reason: string;
+}
+
+/**
+ * Represents a client disconnecting from the server.
+ */
+export interface ServerMessageEvent {
+    type: ServerEventType.Message;
+    user: User;
+    message: Message;
+}
+
+/**
+ * Represents a type of event that can happen on a server.
+ */
+export enum ServerEventType {
+    Connect = 'connect',
+    Disconnect = 'disconnect',
+    Message = 'message',
+}
+
+/**
+ * Represents a message sent by the server or client.
+ * Fields are unknown,
+ * since this is used before the message is validated.
+ */
+interface Message {
+    type: unknown;
+    contents: unknown;
+}
+
+/**
+ * Represents a type of message sent between the client and server.
+ */
+export enum MessageType {
+    String = 'string',
+}

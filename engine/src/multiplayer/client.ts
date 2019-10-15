@@ -1,7 +1,7 @@
 import * as SocketIOClient from 'socket.io-client';
 import { GameObject } from '../game-object/game-object';
+import { MessageType } from './event';
 import { isServer } from './is-server';
-import { MessageType } from './message';
 import { Server } from './server';
 
 /**

@@ -1,6 +1,6 @@
 import * as SocketIOForType from 'socket.io';
-import { GameObject } from '../game-object/game-object';
-import { MessageType } from './message';
+import { beforeStepKey, GameObject } from '../game-object/game-object';
+import { MessageType, ServerEvent, ServerEventType } from './event';
 import { SocketIO } from './socket';
 import { User } from './user';
 
@@ -33,6 +33,11 @@ export class Server extends GameObject {
     private readonly _users: Set<User> = new Set();
 
     /**
+     * An array of events yet to be processed.
+     */
+    private _eventQueue: ServerEvent[] = [];
+
+    /**
      * Starts the server on the specified port.
      *
      * If no port is specified, uses port `17771`.
@@ -46,18 +51,40 @@ export class Server extends GameObject {
         this._socketIOServer.on('connect', (socket) => {
             const user = new User();
             this._userToSocket.set(user.id(), socket);
-            this._users.add(user);
-            this.onUserJoined && this.onUserJoined(user);
+            this._eventQueue.push({ type: ServerEventType.Connect, user });
 
             socket.on('message', (type: unknown, contents: unknown) => {
-                this._onMessage(user, type, contents);
+                this._eventQueue.push({ type: ServerEventType.Message, user, message: { type, contents } });
             });
 
             socket.on('disconnect', (reason: string) => {
-                this._users.delete(user);
                 this._userToSocket.delete(user.id());
-                this.onUserLeft && this.onUserLeft(user, reason);
+                this._eventQueue.push({ type: ServerEventType.Disconnect, user, reason });
             });
+        });
+    }
+
+    /**
+     * Handles the events in the event queue.
+     */
+    private _handleEvents() {
+        const eventsToHandle = this._eventQueue; // Moved in case ._eventQueue is modified during execution.
+        this._eventQueue = [];
+
+        eventsToHandle.forEach((event) => {
+            switch (event.type) {
+                case ServerEventType.Connect:
+                    this._users.add(event.user);
+                    this.onUserJoined && this.onUserJoined(event.user);
+                    break;
+                case ServerEventType.Disconnect:
+                    this._users.delete(event.user);
+                    this.onUserLeft && this.onUserLeft(event.user, event.reason);
+                    break;
+                case ServerEventType.Message:
+                    this._onMessage(event.user, event.message.type, event.message.contents);
+                    break;
+            }
         });
     }
 
@@ -87,6 +114,15 @@ export class Server extends GameObject {
                 console.error(`Unexpected got message from client with type ${type}, which is not recognized.`);
                 return;
         }
+    }
+
+    /**
+     * Before every step, handles all the events and calls the appropriate callbacks.
+     */
+    public [beforeStepKey]() {
+        super[beforeStepKey] && super[beforeStepKey]!();
+
+        this._handleEvents();
     }
 
     /**
