@@ -1,5 +1,6 @@
 import * as SocketIOForType from 'socket.io';
 import { GameObject } from '../game-object/game-object';
+import { MessageType } from './message';
 import { SocketIO } from './socket';
 import { User } from './user';
 
@@ -79,7 +80,7 @@ export class Server extends GameObject {
         }
 
         switch (type) {
-            case 'message':
+            case MessageType.String:
                 this.onMessage && this.onMessage(user, contents);
                 break;
             default:
@@ -95,7 +96,7 @@ export class Server extends GameObject {
         const socket = this._userToSocket.get(user.id());
         if (!socket) { return; }
 
-        socket.send('message', message);
+        socket.send(MessageType.String, message);
     }
 
     /**
@@ -105,7 +106,7 @@ export class Server extends GameObject {
         const { value: socket } = this._userToSocket.values().next() as { value: SocketIO.Socket | undefined };
         if (!socket) { return; }
 
-        socket.broadcast.send('message', message);
+        socket.broadcast.send(MessageType.String, message);
     }
 
     /**

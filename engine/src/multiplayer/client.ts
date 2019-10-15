@@ -1,6 +1,7 @@
 import * as SocketIOClient from 'socket.io-client';
 import { GameObject } from '../game-object/game-object';
 import { isServer } from './is-server';
+import { MessageType } from './message';
 import { Server } from './server';
 
 /**
@@ -44,7 +45,7 @@ export class Client extends GameObject {
     public sendMessage(message: string) {
         if (!this._socketIOClient) { return; }
 
-        this._socketIOClient.send('message', message);
+        this._socketIOClient.send(MessageType.String, message);
     }
 
     /**
@@ -66,7 +67,7 @@ export class Client extends GameObject {
         }
 
         switch (type) {
-            case 'message':
+            case MessageType.String:
                 this.onMessage && this.onMessage(contents);
                 break;
             default:
