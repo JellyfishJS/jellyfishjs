@@ -1,6 +1,6 @@
 import * as SocketIOClient from 'socket.io-client';
-import { GameObject } from '../game-object/game-object';
-import { MessageType } from './event';
+import { beforeStepKey, GameObject } from '../game-object/game-object';
+import { ClientEvent, ClientEventType, MessageType } from './event';
 import { isServer } from './is-server';
 import { Server } from './server';
 
@@ -17,6 +17,11 @@ export class Client extends GameObject {
     private _socketIOClient: SocketIOClient.Socket | undefined;
 
     /**
+     * An array of events yet to be processed.
+     */
+    private _eventQueue: ClientEvent[] = [];
+
+    /**
      * Connects this client to the server with the specified host and port.
      *
      * If no port is specified, defaults to `17771`.
@@ -27,15 +32,15 @@ export class Client extends GameObject {
         this._socketIOClient = SocketIOClient(`${host}:${port}`);
 
         this._socketIOClient.on('connect', () => {
-            this.onConnect && this.onConnect();
+            this._eventQueue.push({ type: ClientEventType.Connect });
         });
 
         this._socketIOClient.on('disconnect', (reason: string) => {
-            this.onDisconnect && this.onDisconnect(reason);
+            this._eventQueue.push({ type: ClientEventType.Disconnect, reason });
         });
 
         this._socketIOClient.on('message', (type: unknown, contents: string) => {
-            this._onMessage(type, contents);
+            this._eventQueue.push({ type: ClientEventType.Message, message: { type, contents } });
         });
     }
 
@@ -74,6 +79,37 @@ export class Client extends GameObject {
                 console.error(`Unexpected got message from client with type ${type}, which is not recognized.`);
                 return;
         }
+    }
+
+    /**
+     * Handles the events in the event queue.
+     */
+    private _handleEvents() {
+        const eventsToHandle = this._eventQueue; // Moved in case ._eventQueue is modified during execution.
+        this._eventQueue = [];
+
+        eventsToHandle.forEach((event) => {
+            switch (event.type) {
+                case ClientEventType.Connect:
+                    this.onConnect && this.onConnect();
+                    break;
+                case ClientEventType.Disconnect:
+                    this.onDisconnect && this.onDisconnect(event.reason);
+                    break;
+                case ClientEventType.Message:
+                    this._onMessage(event.message.type, event.message.contents);
+                    break;
+            }
+        });
+    }
+
+    /**
+     * Before every step, handles all the events and calls the appropriate callbacks.
+     */
+    public [beforeStepKey]() {
+        super[beforeStepKey] && super[beforeStepKey]!();
+
+        this._handleEvents();
     }
 
     /**

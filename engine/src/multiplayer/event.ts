@@ -1,12 +1,52 @@
 import { User } from './user';
 
 /**
+ * Represents the various kinds of events that can happen to a client.
+ */
+export type ClientEvent =
+    | ClientConnectEvent
+    | ClientDisconnectEvent
+    | ClientMessageEvent;
+
+/**
+ * Represents a client connecting to the server.
+ */
+export interface ClientConnectEvent {
+    type: ClientEventType.Connect;
+}
+
+/**
+ * Represents a client disconnecting from the server.
+ */
+export interface ClientDisconnectEvent {
+    type: ClientEventType.Disconnect;
+    reason: string;
+}
+
+/**
+ * Represents a client disconnecting from the server.
+ */
+export interface ClientMessageEvent {
+    type: ClientEventType.Message;
+    message: Message;
+}
+
+/**
+ * Represents a type of event that can happen on the client.
+ */
+export enum ClientEventType {
+    Connect = 'connect',
+    Disconnect = 'disconnect',
+    Message = 'message',
+}
+
+/**
  * Represents the various kinds of events that can happen to a server.
  */
 export type ServerEvent =
     | ServerConnectEvent
-    | ServerMessageEvent
-    | ServerDisconnectEvent;
+    | ServerDisconnectEvent
+    | ServerMessageEvent;
 
 /**
  * Represents a client connecting to the server.
