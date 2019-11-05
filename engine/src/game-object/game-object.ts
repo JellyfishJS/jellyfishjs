@@ -118,7 +118,7 @@ export abstract class GameObject<
      */
     public createObject<
         Subclass extends new (...args: any[]) => GameObject,
-        >(
+    >(
         Class: Subclass,
         ...args: ConstructorParameters<Subclass>
     ): InstanceType<Subclass> {
