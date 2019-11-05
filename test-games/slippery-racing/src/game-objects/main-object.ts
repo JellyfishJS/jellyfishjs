@@ -8,23 +8,23 @@ import { SoccerBall } from './soccer-ball';
 export class MainObject extends GameObject {
 
     private generateCircle(center: Vector, size: number) {
-        game.createObject(Decoration, center, size + 460, 0x888888);
-        game.createObject(Decoration, center, size + 450, 0xd7d7d7);
-        game.createObject(Decoration, center, size + 300, 0x44bf4d);
-        game.createObject(Decoration, center, size + 10, 0x3e7242, true);
-        game.createObject(Decoration, center, size, 0x45824a);
+        this.createObject(Decoration, center, size + 460, 0x888888);
+        this.createObject(Decoration, center, size + 450, 0xd7d7d7);
+        this.createObject(Decoration, center, size + 300, 0x44bf4d);
+        this.createObject(Decoration, center, size + 10, 0x3e7242, true);
+        this.createObject(Decoration, center, size, 0x45824a);
     }
 
     private generateTireCircle(center: Vector, size: number, amount: number) {
         for (let i = 0; i < 360; i += 360 / amount) {
-            game.createObject(
+            this.createObject(
                 LooseTire,
                 center.plus(Vector.lengthAndDirection(size, Angle.degrees(i))),
             );
         }
 
         for (let i = 180 / amount; i < 360; i += 360 / amount) {
-            game.createObject(
+            this.createObject(
                 LooseTire,
                 center.plus(Vector.lengthAndDirection(size + 100, Angle.degrees(i))),
             );
@@ -40,9 +40,9 @@ export class MainObject extends GameObject {
         this.generateCircle(Vector.xy(1900, -2700), 150);
         this.generateCircle(Vector.xy(2900, -2400), 250);
 
-        const camera = game.createObject(Camera);
+        const camera = this.createObject(Camera);
 
-        game.createObject(
+        this.createObject(
             Car,
             Vector.xy(-300, 0),
             {
@@ -58,7 +58,7 @@ export class MainObject extends GameObject {
         this.generateTireCircle(Vector.zero, 800, 24);
         this.generateTireCircle(Vector.xy(-2900, -2700), 300, 48);
 
-        game.createObject(
+        this.createObject(
             SoccerBall,
             Vector.xy(0, -1400),
         );
