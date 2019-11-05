@@ -41,6 +41,61 @@ export const toBeDestroyedKey = Symbol('to-be-destroyed');
 export const wasDestroyedKey = Symbol('was-destroyed');
 
 /**
+ * The symbol used to add an unoverridable `beforeStep` hook.
+ */
+export const beforeStepKey = Symbol('before-step');
+
+/**
+ * The symbol used to add an unoverridable `onCreate` hook.
+ */
+export const onCreateKey = Symbol('on-create');
+
+/**
+ * The symbol used to add an unoverridable `keyPressed` hook.
+ */
+export const keyPressedKey = Symbol('key-pressed');
+
+/**
+ * The symbol used to add an unoverridable `keyReleased` hook.
+ */
+export const keyReleasedKey = Symbol('key-released');
+
+/**
+ * The symbol used to add an unoverridable `keyHeld` hook.
+ */
+export const keyHeldKey = Symbol('key-held');
+
+/**
+ * The symbol used to add an unoverridable `beforePhysics` hook.
+ */
+export const beforePhysicsKey = Symbol('before-physics');
+
+/**
+ * The symbol used to add an unoverridable `afterPhysics` hook.
+ */
+export const afterPhysicsKey = Symbol('after-physics');
+
+/**
+ * The symbol used to add an unoverridable `step` hook.
+ */
+export const stepKey = Symbol('step');
+
+/**
+ * The symbol used to add an unoverridable `draw` hook.
+ */
+export const drawKey = Symbol('draw');
+
+/**
+ * The symbol used to add an unoverridable `onDestroy` hook.
+ */
+export const onDestroyKey = Symbol('on-destroy');
+
+/**
+ * The symbol used to add an unoverridable `afterStep` hook.
+ */
+export const afterStepKey = Symbol('after-step');
+
+/**
  * The superclass of any objects that appear in the game.
  */
 export abstract class GameObject<
@@ -111,11 +166,21 @@ export abstract class GameObject<
     }
 
     /**
+     * A private `beforeStep` hook for the system.
+     */
+    public [beforeStepKey]?(): void;
+
+    /**
      * Called before every step.
      *
      * Meant to be overridden.
      */
     public beforeStep?(): void;
+
+    /**
+     * A private `onCreate` hook for the system.
+     */
+    public [onCreateKey]?(): void;
 
     /**
      * Called when the object is created.
@@ -144,11 +209,21 @@ export abstract class GameObject<
     public setUpSprite?(pixi: typeof PIXI, container: PIXI.Container): Sprite;
 
     /**
+     * A private `keyPressed` hook for the system.
+     */
+    public [keyPressedKey]?(keyCode: number): void;
+
+    /**
      * Called once for each time a key is pressed during the processEvents portion of the game loop
      *
      * Meant to be overridden.
      */
     public keyPressed?(keyCode: number): void;
+
+    /**
+     * A private `keyReleased` hook for the system.
+     */
+    public [keyReleasedKey]?(keyCode: number): void;
 
     /**
      * Called once for each time a key is released during the processEvents portion of the game loop
@@ -158,11 +233,21 @@ export abstract class GameObject<
     public keyReleased?(keyCode: number): void;
 
     /**
+     * A private `keyHeld` hook for the system.
+     */
+    public [keyHeldKey]?(keyCode: number): void;
+
+    /**
      * Called once for each time held down on each step of the gameLoop
      *
      * Meant to be overridden.
      */
     public keyHeld?(keyCode: number): void;
+
+    /**
+     * A private `beforePhysics` hook for the system.
+     */
+    public [beforePhysicsKey]?(): void;
 
     /**
      * Called before performing physics calculations.
@@ -172,6 +257,11 @@ export abstract class GameObject<
     public beforePhysics?(): void;
 
     /**
+     * A private `afterPhysics` hook for the system.
+     */
+    public [afterPhysicsKey]?(): void;
+
+    /**
      * Called after performing physics calculations.
      *
      * Meant to be overridden.
@@ -179,11 +269,21 @@ export abstract class GameObject<
     public afterPhysics?(): void;
 
     /**
+     * A private `step` hook for the system.
+     */
+    public [stepKey]?(): void;
+
+    /**
      * Called every step.
      *
      * Meant to be overridden.
      */
     public step?(): void;
+
+    /**
+     * A private `draw` hook for the system.
+     */
+    public [drawKey]?(pixi: typeof PIXI, sprite: Sprite, container: PIXI.Container): void;
 
     /**
      * Called every step, to do drawing actions.
@@ -195,11 +295,21 @@ export abstract class GameObject<
     public draw?(pixi: typeof PIXI, sprite: Sprite, container: PIXI.Container): void;
 
     /**
+     * A private `onDestroy` hook for the system.
+     */
+    public [onDestroyKey]?(): void;
+
+    /**
      * Called when the object is destroyed.
      *
      * Meant to be overridden.
      */
     public onDestroy?(): void;
+
+    /**
+     * A private `afterStep` hook for the system.
+     */
+    public [afterStepKey]?(): void;
 
     /**
      * Called at the end of every step.
