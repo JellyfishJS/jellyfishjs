@@ -1,10 +1,21 @@
 import * as MatterType from 'matter-js';
 import {
+    afterPhysicsKey,
+    afterStepKey,
+    beforePhysicsKey,
+    beforeStepKey,
     containerKey,
+    drawKey,
     GameObject,
     GameObjectBody,
     GameObjectSprite,
+    keyHeldKey,
+    keyPressedKey,
+    keyReleasedKey,
+    onCreateKey,
+    onDestroyKey,
     spriteKey,
+    stepKey,
     toBeDestroyedKey,
     wasDestroyedKey,
 } from '../game-object/game-object';
@@ -56,7 +67,10 @@ export class GameLoop {
      * Calls the `beforeStep` hook on every initialized game object.
      */
     private _beforeStep() {
-        this._gameObjects.forEach((gameObject) => gameObject.beforeStep && gameObject.beforeStep());
+        this._gameObjects.forEach((gameObject) => {
+            gameObject[beforeStepKey] && gameObject[beforeStepKey]!();
+            gameObject.beforeStep && gameObject.beforeStep();
+        });
     }
 
     /**
@@ -71,9 +85,8 @@ export class GameLoop {
         gameObject: Subclass,
         pixiSetup: PIXISetup | undefined,
     ) {
-        if (gameObject.onCreate) {
-            gameObject.onCreate();
-        }
+        gameObject[onCreateKey] && gameObject[onCreateKey]!();
+        gameObject.onCreate && gameObject.onCreate();
 
         // Apparently type narrowing doesn't work on imports.
         const matter = Matter;
@@ -162,13 +175,22 @@ export class GameLoop {
     private _dispatchKeyEvent(keyCode: number, eventType: KeyEvent): void {
         switch (eventType) {
             case KeyEvent.Pressed:
-                this._gameObjects.forEach((gameObject) => gameObject.keyPressed && gameObject.keyPressed(keyCode));
+                this._gameObjects.forEach((gameObject) => {
+                    gameObject[keyPressedKey] && gameObject[keyPressedKey]!(keyCode);
+                    gameObject.keyPressed && gameObject.keyPressed(keyCode);
+                });
                 break;
             case KeyEvent.Released:
-                this._gameObjects.forEach((gameObject) => gameObject.keyReleased && gameObject.keyReleased(keyCode));
+                this._gameObjects.forEach((gameObject) => {
+                    gameObject[keyReleasedKey] && gameObject[keyReleasedKey]!(keyCode);
+                    gameObject.keyReleased && gameObject.keyReleased(keyCode);
+                });
                 break;
             case KeyEvent.HeldDown:
-                this._gameObjects.forEach((gameObject) => gameObject.keyHeld && gameObject.keyHeld(keyCode));
+                this._gameObjects.forEach((gameObject) => {
+                    gameObject[keyHeldKey] && gameObject[keyHeldKey]!(keyCode);
+                    gameObject.keyHeld && gameObject.keyHeld(keyCode);
+                });
                 break;
         }
     }
@@ -185,7 +207,10 @@ export class GameLoop {
      * Calls the `beforePhysics` hook on every initialized game object.
      */
     private _beforePhysics() {
-        this._gameObjects.forEach((gameObject) => gameObject.beforePhysics && gameObject.beforePhysics());
+        this._gameObjects.forEach((gameObject) => {
+            gameObject[beforePhysicsKey] && gameObject[beforePhysicsKey]!();
+            gameObject.beforePhysics && gameObject.beforePhysics();
+        });
     }
 
     /**
@@ -199,14 +224,20 @@ export class GameLoop {
      * Calls the `afterPhysics` hook on every initialized game object.
      */
     private _afterPhysics() {
-        this._gameObjects.forEach((gameObject) => gameObject.afterPhysics && gameObject.afterPhysics());
+        this._gameObjects.forEach((gameObject) => {
+            gameObject[afterPhysicsKey] && gameObject[afterPhysicsKey]!();
+            gameObject.afterPhysics && gameObject.afterPhysics();
+        });
     }
 
     /**
      * Calls the `step` hook on every initialized game object.
      */
     private _step() {
-        this._gameObjects.forEach((gameObject) => gameObject.step && gameObject.step());
+        this._gameObjects.forEach((gameObject) => {
+            gameObject[stepKey] && gameObject[stepKey]!();
+            gameObject.step && gameObject.step();
+        });
     }
 
     /**
@@ -222,9 +253,10 @@ export class GameLoop {
         this._gameObjects.forEach((gameObject) => {
             const sprite = gameObject[spriteKey];
             const container = gameObject[containerKey];
-            if (gameObject.draw && sprite && container) {
-                gameObject.draw(pixi, sprite, container);
-            }
+            if (!sprite || !container) { return; }
+
+            gameObject[drawKey] && gameObject[drawKey]!(pixi, sprite, container);
+            gameObject.draw && gameObject.draw(pixi, sprite, container);
         });
     }
 
@@ -235,11 +267,12 @@ export class GameLoop {
     private _handleDestruction() {
         while (this._gameObjects.some((gameObject) => gameObject[toBeDestroyedKey])) {
             this._gameObjects = this._gameObjects.filter((gameObject) => {
-                if (!gameObject[toBeDestroyedKey]) {
-                    return true;
-                }
+                if (!gameObject[toBeDestroyedKey]) { return true; }
+
+                gameObject[onDestroyKey] && gameObject[onDestroyKey]!();
                 gameObject.onDestroy && gameObject.onDestroy();
                 gameObject[wasDestroyedKey] = true;
+
                 return false;
             });
         }
@@ -249,7 +282,10 @@ export class GameLoop {
      * Calls the `afterStep` hook on every initialized game object.
      */
     private _endStep() {
-        this._gameObjects.forEach((gameObject) => gameObject.afterStep && gameObject.afterStep());
+        this._gameObjects.forEach((gameObject) => {
+            gameObject[afterStepKey] && gameObject[afterStepKey]!();
+            gameObject.afterStep && gameObject.afterStep();
+        });
     }
 
     /**
