@@ -3,6 +3,16 @@ import * as PIXI from 'pixi.js';
 import { AnyAmountOf } from '../util/as-array';
 
 /**
+ * Allowable types for GameObject bodies.
+ */
+export type GameObjectBody = AnyAmountOf<Matter.Body>;
+
+/**
+ * Allowable types for GameObject sprites.
+ */
+export type GameObjectSprite = AnyAmountOf<PIXI.DisplayObject>;
+
+/**
  * The symbol used to access containers.
  *
  * A symbol is used instead of a private variable,
@@ -31,16 +41,6 @@ export const toBeDestroyedKey = Symbol('to-be-destroyed');
 export const wasDestroyedKey = Symbol('was-destroyed');
 
 /**
- * Allowable types for GameObject bodies.
- */
-export type GameObjectBody = AnyAmountOf<Matter.Body>;
-
-/**
- * Allowable types for GameObject sprites.
- */
-export type GameObjectSprite = AnyAmountOf<PIXI.DisplayObject>;
-
-/**
  * The superclass of any objects that appear in the game.
  */
 export abstract class GameObject<
@@ -52,24 +52,6 @@ export abstract class GameObject<
      * The container for this GameObject.
      */
     public [containerKey]: PIXI.Container | undefined;
-
-    /**
-     * Whether this object should be destroyed by the end of the current step.
-     */
-    public [toBeDestroyedKey] = false;
-
-    /**
-     * Whether this object was destroyed.
-     */
-    public [wasDestroyedKey] = false;
-
-    /**
-     * Sets the container in which to draw sprites
-     * of this GameObject.
-     */
-    public setContainer(container: PIXI.Container) {
-        this[containerKey] = container;
-    }
 
     /**
      * The sprites for this GameObject.
@@ -91,25 +73,56 @@ export abstract class GameObject<
     public physicsBody: Body | undefined;
 
     /**
+     * Whether this object should be destroyed by the end of the current step.
+     */
+    public [toBeDestroyedKey] = false;
+
+    /**
+     * Whether this object was destroyed.
+     */
+    public [wasDestroyedKey] = false;
+
+    /**
+     * Sets the container in which to draw sprites
+     * of this GameObject.
+     *
+     * Do not override.
+     */
+    public setContainer(container: PIXI.Container) {
+        this[containerKey] = container;
+    }
+
+    /**
+     * Schedule the game object for destruction at the end of the current step.
+     *
+     * Do not override.
+     */
+    public destroy(): void {
+        this[toBeDestroyedKey] = true;
+    }
+
+    /**
+     * Returns whether this object has been destroyed.
+     *
+     * Do not override.
+     */
+    public wasDestroyed(): boolean {
+        return this[wasDestroyedKey];
+    }
+
+    /**
+     * Called before every step.
+     *
+     * Meant to be overridden.
+     */
+    public beforeStep?(): void;
+
+    /**
      * Called when the object is created.
      *
      * Meant to be overridden.
      */
     public onCreate?(): void;
-
-    /**
-     * Called when the object is destroyed.
-     *
-     * Meant to be overridden.
-     */
-    public onDestroy?(): void;
-
-    /**
-     * Sets up and returns the sprite for this GameObject.
-     *
-     * Meant to be overridden.
-     */
-    public setUpSprite?(pixi: typeof PIXI, container: PIXI.Container): Sprite;
 
     /**
      * If this GameObject needs any physics bodies,
@@ -124,39 +137,11 @@ export abstract class GameObject<
     public setUpPhysicsBody?(): Body;
 
     /**
-     * Called before every step.
+     * Sets up and returns the sprite for this GameObject.
      *
      * Meant to be overridden.
      */
-    public beforeStep?(): void;
-
-    /**
-     * Called before performing physics calculations.
-     *
-     * Meant to be overridden.
-     */
-    public beforePhysics?(): void;
-
-    /**
-     * Called after performing physics calculations.
-     *
-     * Meant to be overridden.
-     */
-    public afterPhysics?(): void;
-
-    /**
-     * Called every step.
-     *
-     * Meant to be overridden.
-     */
-    public step?(): void;
-
-    /**
-     * Called at the end of every step.
-     *
-     * Meant to be overridden.
-     */
-    public afterStep?(): void;
+    public setUpSprite?(pixi: typeof PIXI, container: PIXI.Container): Sprite;
 
     /**
      * Called once for each time a key is pressed during the processEvents portion of the game loop
@@ -180,6 +165,27 @@ export abstract class GameObject<
     public keyHeld?(keyCode: number): void;
 
     /**
+     * Called before performing physics calculations.
+     *
+     * Meant to be overridden.
+     */
+    public beforePhysics?(): void;
+
+    /**
+     * Called after performing physics calculations.
+     *
+     * Meant to be overridden.
+     */
+    public afterPhysics?(): void;
+
+    /**
+     * Called every step.
+     *
+     * Meant to be overridden.
+     */
+    public step?(): void;
+
+    /**
      * Called every step, to do drawing actions.
      *
      * Put any code that manipulates sprites here.
@@ -189,16 +195,17 @@ export abstract class GameObject<
     public draw?(pixi: typeof PIXI, sprite: Sprite, container: PIXI.Container): void;
 
     /**
-     * Schedule the game object for destruction at the end of the current step.
+     * Called when the object is destroyed.
+     *
+     * Meant to be overridden.
      */
-    public destroy(): void {
-        this[toBeDestroyedKey] = true;
-    }
+    public onDestroy?(): void;
 
     /**
-     * Returns whether this object has been destroyed.
+     * Called at the end of every step.
+     *
+     * Meant to be overridden.
      */
-    public wasDestroyed(): boolean {
-        return this[wasDestroyedKey];
-    }
+    public afterStep?(): void;
+
 }
