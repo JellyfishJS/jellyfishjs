@@ -1,5 +1,6 @@
 import * as Matter from 'matter-js';
 import * as PIXI from 'pixi.js';
+import { Game } from '../game/game';
 import { AnyAmountOf } from '../util/as-array';
 
 /**
@@ -39,6 +40,31 @@ export const toBeDestroyedKey = Symbol('to-be-destroyed');
  * The symbol used to access the object's destroyed status.
  */
 export const wasDestroyedKey = Symbol('was-destroyed');
+
+/**
+ * The symbol used to access the object's parent
+ */
+export const parent = Symbol('parent');
+
+/**
+ * The symbol used to access the object's children
+ */
+export const children = Symbol('children');
+
+/**
+ * The symbol used to access the game
+ */
+export const game = Symbol('game');
+
+/**
+ * Allowable types for GameObject bodies.
+ */
+export type GameObjectBody = AnyAmountOf<Matter.Body>;
+
+/**
+ * Allowable types for GameObject sprites.
+ */
+export type GameObjectSprite = AnyAmountOf<PIXI.DisplayObject>;
 
 /**
  * The superclass of any objects that appear in the game.
@@ -81,6 +107,50 @@ export abstract class GameObject<
      * Whether this object was destroyed.
      */
     public [wasDestroyedKey] = false;
+
+    /**
+     * The parent of this game object
+     */
+    private [parent]: GameObject;
+
+    /**
+     * List of children objects of this game object
+     */
+    private [children]: GameObject[] = [];
+
+    /**
+     * The game this gameObject belongs to
+     */
+    private [game]: Game = undefined as any;
+
+    /**
+     * Creates an object with parameters specified as the child of this game object
+     */
+    public createObject<
+        Subclass extends new (...args: any[]) => GameObject,
+        >(
+        Class: Subclass,
+        ...args: ConstructorParameters<Subclass>
+    ): InstanceType<Subclass> {
+        const newObject = this[game].createObject(Class, ...args);
+        newObject[parent] = this;
+        this[children].push(newObject);
+        return newObject;
+    }
+
+    /**
+     * Returns the parent GameObject, or undefined if it is a top-level GameObject
+     */
+    public parent() {
+        return this[parent];
+    }
+
+    /**
+     * Returns the children GameObjects, or an empty array if there are none
+     */
+    public children() {
+        return this[children];
+    }
 
     /**
      * Sets the container in which to draw sprites
