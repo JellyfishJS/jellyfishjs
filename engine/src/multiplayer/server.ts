@@ -28,7 +28,7 @@ export class Server extends GameObject {
     private readonly _userToSocket: Map<string, SocketIOForType.Socket> = new Map();
 
     /**
-     * A map from user ids to sockets.
+     * The set of the users currently on the server.
      */
     private readonly _users: Set<User> = new Set();
 
