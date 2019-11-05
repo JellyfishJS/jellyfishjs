@@ -1,9 +1,9 @@
-import {GameLoop} from '../game-loop/game-loop';
-import {GameObject, gameKey} from '../game-object/game-object';
-import {Keyboard} from '../keyboard/keyboard';
-import {Matter} from '../matter-setup/matter-setup';
-import {PIXISetup} from '../pixi-setup/pixi-setup';
-import {Vector} from '../util/geometry';
+import { GameLoop } from '../game-loop/game-loop';
+import { gameKey, GameObject } from '../game-object/game-object';
+import { Keyboard } from '../keyboard/keyboard';
+import { Matter } from '../matter-setup/matter-setup';
+import { PIXISetup } from '../pixi-setup/pixi-setup';
+import { Vector } from '../util/geometry';
 
 /**
  * Represents separate games.

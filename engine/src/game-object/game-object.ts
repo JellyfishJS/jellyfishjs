@@ -131,7 +131,7 @@ export abstract class GameObject<
     /**
      * Returns the Game, or undefined if the game hasn't been set (that shouldn't happen)
      */
-    public game(){
+    public game() {
         return this[gameKey];
     }
 
