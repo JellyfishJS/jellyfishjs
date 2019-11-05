@@ -24,11 +24,17 @@ export class Server extends GameObject {
 
     /**
      * A map from user ids to sockets.
+     *
+     * This updates as changes come in,
+     * and does not respect the game loop.
      */
     private readonly _userToSocket: Map<string, SocketIOForType.Socket> = new Map();
 
     /**
      * The set of the users currently on the server.
+     *
+     * This updates as events are sent to the hooks,
+     * and isn't necessarily up-to-date.
      */
     private readonly _users: Set<User> = new Set();
 
@@ -87,6 +93,19 @@ export class Server extends GameObject {
                 console.error(`Unexpected got message from client with type ${type}, which is not recognized.`);
                 return;
         }
+    }
+
+    /**
+     * Returns the set of users
+     * currently connected to this server.
+     *
+     * Is not necessarily up to date,
+     * but doesn't update until just before updates
+     * are sent to the hooks.
+     */
+    public users(): Set<User> {
+        // Defensive copy
+        return new Set(this._users);
     }
 
     /**
