@@ -122,10 +122,17 @@ export abstract class GameObject<
         Class: Subclass,
         ...args: ConstructorParameters<Subclass>
     ): InstanceType<Subclass> {
-        const newObject = this[gameKey].createObject(Class, ...args);
+        const newObject = this.game().createObject(Class, ...args);
         newObject[parentKey] = this;
         this[childrenKey].push(newObject);
         return newObject;
+    }
+
+    /**
+     * Returns the Game, or undefined if the game hasn't been set (that shouldn't happen)
+     */
+    public game(){
+        return this[gameKey];
     }
 
     /**
