@@ -44,17 +44,17 @@ export const wasDestroyedKey = Symbol('was-destroyed');
 /**
  * The symbol used to access the object's parent
  */
-export const parent = Symbol('parent');
+export const parentKey = Symbol('parent');
 
 /**
  * The symbol used to access the object's children
  */
-export const children = Symbol('children');
+export const childrenKey = Symbol('children');
 
 /**
  * The symbol used to access the game
  */
-export const game = Symbol('game');
+export const gameKey = Symbol('game');
 
 /**
  * The superclass of any objects that appear in the game.
@@ -101,17 +101,17 @@ export abstract class GameObject<
     /**
      * The parent of this game object
      */
-    private [parent]: GameObject;
+    private [parentKey]: GameObject;
 
     /**
      * List of children objects of this game object
      */
-    private [children]: GameObject[] = [];
+    private [childrenKey]: GameObject[] = [];
 
     /**
      * The game this gameObject belongs to
      */
-    private [game]: Game = undefined as any;
+    public [gameKey]: Game = undefined as any;
 
     /**
      * Creates an object with parameters specified as the child of this game object
@@ -122,9 +122,9 @@ export abstract class GameObject<
         Class: Subclass,
         ...args: ConstructorParameters<Subclass>
     ): InstanceType<Subclass> {
-        const newObject = this[game].createObject(Class, ...args);
-        newObject[parent] = this;
-        this[children].push(newObject);
+        const newObject = this[gameKey].createObject(Class, ...args);
+        newObject[parentKey] = this;
+        this[childrenKey].push(newObject);
         return newObject;
     }
 
@@ -132,14 +132,14 @@ export abstract class GameObject<
      * Returns the parent GameObject, or undefined if it is a top-level GameObject
      */
     public parent() {
-        return this[parent];
+        return this[parentKey];
     }
 
     /**
      * Returns the children GameObjects, or an empty array if there are none
      */
     public children() {
-        return this[children];
+        return this[childrenKey];
     }
 
     /**
