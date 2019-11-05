@@ -1,5 +1,5 @@
 import { GameLoop } from '../game-loop/game-loop';
-import { GameObject } from '../game-object/game-object';
+import { gameKey, GameObject } from '../game-object/game-object';
 import { Keyboard } from '../keyboard/keyboard';
 import { Matter } from '../matter-setup/matter-setup';
 import { PIXISetup } from '../pixi-setup/pixi-setup';
@@ -42,6 +42,7 @@ export class Game {
         ...args: ConstructorParameters<Subclass>
     ): InstanceType<Subclass> {
         const newObject = new Class(...args) as InstanceType<Subclass>;
+        newObject[gameKey] = this;
 
         if (this._physicsEngine) {
             newObject.physicsWorld = this._physicsEngine.world;

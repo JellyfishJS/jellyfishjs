@@ -1,5 +1,6 @@
 import * as Matter from 'matter-js';
 import * as PIXI from 'pixi.js';
+import { Game } from '../game/game';
 import { AnyAmountOf } from '../util/as-array';
 
 /**
@@ -39,6 +40,21 @@ export const toBeDestroyedKey = Symbol('to-be-destroyed');
  * The symbol used to access the object's destroyed status.
  */
 export const wasDestroyedKey = Symbol('was-destroyed');
+
+/**
+ * The symbol used to access the object's parent.
+ */
+export const parentKey = Symbol('parent');
+
+/**
+ * The symbol used to access the object's children.
+ */
+export const childrenKey = Symbol('children');
+
+/**
+ * The symbol used to access the game.
+ */
+export const gameKey = Symbol('game');
 
 /**
  * The symbol used to add an unoverridable `beforeStep` hook.
@@ -136,6 +152,58 @@ export abstract class GameObject<
      * Whether this object was destroyed.
      */
     public [wasDestroyedKey] = false;
+
+    /**
+     * The parent of this GameObject.
+     */
+    private [parentKey]: GameObject;
+
+    /**
+     * List of children objects of this GameObject.
+     */
+    private [childrenKey]: GameObject[] = [];
+
+    /**
+     * The game this GameObject belongs to.
+     */
+    public [gameKey]: Game = undefined as any;
+
+    /**
+     * Creates an object with parameters specified as the child of this GameObject.
+     */
+    public createObject<
+        Subclass extends new (...args: any[]) => GameObject,
+    >(
+        Class: Subclass,
+        ...args: ConstructorParameters<Subclass>
+    ): InstanceType<Subclass> {
+        const newObject = this.game().createObject(Class, ...args);
+        newObject[parentKey] = this;
+        this[childrenKey].push(newObject);
+        return newObject;
+    }
+
+    /**
+     * Returns the Game containing this object.
+     * If the constructor for this object was called directly, returns undefined.
+     */
+    public game() {
+        return this[gameKey];
+    }
+
+    /**
+     * Returns the parent GameObject, or undefined if it is a top-level GameObject.
+     */
+    public parent() {
+        return this[parentKey];
+    }
+
+    /**
+     * Returns the children GameObjects, or an empty array if there are none.
+     */
+    public children() {
+        return this[childrenKey];
+    }
 
     /**
      * Sets the container in which to draw sprites
