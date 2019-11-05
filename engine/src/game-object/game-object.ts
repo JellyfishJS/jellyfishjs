@@ -42,17 +42,17 @@ export const toBeDestroyedKey = Symbol('to-be-destroyed');
 export const wasDestroyedKey = Symbol('was-destroyed');
 
 /**
- * The symbol used to access the object's parent
+ * The symbol used to access the object's parent.
  */
 export const parentKey = Symbol('parent');
 
 /**
- * The symbol used to access the object's children
+ * The symbol used to access the object's children.
  */
 export const childrenKey = Symbol('children');
 
 /**
- * The symbol used to access the game
+ * The symbol used to access the game.
  */
 export const gameKey = Symbol('game');
 
@@ -99,22 +99,22 @@ export abstract class GameObject<
     public [wasDestroyedKey] = false;
 
     /**
-     * The parent of this game object
+     * The parent of this GameObject.
      */
     private [parentKey]: GameObject;
 
     /**
-     * List of children objects of this game object
+     * List of children objects of this GameObject.
      */
     private [childrenKey]: GameObject[] = [];
 
     /**
-     * The game this gameObject belongs to
+     * The game this GameObject belongs to.
      */
     public [gameKey]: Game = undefined as any;
 
     /**
-     * Creates an object with parameters specified as the child of this game object
+     * Creates an object with parameters specified as the child of this GameObject.
      */
     public createObject<
         Subclass extends new (...args: any[]) => GameObject,
@@ -129,21 +129,22 @@ export abstract class GameObject<
     }
 
     /**
-     * Returns the Game, or undefined if the game hasn't been set (that shouldn't happen)
+     * Returns the Game containing this object.
+     * If the constructor for this object was called directly, returns undefined.
      */
     public game() {
         return this[gameKey];
     }
 
     /**
-     * Returns the parent GameObject, or undefined if it is a top-level GameObject
+     * Returns the parent GameObject, or undefined if it is a top-level GameObject.
      */
     public parent() {
         return this[parentKey];
     }
 
     /**
-     * Returns the children GameObjects, or an empty array if there are none
+     * Returns the children GameObjects, or an empty array if there are none.
      */
     public children() {
         return this[childrenKey];
