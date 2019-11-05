@@ -57,16 +57,6 @@ export const children = Symbol('children');
 export const game = Symbol('game');
 
 /**
- * Allowable types for GameObject bodies.
- */
-export type GameObjectBody = AnyAmountOf<Matter.Body>;
-
-/**
- * Allowable types for GameObject sprites.
- */
-export type GameObjectSprite = AnyAmountOf<PIXI.DisplayObject>;
-
-/**
  * The superclass of any objects that appear in the game.
  */
 export abstract class GameObject<
