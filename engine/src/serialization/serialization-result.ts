@@ -1,8 +1,8 @@
 /**
- * The serialization of a single object.
+ * Any object that can be serialized.
  */
-export interface SerializedObject {
-
+export interface SerializableObject {
+    [key: string]: unknown;
 }
 
 /**
@@ -16,3 +16,33 @@ export interface SerializationResult {
         [uuid: string]: SerializedObject,
     };
 }
+
+/**
+ * The serialization of a single object.
+ */
+export interface SerializedObject {
+    stringKeyedProperties: {
+        [key: string]: SerializedObjectPropertyValue;
+    };
+}
+
+/**
+ * References another object in the serialization.
+ */
+export interface SerializedObjectReference {
+    type: 'reference';
+    uuid: string;
+}
+
+/**
+ * A value on a serialized object.
+ */
+export type SerializedObjectPropertyValue =
+    | number
+    | bigint
+    | string
+    | boolean
+    | null
+    | undefined
+    | SerializedObjectPropertyValue[]
+    | SerializedObjectReference;

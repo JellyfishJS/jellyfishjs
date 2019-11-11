@@ -1,5 +1,5 @@
 import { Serialization } from './serialization';
-import { SerializationResult } from './serialization-result';
+import { SerializableObject, SerializationResult } from './serialization-result';
 
 /**
  * Serializes specified objects.
@@ -11,7 +11,7 @@ export class Serializer {
     /**
      * Serializes the specified object.
      */
-    public serialize(object: object): SerializationResult {
+    public serialize(object: SerializableObject): SerializationResult {
         return new Serialization(object).getSerialization();
     }
 
