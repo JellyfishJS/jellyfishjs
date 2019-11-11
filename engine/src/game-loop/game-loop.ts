@@ -65,7 +65,7 @@ export class GameLoop {
     }
 
     /**
-     * Runs the function for all children of the game objectk.
+     * Runs the function for all children of the game object.
      */
     private _forEachInTree(gameObject: GameObject, callback: (gameObject: GameObject) => void) {
         callback(gameObject);
