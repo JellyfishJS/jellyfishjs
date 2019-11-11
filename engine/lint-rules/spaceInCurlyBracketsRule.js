@@ -12,13 +12,13 @@ module.exports.Rule = class Rule extends Lint.Rules.AbstractRule {
 class SpaceInCurlyBracketsWalker extends Lint.RuleWalker {
     _handleCurlyBrackets(node) {
         const contents = node.getText();
-        
-        if (contents !== '{}' && (contents.slice(1, 2) !== ' ' && contents.slice(1, 2) !== '\n')) {
+
+        if (contents !== '{}' && (contents.slice(1, 2) !== ' ' && contents.slice(1, 2) !== '\n' && contents.slice(1, 3) !== '\r\n')) {
             const fix = new Lint.Replacement(node.getStart(), 1, '{ ');
             this.addFailure(this.createFailure(node.getStart(), 1, leadingFailureString, fix));
         }
-        
-        if (contents !== '{}' && (contents.slice(-2, -1) !== ' ' && contents.slice(-2, -1) !== '\n')) {
+
+        if (contents !== '{}' && (contents.slice(-2, -1) !== ' ' && contents.slice(-2, -1) !== '\n' && contents.slice(-3, -1) !== '\r\n')) {
             const fix = new Lint.Replacement(node.getEnd() - 1, 1, ' }');
             this.addFailure(this.createFailure(node.getEnd() - 1, 1, trailingFailureString, fix));
         }
