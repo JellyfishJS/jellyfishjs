@@ -183,14 +183,6 @@ export abstract class GameObject<
     }
 
     /**
-     * Runs the specified function on this object and recursively over all children.
-     */
-    public forTree(callback: (gameObject: GameObject) => void): void {
-        callback(this);
-        this[childrenKey].forEach((child) => child.forTree(callback));
-    }
-
-    /**
      * Returns the Game containing this object.
      * If the constructor for this object was called directly, returns undefined.
      */

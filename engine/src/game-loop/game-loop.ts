@@ -65,10 +65,18 @@ export class GameLoop {
     }
 
     /**
+     * Runs the function for all children of the game objectk.
+     */
+    private _forEachInTree(gameObject: GameObject, callback: (gameObject: GameObject) => void) {
+        callback(gameObject);
+        gameObject[childrenKey].forEach((child) => this._forEachInTree(child, callback));
+    }
+
+    /**
      * Runs the function for each game object recursively.
      */
     private _forEachObject(callback: (gameObject: GameObject) => void) {
-        this._gameObjects.forEach((gameObject) => gameObject.forTree(callback));
+        this._gameObjects.forEach((gameObject) => this._forEachInTree(gameObject, callback));
     }
 
     /**
