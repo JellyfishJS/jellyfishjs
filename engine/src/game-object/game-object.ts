@@ -179,7 +179,6 @@ export abstract class GameObject<
     ): InstanceType<Subclass> {
         const newObject = this.game().createObject(Class, ...args);
         newObject[parentKey] = this;
-        this[childrenKey].push(newObject);
         return newObject;
     }
 
