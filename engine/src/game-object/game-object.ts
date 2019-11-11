@@ -216,11 +216,13 @@ export abstract class GameObject<
 
     /**
      * Schedule the game object for destruction at the end of the current step.
+     * This done recursively for all children as well.
      *
      * Do not override.
      */
     public destroy(): void {
         this[toBeDestroyedKey] = true;
+        this[childrenKey].forEach((child) => child.destroy());
     }
 
     /**
