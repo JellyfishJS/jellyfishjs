@@ -4,6 +4,7 @@ import {
     afterStepKey,
     beforePhysicsKey,
     beforeStepKey,
+    childrenKey,
     containerKey,
     drawKey,
     GameObject,
@@ -64,10 +65,17 @@ export class GameLoop {
     }
 
     /**
+     * Runs the function for each game object recursively.
+     */
+    private _forEachObject(callback: (gameObject: GameObject) => void) {
+        this._gameObjects.forEach((gameObject) => gameObject.forTree(callback));
+    }
+
+    /**
      * Calls the `beforeStep` hook on every initialized game object.
      */
     private _beforeStep() {
-        this._gameObjects.forEach((gameObject) => {
+        this._forEachObject((gameObject) => {
             gameObject[beforeStepKey] && gameObject[beforeStepKey]!();
             gameObject.beforeStep && gameObject.beforeStep();
         });
@@ -154,7 +162,10 @@ export class GameLoop {
         let iterations = 0;
 
         while (this._gameObjectsToBeCreated.length !== 0 && ++iterations < maxCreationDepth) {
-            this._gameObjects = [...this._gameObjects, ...this._gameObjectsToBeCreated];
+            this._gameObjectsToBeCreated.forEach((gameObject) => {
+                const parent = gameObject.parent();
+                (parent ? parent[childrenKey] : this._gameObjects).push(gameObject);
+            });
             const gameObjectsCreatedThisIteration = this._gameObjectsToBeCreated;
             this._gameObjectsToBeCreated = [];
 
@@ -175,19 +186,19 @@ export class GameLoop {
     private _dispatchKeyEvent(keyCode: number, eventType: KeyEvent): void {
         switch (eventType) {
             case KeyEvent.Pressed:
-                this._gameObjects.forEach((gameObject) => {
+                this._forEachObject((gameObject) => {
                     gameObject[keyPressedKey] && gameObject[keyPressedKey]!(keyCode);
                     gameObject.keyPressed && gameObject.keyPressed(keyCode);
                 });
                 break;
             case KeyEvent.Released:
-                this._gameObjects.forEach((gameObject) => {
+                this._forEachObject((gameObject) => {
                     gameObject[keyReleasedKey] && gameObject[keyReleasedKey]!(keyCode);
                     gameObject.keyReleased && gameObject.keyReleased(keyCode);
                 });
                 break;
             case KeyEvent.HeldDown:
-                this._gameObjects.forEach((gameObject) => {
+                this._forEachObject((gameObject) => {
                     gameObject[keyHeldKey] && gameObject[keyHeldKey]!(keyCode);
                     gameObject.keyHeld && gameObject.keyHeld(keyCode);
                 });
@@ -207,7 +218,7 @@ export class GameLoop {
      * Calls the `beforePhysics` hook on every initialized game object.
      */
     private _beforePhysics() {
-        this._gameObjects.forEach((gameObject) => {
+        this._forEachObject((gameObject) => {
             gameObject[beforePhysicsKey] && gameObject[beforePhysicsKey]!();
             gameObject.beforePhysics && gameObject.beforePhysics();
         });
@@ -224,7 +235,7 @@ export class GameLoop {
      * Calls the `afterPhysics` hook on every initialized game object.
      */
     private _afterPhysics() {
-        this._gameObjects.forEach((gameObject) => {
+        this._forEachObject((gameObject) => {
             gameObject[afterPhysicsKey] && gameObject[afterPhysicsKey]!();
             gameObject.afterPhysics && gameObject.afterPhysics();
         });
@@ -234,7 +245,7 @@ export class GameLoop {
      * Calls the `step` hook on every initialized game object.
      */
     private _step() {
-        this._gameObjects.forEach((gameObject) => {
+        this._forEachObject((gameObject) => {
             gameObject[stepKey] && gameObject[stepKey]!();
             gameObject.step && gameObject.step();
         });
@@ -250,7 +261,7 @@ export class GameLoop {
         const pixi = PIXI;
         if (!pixi) { return; }
 
-        this._gameObjects.forEach((gameObject) => {
+        this._forEachObject((gameObject) => {
             const sprite = gameObject[spriteKey];
             const container = gameObject[containerKey];
             if (!sprite || !container) { return; }
@@ -282,7 +293,7 @@ export class GameLoop {
      * Calls the `afterStep` hook on every initialized game object.
      */
     private _endStep() {
-        this._gameObjects.forEach((gameObject) => {
+        this._forEachObject((gameObject) => {
             gameObject[afterStepKey] && gameObject[afterStepKey]!();
             gameObject.afterStep && gameObject.afterStep();
         });

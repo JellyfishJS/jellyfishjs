@@ -179,8 +179,15 @@ export abstract class GameObject<
     ): InstanceType<Subclass> {
         const newObject = this.game().createObject(Class, ...args);
         newObject[parentKey] = this;
-        this[childrenKey].push(newObject);
         return newObject;
+    }
+
+    /**
+     * Runs the specified function on this object and recursively over all children.
+     */
+    public forTree(callback: (gameObject: GameObject) => void): void {
+        callback(this);
+        this[childrenKey].forEach((child) => child.forTree(callback));
     }
 
     /**
