@@ -6,8 +6,8 @@ import { SerializableObject, SerializationResult, SerializedObject, SerializedOb
  * A class used to serialize a single object.
  *
  * This is basically just a method,
- * but I put it in its own class
- * because it caches lots of stuff
+ * but it's it in its own class
+ * because it caches many things
  * and this makes it easier.
  */
 export class Serialization {
