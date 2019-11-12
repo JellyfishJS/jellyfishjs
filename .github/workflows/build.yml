@@ -23,6 +23,7 @@ jobs:
       working-directory: engine
     - name: Run test games
       run: |
+        set +e
         for game in test-games/*; do
           echo
           printf '%*s\n' "$COLUMNS" '' | tr ' ' -
