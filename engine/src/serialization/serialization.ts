@@ -114,6 +114,7 @@ export class Serialization {
         if (
             typeof value === 'string'
                 || typeof value === 'number'
+                || typeof value === 'boolean'
                 || typeof value === 'bigint'
                 || value === null
                 || value === undefined
