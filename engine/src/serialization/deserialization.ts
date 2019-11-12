@@ -77,6 +77,7 @@ export class Deserialization {
         if (existingObject) { return existingObject; }
 
         const result: SerializableObject = {};
+        this._uuidToObjects.set(id, result);
 
         if (!this._originalObject.objects) {
             throw new Error(`Bad deserialization: Missing key .objects in ${this._originalObject}.`);
