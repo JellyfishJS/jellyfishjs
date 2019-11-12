@@ -31,10 +31,10 @@ export class Client extends GameObject {
         eventsToHandle.forEach((event) => {
             switch (event.type) {
                 case ClientEventType.Connect:
-                    this.onConnected && this.onConnected();
+                    this.onConnected?.();
                     break;
                 case ClientEventType.Disconnect:
-                    this.onDisconnected && this.onDisconnected(event.reason);
+                    this.onDisconnected?.(event.reason);
                     break;
                 case ClientEventType.Message:
                     this._onMessage(event.message.type, event.message.contents);
@@ -63,7 +63,7 @@ export class Client extends GameObject {
 
         switch (type) {
             case MessageType.String:
-                this.onMessage && this.onMessage(contents);
+                this.onMessage?.(contents);
                 break;
             default:
                 console.error(`Unexpected got message from client with type ${type}, which is not recognized.`);
@@ -107,7 +107,7 @@ export class Client extends GameObject {
      * Before every step, handles all the events and calls the appropriate callbacks.
      */
     public [beforeStepKey]() {
-        super[beforeStepKey] && super[beforeStepKey]!();
+        super[beforeStepKey]?.();
 
         this._handleEvents();
     }

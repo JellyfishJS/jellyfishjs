@@ -84,8 +84,8 @@ export class GameLoop {
      */
     private _beforeStep() {
         this._forEachObject((gameObject) => {
-            gameObject[beforeStepKey] && gameObject[beforeStepKey]!();
-            gameObject.beforeStep && gameObject.beforeStep();
+            gameObject[beforeStepKey]?.();
+            gameObject.beforeStep?.();
         });
     }
 
@@ -101,8 +101,8 @@ export class GameLoop {
         gameObject: Subclass,
         pixiSetup: PIXISetup | undefined,
     ) {
-        gameObject[onCreateKey] && gameObject[onCreateKey]!();
-        gameObject.onCreate && gameObject.onCreate();
+        gameObject[onCreateKey]?.();
+        gameObject.onCreate?.();
 
         // Apparently type narrowing doesn't work on imports.
         const matter = Matter;
@@ -195,20 +195,20 @@ export class GameLoop {
         switch (eventType) {
             case KeyEvent.Pressed:
                 this._forEachObject((gameObject) => {
-                    gameObject[keyPressedKey] && gameObject[keyPressedKey]!(keyCode);
-                    gameObject.keyPressed && gameObject.keyPressed(keyCode);
+                    gameObject[keyPressedKey]?.(keyCode);
+                    gameObject.keyPressed?.(keyCode);
                 });
                 break;
             case KeyEvent.Released:
                 this._forEachObject((gameObject) => {
-                    gameObject[keyReleasedKey] && gameObject[keyReleasedKey]!(keyCode);
-                    gameObject.keyReleased && gameObject.keyReleased(keyCode);
+                    gameObject[keyReleasedKey]?.(keyCode);
+                    gameObject.keyReleased?.(keyCode);
                 });
                 break;
             case KeyEvent.HeldDown:
                 this._forEachObject((gameObject) => {
-                    gameObject[keyHeldKey] && gameObject[keyHeldKey]!(keyCode);
-                    gameObject.keyHeld && gameObject.keyHeld(keyCode);
+                    gameObject[keyHeldKey]?.(keyCode);
+                    gameObject.keyHeld?.(keyCode);
                 });
                 break;
         }
@@ -227,8 +227,8 @@ export class GameLoop {
      */
     private _beforePhysics() {
         this._forEachObject((gameObject) => {
-            gameObject[beforePhysicsKey] && gameObject[beforePhysicsKey]!();
-            gameObject.beforePhysics && gameObject.beforePhysics();
+            gameObject[beforePhysicsKey]?.();
+            gameObject.beforePhysics?.();
         });
     }
 
@@ -236,7 +236,7 @@ export class GameLoop {
      * Runs one step of the physics engine.
      */
     private _physics(engine: Matter.Engine | undefined) {
-        Matter && engine && Matter.Engine.update(engine);
+        engine && Matter?.Engine.update(engine);
     }
 
     /**
@@ -244,8 +244,8 @@ export class GameLoop {
      */
     private _afterPhysics() {
         this._forEachObject((gameObject) => {
-            gameObject[afterPhysicsKey] && gameObject[afterPhysicsKey]!();
-            gameObject.afterPhysics && gameObject.afterPhysics();
+            gameObject[afterPhysicsKey]?.();
+            gameObject.afterPhysics?.();
         });
     }
 
@@ -254,8 +254,8 @@ export class GameLoop {
      */
     private _step() {
         this._forEachObject((gameObject) => {
-            gameObject[stepKey] && gameObject[stepKey]!();
-            gameObject.step && gameObject.step();
+            gameObject[stepKey]?.();
+            gameObject.step?.();
         });
     }
 
@@ -274,8 +274,8 @@ export class GameLoop {
             const container = gameObject[containerKey];
             if (!sprite || !container) { return; }
 
-            gameObject[drawKey] && gameObject[drawKey]!(pixi, sprite, container);
-            gameObject.draw && gameObject.draw(pixi, sprite, container);
+            gameObject[drawKey]?.(pixi, sprite, container);
+            gameObject.draw?.(pixi, sprite, container);
         });
     }
 
@@ -288,8 +288,8 @@ export class GameLoop {
             this._gameObjects = this._gameObjects.filter((gameObject) => {
                 if (!gameObject[toBeDestroyedKey]) { return true; }
 
-                gameObject[onDestroyKey] && gameObject[onDestroyKey]!();
-                gameObject.onDestroy && gameObject.onDestroy();
+                gameObject[onDestroyKey]?.();
+                gameObject.onDestroy?.();
                 gameObject[wasDestroyedKey] = true;
 
                 return false;
@@ -302,8 +302,8 @@ export class GameLoop {
      */
     private _endStep() {
         this._forEachObject((gameObject) => {
-            gameObject[afterStepKey] && gameObject[afterStepKey]!();
-            gameObject.afterStep && gameObject.afterStep();
+            gameObject[afterStepKey]?.();
+            gameObject.afterStep?.();
         });
     }
 
