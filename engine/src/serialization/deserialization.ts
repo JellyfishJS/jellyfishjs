@@ -37,6 +37,11 @@ export class Deserialization {
     private readonly _originalObject: SerializationResult;
 
     /**
+     * A map from UUIDs to objects.
+     */
+    private _uuidToObjects = new Map<string, SerializableObject>();
+
+    /**
      * A cache of the result of the deserialization.
      */
     private _result: SerializableObject | undefined;
@@ -49,7 +54,26 @@ export class Deserialization {
      * or the results will be strange.
      */
     private _runDeserialization() {
+        if (typeof this._originalObject.rootObject !== 'string') {
+            throw new TypeError(`Bad deserialization: The .rootObject is not a string in ${this._originalObject}.`);
+        }
 
+        return this._deserializeObject(typeof this._originalObject.rootObject);
+    }
+
+    /**
+     * Deserializes the object with the specified ID,
+     * and returns it.
+     *
+     * Caches results, so can be called multiple times.
+     */
+    private _deserializeObject(id: string): SerializableObject {
+        const existingObject = this._uuidToObjects.get(id);
+        if (existingObject) { return existingObject; }
+
+        const result = {};
+
+        return result;
     }
 
 }
