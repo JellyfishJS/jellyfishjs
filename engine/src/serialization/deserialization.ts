@@ -63,7 +63,7 @@ export class Deserialization {
             throw new Error(`Bad deserialization: Property .rootObject is not a string in ${this._originalObject}.`);
         }
 
-        return this._deserializeObject(typeof this._originalObject.rootObject);
+        return this._deserializeObject(this._originalObject.rootObject);
     }
 
     /**
