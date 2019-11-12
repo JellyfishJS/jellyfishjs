@@ -94,7 +94,7 @@ export class Deserialization {
 
         Object.keys(serializedObject.stringKeyedProperties).forEach((key) => {
             const value = serializedObject.stringKeyedProperties[key];
-            result[key] = value;
+            result[key] = this._deserializePropertyValue(value);
         });
 
         return result;
