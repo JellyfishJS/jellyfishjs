@@ -1,3 +1,4 @@
+import { Deserialization } from './deserialization';
 import { Serialization } from './serialization';
 import { SerializableObject, SerializationResult } from './serialization-result';
 
@@ -13,6 +14,10 @@ export class Serializer {
      */
     public serialize(object: SerializableObject): SerializationResult {
         return new Serialization(object).getSerialization();
+    }
+
+    public deserialize(object: SerializationResult): SerializableObject {
+        return new Deserialization(object).getDeserialization();
     }
 
 }
