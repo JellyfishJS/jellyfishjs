@@ -28,7 +28,7 @@ jobs:
           printf '%*s\n' "$COLUMNS" '' | tr ' ' -
           echo "Testing game: $game"
           pushd "$game" > /dev/null
-          npm ci
+          npm install
           npm run build
           timeout 5 npm start > /dev/null
           if [ ! "$?" -eq 124 ]; then
