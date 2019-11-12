@@ -1,4 +1,9 @@
-import { SerializableObject, SerializationResult } from './serialization-result';
+import {
+    SerializableObject,
+    SerializationResult,
+    SerializedObjectPropertyValue,
+    SerializedObjectPropertyValueType,
+} from './serialization-result';
 
 /**
  * A class used to deserialize a single object.
@@ -55,7 +60,7 @@ export class Deserialization {
      */
     private _runDeserialization() {
         if (typeof this._originalObject.rootObject !== 'string') {
-            throw new TypeError(`Bad deserialization: The .rootObject is not a string in ${this._originalObject}.`);
+            throw new Error(`Bad deserialization: Property .rootObject is not a string in ${this._originalObject}.`);
         }
 
         return this._deserializeObject(typeof this._originalObject.rootObject);
@@ -71,9 +76,66 @@ export class Deserialization {
         const existingObject = this._uuidToObjects.get(id);
         if (existingObject) { return existingObject; }
 
-        const result = {};
+        const result: SerializableObject = {};
+
+        if (!this._originalObject.objects) {
+            throw new Error(`Bad deserialization: Missing key .objects in ${this._originalObject}.`);
+        }
+
+        const serializedObject = this._originalObject.objects[id];
+
+        if (!serializedObject) {
+            throw new Error(`Bad deserialization: Missing key "${id}" in ${this._originalObject.objects}.`);
+        }
+
+        if (typeof serializedObject.stringKeyedProperties !== 'object') {
+            throw new Error(`Bad deserialization: Property .stringKeyedProperties is not an object in ${serializedObject}.`);
+        }
+
+        Object.keys(serializedObject.stringKeyedProperties).forEach((key) => {
+            const value = serializedObject.stringKeyedProperties[key];
+            result[key] = value;
+        });
 
         return result;
+    }
+
+    /**
+     * Deserializes the object with the specified ID,
+     * and returns it.
+     *
+     * Caches results, so can be called multiple times.
+     */
+    private _deserializePropertyValue(value: SerializedObjectPropertyValue): unknown {
+        if (
+            typeof value === 'string'
+                || typeof value === 'number'
+                || typeof value === 'boolean'
+                || typeof value === 'bigint'
+                || value === null
+                || value === undefined
+        ) {
+            return value;
+        }
+
+        if (
+            Array.isArray(value)
+        ) {
+            return value.map((subvalue) => this._deserializePropertyValue(subvalue));
+        }
+
+        switch (value.type) {
+            case SerializedObjectPropertyValueType.Reference:
+                const uuid = value.uuid;
+                if (typeof uuid !== 'string') {
+                    new Error(`Bad deserialization: Property .uuid is not a string in ${value}.`);
+                }
+
+                return this._deserializeObject(uuid);
+
+            default:
+                throw new Error(`Bad deserialization: Unknown value type ${value.type}`);
+        }
     }
 
 }
