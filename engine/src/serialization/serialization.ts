@@ -1,6 +1,12 @@
 import { type } from 'os';
 import uuid = require('uuid');
-import { SerializableObject, SerializationResult, SerializedObject, SerializedObjectPropertyValue } from './serialization-result';
+import {
+    SerializableObject,
+    SerializationResult,
+    SerializedObject,
+    SerializedObjectPropertyValue,
+    SerializedObjectPropertyValueType,
+} from './serialization-result';
 
 /**
  * A class used to serialize a single object.
@@ -122,7 +128,7 @@ export class Serialization {
         if (typeof value === 'object') {
             // value is a `SerializableObject` at this point.
             return {
-                type: 'reference',
+                type: SerializedObjectPropertyValueType.Reference,
                 uuid: this._getSerializationOfObject(value as SerializableObject),
             };
         }

@@ -27,10 +27,18 @@ export interface SerializedObject {
 }
 
 /**
+ * Represents the type of property value,
+ * if the property cannot be serialized directly.
+ */
+export enum SerializedObjectPropertyValueType {
+    Reference = 'reference',
+}
+
+/**
  * References another object in the serialization.
  */
 export interface SerializedObjectReference {
-    type: 'reference';
+    type: SerializedObjectPropertyValueType.Reference;
     uuid: string;
 }
 
