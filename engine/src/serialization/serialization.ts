@@ -23,8 +23,8 @@ export class Serialization {
     /**
      * Makes a serialization for the specified entity.
      */
-    public constructor(object: SerializableEntity) {
-        this._originalObject = object;
+    public constructor(entity: SerializableEntity) {
+        this._serializableEntity = entity;
     }
 
     /**
@@ -49,7 +49,7 @@ export class Serialization {
      * once an instance is serializing something,
      * that's the only thing it can serialize.
      */
-    private readonly _originalObject: SerializableEntity;
+    private readonly _serializableEntity: SerializableEntity;
 
     /**
      * If the entity has been serialized yet.
@@ -66,7 +66,7 @@ export class Serialization {
         items: {},
     };
 
-    private _objectsToUUID = new WeakMap<SerializableEntity, string>();
+    private _serializableEntityToUUID = new WeakMap<SerializableEntity, string>();
 
     /**
      * Serializes the entity without checking the cache.
@@ -78,7 +78,7 @@ export class Serialization {
      * so it will not work correctly.
      */
     private _runSerialization() {
-        this._result.rootItem = this._serializeObject(this._originalObject);
+        this._result.rootItem = this._serializeItem(this._serializableEntity);
     }
 
     /**
@@ -87,24 +87,24 @@ export class Serialization {
      *
      * Returns the uuid the item was assigned.
      */
-    private _serializeObject(object: SerializableEntity): string {
-        const existingUUID = this._objectsToUUID.get(object);
+    private _serializeItem(item: SerializableEntity): string {
+        const existingUUID = this._serializableEntityToUUID.get(item);
         if (existingUUID) { return existingUUID; }
 
         const id = uuid();
-        this._objectsToUUID.set(object, id);
+        this._serializableEntityToUUID.set(item, id);
 
         const stringKeyedProperties: SerializedItem['stringKeyedProperties'] = {};
 
-        Object.keys(object).forEach((key) => {
-            const value = object[key];
+        Object.keys(item).forEach((key) => {
+            const serializableProperty = item[key];
 
-            stringKeyedProperties[key] = this._serializePropertyValue(value);
+            stringKeyedProperties[key] = this._serializeProperty(serializableProperty);
         });
 
         let metadata: SerializedItemMetadata;
 
-        if (Array.isArray(object)) {
+        if (Array.isArray(item)) {
             metadata = { type: SerializedItemMetadataType.Array };
         } else {
             metadata = { type: SerializedItemMetadataType.Object };
@@ -121,41 +121,41 @@ export class Serialization {
     /**
      * Serializes the specified property to a `SerializedProperty`.
      */
-    private _serializePropertyValue(value: unknown): SerializedProperty {
+    private _serializeProperty(property: unknown): SerializedProperty {
         if (
-            typeof value === 'string'
-                || typeof value === 'number'
-                || typeof value === 'boolean'
-                || typeof value === 'bigint'
-                || value === null
-                || value === undefined
+            typeof property === 'string'
+                || typeof property === 'number'
+                || typeof property === 'boolean'
+                || typeof property === 'bigint'
+                || property === null
+                || property === undefined
         ) {
-            return value;
+            return property;
         }
 
-        if (typeof value === 'bigint') {
+        if (typeof property === 'bigint') {
             return {
                 type: SerializedPropertyType.BigInt,
                 // BigInt constructors don't take arbitrary radixes.
-                value: value.toString(10),
+                value: property.toString(10),
             };
         }
 
-        if (Array.isArray(value) || typeof value === 'object') {
-            // value is a `SerializableEntity` at this point.
+        if (Array.isArray(property) || typeof property === 'object') {
+            // property is a `SerializableEntity` at this point.
             return {
                 type: SerializedPropertyType.Reference,
-                uuid: this._serializeObject(value as SerializableEntity),
+                uuid: this._serializeItem(property as SerializableEntity),
             };
         }
 
-        if (typeof value === 'function') {
+        if (typeof property === 'function') {
             // Functions cannot (safely) be serialized.
             // Later, if we wish, we can register functions
             return undefined;
         }
 
-        throw new Error(`Unrecognized type of value ${value}`);
+        throw new Error(`Bad serialization: Unrecognized type of property ${property}.`);
     }
 
 }
