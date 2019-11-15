@@ -80,7 +80,7 @@ export class Deserialization {
         if (existingItem) { return existingItem; }
 
         if (!this._originalEntity.items) {
-            throw new Error(`Bad deserialization: Missing key .objects in ${this._originalEntity}.`);
+            throw new Error(`Bad deserialization: Missing key .items in ${this._originalEntity}.`);
         }
 
         const serializedObject = this._originalEntity.items[id];
