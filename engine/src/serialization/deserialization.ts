@@ -79,14 +79,14 @@ export class Deserialization {
 
         let result: SerializableEntity;
 
-        if (!this._originalObject.objects) {
+        if (!this._originalObject.items) {
             throw new Error(`Bad deserialization: Missing key .objects in ${this._originalObject}.`);
         }
 
-        const serializedObject = this._originalObject.objects[id];
+        const serializedObject = this._originalObject.items[id];
 
         if (!serializedObject) {
-            throw new Error(`Bad deserialization: Missing key "${id}" in ${this._originalObject.objects}.`);
+            throw new Error(`Bad deserialization: Missing key "${id}" in ${this._originalObject.items}.`);
         }
 
         if (serializedObject === null || typeof serializedObject !== 'object') {
@@ -107,7 +107,7 @@ export class Deserialization {
                 result = {};
                 break;
             default:
-                throw new Error(`Bad deserialization: Unknown type "${(serializedObject.metadata as any).type}" in ${this._originalObject.objects}.`);
+                throw new Error(`Bad deserialization: Unknown type "${(serializedObject.metadata as any).type}" in ${this._originalObject.items}.`);
         }
 
         this._uuidToObjects.set(id, result);

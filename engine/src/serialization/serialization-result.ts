@@ -12,7 +12,7 @@ export interface SerializableEntity {
  */
 export interface SerializedEntity {
     rootItem: string;
-    objects: {
+    items: {
         [uuid: string]: SerializedObject,
     };
 }

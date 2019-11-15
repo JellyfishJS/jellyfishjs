@@ -63,7 +63,7 @@ export class Serialization {
      */
     private _result: SerializedEntity = {
         rootItem: '',
-        objects: {},
+        items: {},
     };
 
     private _objectsToUUID = new WeakMap<SerializableEntity, string>();
@@ -110,7 +110,7 @@ export class Serialization {
             metadata = { type: SerializedObjectMetadataType.Object };
         }
 
-        this._result.objects[id] = {
+        this._result.items[id] = {
             metadata,
             stringKeyedProperties,
         };
