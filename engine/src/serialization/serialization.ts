@@ -2,7 +2,7 @@ import { type } from 'os';
 import uuid = require('uuid');
 import {
     SerializableEntity,
-    SerializationResult,
+    SerializedEntity,
     SerializedObject,
     SerializedObjectMetadata,
     SerializedObjectMetadataType,
@@ -33,7 +33,7 @@ export class Serialization {
      * Caches its result,
      * so don't modify the object and expect to be able to reserialize it.
      */
-    public getSerialization(): SerializationResult {
+    public getSerialization(): SerializedEntity {
         if (!this.hasSerialized) {
             this._runSerialization();
             this.hasSerialized = true;
@@ -61,7 +61,7 @@ export class Serialization {
     /**
      * A cache of the result of the serialization.
      */
-    private _result: SerializationResult = {
+    private _result: SerializedEntity = {
         rootObject: '',
         objects: {},
     };

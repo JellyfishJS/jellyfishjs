@@ -6,11 +6,11 @@ export interface SerializableEntity {
 }
 
 /**
- * A serialization of some object.
+ * Some entity that has been serialized.
  *
  * Compatible with JSON.
  */
-export interface SerializationResult {
+export interface SerializedEntity {
     rootObject: string;
     objects: {
         [uuid: string]: SerializedObject,

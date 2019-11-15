@@ -1,6 +1,6 @@
 import {
     SerializableEntity,
-    SerializationResult,
+    SerializedEntity,
     SerializedObjectMetadataType,
     SerializedObjectPropertyValue,
     SerializedObjectPropertyValueType,
@@ -19,7 +19,7 @@ export class Deserialization {
     /**
      * Makes a deserialization for the specified serialization.
      */
-    public constructor(object: SerializationResult) {
+    public constructor(object: SerializedEntity) {
         this._originalObject = object;
     }
 
@@ -40,7 +40,7 @@ export class Deserialization {
     /**
      * The object this deserialization deserializes.
      */
-    private readonly _originalObject: SerializationResult;
+    private readonly _originalObject: SerializedEntity;
 
     /**
      * A map from UUIDs to objects.
