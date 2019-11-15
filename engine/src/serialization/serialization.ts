@@ -6,6 +6,7 @@ import {
     SerializedObject,
     SerializedObjectPropertyValue,
     SerializedObjectPropertyValueType,
+    SerializedObjectType,
 } from './serialization-result';
 
 /**
@@ -100,7 +101,16 @@ export class Serialization {
             stringKeyedProperties[key] = this._valueToSerializedValue(value);
         });
 
+        let type: SerializedObjectType;
+
+        if (Array.isArray(object)) {
+            type = SerializedObjectType.Array;
+        } else {
+            type = SerializedObjectType.Object;
+        }
+
         this._result.objects[id] = {
+            type,
             stringKeyedProperties,
         };
 
@@ -122,11 +132,7 @@ export class Serialization {
             return value;
         }
 
-        if (Array.isArray(value)) {
-            return value.map((subvalue: unknown) => this._valueToSerializedValue(subvalue));
-        }
-
-        if (typeof value === 'object') {
+        if (Array.isArray(value) || typeof value === 'object') {
             // value is a `SerializableObject` at this point.
             return {
                 type: SerializedObjectPropertyValueType.Reference,

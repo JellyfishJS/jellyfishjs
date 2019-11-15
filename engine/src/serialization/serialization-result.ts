@@ -18,9 +18,20 @@ export interface SerializationResult {
 }
 
 /**
+ * Represents what kind of object a serialized object is.
+ *
+ * These potentially require different deserialization.
+ */
+export enum SerializedObjectType {
+    Object = 'object',
+    Array = 'array',
+}
+
+/**
  * The serialization of a single object.
  */
 export interface SerializedObject {
+    type: 'object' | 'array';
     stringKeyedProperties: {
         [key: string]: SerializedObjectPropertyValue;
     };

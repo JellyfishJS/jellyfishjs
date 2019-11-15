@@ -3,6 +3,7 @@ import {
     SerializationResult,
     SerializedObjectPropertyValue,
     SerializedObjectPropertyValueType,
+    SerializedObjectType,
 } from './serialization-result';
 
 /**
@@ -76,8 +77,7 @@ export class Deserialization {
         const existingObject = this._uuidToObjects.get(id);
         if (existingObject) { return existingObject; }
 
-        const result: SerializableObject = {};
-        this._uuidToObjects.set(id, result);
+        let result: SerializableObject;
 
         if (!this._originalObject.objects) {
             throw new Error(`Bad deserialization: Missing key .objects in ${this._originalObject}.`);
@@ -88,6 +88,21 @@ export class Deserialization {
         if (!serializedObject) {
             throw new Error(`Bad deserialization: Missing key "${id}" in ${this._originalObject.objects}.`);
         }
+
+        switch (serializedObject.type) {
+            case SerializedObjectType.Array:
+                // It is safe to treat an array like an object with arbitrary access,
+                // it's just usually a bad idea so TypeScript complains.
+                result = [] as unknown as SerializableObject;
+                break;
+            case SerializedObjectType.Object:
+                result = {};
+                break;
+            default:
+                throw new Error(`Bad deserialization: Unknown type "${serializedObject.type}" in ${this._originalObject.objects}.`);
+        }
+
+        this._uuidToObjects.set(id, result);
 
         if (typeof serializedObject.stringKeyedProperties !== 'object') {
             throw new Error(`Bad deserialization: Property .stringKeyedProperties is not an object in ${serializedObject}.`);
@@ -119,10 +134,8 @@ export class Deserialization {
             return value;
         }
 
-        if (
-            Array.isArray(value)
-        ) {
-            return value.map((subvalue) => this._deserializePropertyValue(subvalue));
+        if (Array.isArray(value)) {
+            throw new Error(`Bad deserialization: Found a direct array value ${value}.`);
         }
 
         switch (value.type) {

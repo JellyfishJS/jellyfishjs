@@ -52,4 +52,16 @@ describe('User', function () {
         assertSerializesCorrectly(original);
     });
 
+    it('should serialize arrays with circular references', function () {
+        const original: any = [];
+        original.push(original);
+        assertSerializesCorrectly(original);
+    });
+
+    it('should serialize arrays with duplicate references', function () {
+        const original: any = [[]];
+        original.push(original[0]);
+        assertSerializesCorrectly(original);
+    });
+
 });
