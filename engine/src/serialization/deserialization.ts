@@ -148,7 +148,7 @@ export class Deserialization {
                 return this._deserializeObject(uuid);
 
             case SerializedObjectPropertyValueType.BigInt:
-                if (typeof BigInt !== undefined) {
+                if (typeof BigInt !== 'undefined') {
                     // Automatically throws if the value is not well-formed.
                     return BigInt(value.value);
                 } else {
