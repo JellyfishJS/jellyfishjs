@@ -94,7 +94,7 @@ export class Deserialization {
         }
 
         if (serializedObject.metadata === null || typeof serializedObject.metadata !== 'object') {
-            throw new Error(`Bad deserialization: Unexpected type of object "${serializedObject}" with type ${typeof serializedObject}.`);
+            throw new Error(`Bad deserialization: Unexpected type of metadata "${serializedObject}" with type ${typeof serializedObject}.`);
         }
 
         let result: SerializableItem;
