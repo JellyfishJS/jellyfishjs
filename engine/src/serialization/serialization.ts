@@ -11,7 +11,7 @@ import {
 } from './serialization-result';
 
 /**
- * A class used to serialize a single object.
+ * A class used to serialize a single entity.
  *
  * This is basically just a method,
  * but it's it in its own class
@@ -21,17 +21,17 @@ import {
 export class Serialization {
 
     /**
-     * Makes a serialization for the specified object.
+     * Makes a serialization for the specified entity.
      */
     public constructor(object: SerializableEntity) {
         this._originalObject = object;
     }
 
     /**
-     * Returns a serialized version of the specified object.
+     * Returns a serialized version of the specified entity.
      *
      * Caches its result,
-     * so don't modify the object and expect to be able to reserialize it.
+     * so don't modify the entity and expect to be able to reserialize it.
      */
     public getSerialization(): SerializedEntity {
         if (!this.hasSerialized) {
@@ -52,14 +52,14 @@ export class Serialization {
     private readonly _originalObject: SerializableEntity;
 
     /**
-     * If the object has been serialized yet.
+     * If the entity has been serialized yet.
      *
      * Used to determine if the cached version should be returned.
      */
     private hasSerialized = false;
 
     /**
-     * A cache of the result of the serialization.
+     * A cache of the serialized entity.
      */
     private _result: SerializedEntity = {
         rootItem: '',
@@ -69,7 +69,7 @@ export class Serialization {
     private _objectsToUUID = new WeakMap<SerializableEntity, string>();
 
     /**
-     * Serializes the object without caching the result.
+     * Serializes the entity without checking the cache.
      *
      * Do NOT call more than once.
      *
@@ -82,10 +82,10 @@ export class Serialization {
     }
 
     /**
-     * Serializes the given object,
+     * Serializes the given item,
      * and adds it to the result.
      *
-     * Returns the uuid the object was assigned.
+     * Returns the uuid the item was assigned.
      */
     private _serializeObject(object: SerializableEntity): string {
         const existingUUID = this._objectsToUUID.get(object);
@@ -119,7 +119,7 @@ export class Serialization {
     }
 
     /**
-     * Converts the specified value to a `SerializedProperty`.
+     * Serializes the specified property to a `SerializedProperty`.
      */
     private _serializePropertyValue(value: unknown): SerializedProperty {
         if (
