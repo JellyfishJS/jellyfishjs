@@ -4,9 +4,10 @@ import {
     SerializableObject,
     SerializationResult,
     SerializedObject,
+    SerializedObjectMetadata,
+    SerializedObjectMetadataType,
     SerializedObjectPropertyValue,
     SerializedObjectPropertyValueType,
-    SerializedObjectType,
 } from './serialization-result';
 
 /**
@@ -101,16 +102,16 @@ export class Serialization {
             stringKeyedProperties[key] = this._serializePropertyValue(value);
         });
 
-        let type: SerializedObjectType;
+        let metadata: SerializedObjectMetadata;
 
         if (Array.isArray(object)) {
-            type = SerializedObjectType.Array;
+            metadata = { type: SerializedObjectMetadataType.Array };
         } else {
-            type = SerializedObjectType.Object;
+            metadata = { type: SerializedObjectMetadataType.Object };
         }
 
         this._result.objects[id] = {
-            type,
+            metadata,
             stringKeyedProperties,
         };
 

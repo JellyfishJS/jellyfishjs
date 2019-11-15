@@ -1,9 +1,9 @@
 import {
     SerializableObject,
     SerializationResult,
+    SerializedObjectMetadataType,
     SerializedObjectPropertyValue,
     SerializedObjectPropertyValueType,
-    SerializedObjectType,
 } from './serialization-result';
 
 /**
@@ -89,17 +89,25 @@ export class Deserialization {
             throw new Error(`Bad deserialization: Missing key "${id}" in ${this._originalObject.objects}.`);
         }
 
-        switch (serializedObject.type) {
-            case SerializedObjectType.Array:
+        if (serializedObject === null || typeof serializedObject !== 'object') {
+            throw new Error(`Bad deserialization: Unexpected type of object "${serializedObject}" with type ${typeof serializedObject}.`);
+        }
+
+        if (serializedObject.metadata === null || typeof serializedObject.metadata !== 'object') {
+            throw new Error(`Bad deserialization: Unexpected type of object "${serializedObject}" with type ${typeof serializedObject}.`);
+        }
+
+        switch (serializedObject.metadata.type) {
+            case SerializedObjectMetadataType.Array:
                 // It is safe to treat an array like an object with arbitrary access,
                 // it's just usually a bad idea so TypeScript complains.
                 result = [] as unknown as SerializableObject;
                 break;
-            case SerializedObjectType.Object:
+            case SerializedObjectMetadataType.Object:
                 result = {};
                 break;
             default:
-                throw new Error(`Bad deserialization: Unknown type "${serializedObject.type}" in ${this._originalObject.objects}.`);
+                throw new Error(`Bad deserialization: Unknown type "${(serializedObject.metadata as any).type}" in ${this._originalObject.objects}.`);
         }
 
         this._uuidToObjects.set(id, result);
