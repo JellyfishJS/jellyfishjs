@@ -1,5 +1,5 @@
 import {
-    SerializableObject,
+    SerializableEntity,
     SerializationResult,
     SerializedObjectMetadataType,
     SerializedObjectPropertyValue,
@@ -29,7 +29,7 @@ export class Deserialization {
      * Caches its result,
      * so don't modify the object and expect a different result.
      */
-    public getDeserialization(): SerializableObject {
+    public getDeserialization(): SerializableEntity {
         if (!this._result) {
             this._runDeserialization();
         }
@@ -45,12 +45,12 @@ export class Deserialization {
     /**
      * A map from UUIDs to objects.
      */
-    private _uuidToObjects = new Map<string, SerializableObject>();
+    private _uuidToObjects = new Map<string, SerializableEntity>();
 
     /**
      * A cache of the result of the deserialization.
      */
-    private _result: SerializableObject | undefined;
+    private _result: SerializableEntity | undefined;
 
     /**
      * Deserializes the object passed in to the constructor.
@@ -73,11 +73,11 @@ export class Deserialization {
      *
      * Caches results, so can be called multiple times.
      */
-    private _deserializeObject(id: string): SerializableObject {
+    private _deserializeObject(id: string): SerializableEntity {
         const existingObject = this._uuidToObjects.get(id);
         if (existingObject) { return existingObject; }
 
-        let result: SerializableObject;
+        let result: SerializableEntity;
 
         if (!this._originalObject.objects) {
             throw new Error(`Bad deserialization: Missing key .objects in ${this._originalObject}.`);
@@ -101,7 +101,7 @@ export class Deserialization {
             case SerializedObjectMetadataType.Array:
                 // It is safe to treat an array like an object with arbitrary access,
                 // it's just usually a bad idea so TypeScript complains.
-                result = [] as unknown as SerializableObject;
+                result = [] as unknown as SerializableEntity;
                 break;
             case SerializedObjectMetadataType.Object:
                 result = {};

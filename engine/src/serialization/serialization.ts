@@ -1,7 +1,7 @@
 import { type } from 'os';
 import uuid = require('uuid');
 import {
-    SerializableObject,
+    SerializableEntity,
     SerializationResult,
     SerializedObject,
     SerializedObjectMetadata,
@@ -23,7 +23,7 @@ export class Serialization {
     /**
      * Makes a serialization for the specified object.
      */
-    public constructor(object: SerializableObject) {
+    public constructor(object: SerializableEntity) {
         this._originalObject = object;
     }
 
@@ -49,7 +49,7 @@ export class Serialization {
      * once an instance is serializing something,
      * that's the only thing it can serialize.
      */
-    private readonly _originalObject: SerializableObject;
+    private readonly _originalObject: SerializableEntity;
 
     /**
      * If the object has been serialized yet.
@@ -66,7 +66,7 @@ export class Serialization {
         objects: {},
     };
 
-    private _objectsToUUID = new WeakMap<SerializableObject, string>();
+    private _objectsToUUID = new WeakMap<SerializableEntity, string>();
 
     /**
      * Serializes the object without caching the result.
@@ -87,7 +87,7 @@ export class Serialization {
      *
      * Returns the uuid the object was assigned.
      */
-    private _serializeObject(object: SerializableObject): string {
+    private _serializeObject(object: SerializableEntity): string {
         const existingUUID = this._objectsToUUID.get(object);
         if (existingUUID) { return existingUUID; }
 
@@ -142,10 +142,10 @@ export class Serialization {
         }
 
         if (Array.isArray(value) || typeof value === 'object') {
-            // value is a `SerializableObject` at this point.
+            // value is a `SerializableEntity` at this point.
             return {
                 type: SerializedObjectPropertyValueType.Reference,
-                uuid: this._serializeObject(value as SerializableObject),
+                uuid: this._serializeObject(value as SerializableEntity),
             };
         }
 

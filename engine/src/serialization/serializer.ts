@@ -1,6 +1,6 @@
 import { Deserialization } from './deserialization';
 import { Serialization } from './serialization';
-import { SerializableObject, SerializationResult } from './serialization-result';
+import { SerializableEntity, SerializationResult } from './serialization-result';
 
 /**
  * Serializes specified objects.
@@ -12,11 +12,11 @@ export class Serializer {
     /**
      * Serializes the specified object.
      */
-    public serialize(object: SerializableObject): SerializationResult {
+    public serialize(object: SerializableEntity): SerializationResult {
         return new Serialization(object).getSerialization();
     }
 
-    public deserialize(object: SerializationResult): SerializableObject {
+    public deserialize(object: SerializationResult): SerializableEntity {
         return new Deserialization(object).getDeserialization();
     }
 
