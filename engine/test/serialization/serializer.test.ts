@@ -64,4 +64,13 @@ describe('User', function () {
         assertSerializesCorrectly(original);
     });
 
+    it('should ignore functions', function () {
+        const original: any = { doThings() {} };
+
+        const serializer = new Serializer();
+        const serialized = serializer.serialize(original);
+        const deserialized = serializer.deserialize(serialized);
+        assert.deepEqual(deserialized, { doThings: undefined });
+    });
+
 });
