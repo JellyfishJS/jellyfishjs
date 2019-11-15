@@ -77,7 +77,7 @@ export class Serialization {
      * so it will not work correctly.
      */
     private _runSerialization() {
-        this._result.rootObject = this._getSerializationOfObject(this._originalObject);
+        this._result.rootObject = this._serializeObject(this._originalObject);
     }
 
     /**
@@ -86,7 +86,7 @@ export class Serialization {
      *
      * Returns the uuid the object was assigned.
      */
-    private _getSerializationOfObject(object: SerializableObject): string {
+    private _serializeObject(object: SerializableObject): string {
         const existingUUID = this._objectsToUUID.get(object);
         if (existingUUID) { return existingUUID; }
 
@@ -98,7 +98,7 @@ export class Serialization {
         Object.keys(object).forEach((key) => {
             const value = object[key];
 
-            stringKeyedProperties[key] = this._valueToSerializedValue(value);
+            stringKeyedProperties[key] = this._serializePropertyValue(value);
         });
 
         let type: SerializedObjectType;
@@ -120,7 +120,7 @@ export class Serialization {
     /**
      * Converts the specified value to a `SerializedObjectPropertyValue`.
      */
-    private _valueToSerializedValue(value: unknown): SerializedObjectPropertyValue {
+    private _serializePropertyValue(value: unknown): SerializedObjectPropertyValue {
         if (
             typeof value === 'string'
                 || typeof value === 'number'
@@ -144,7 +144,7 @@ export class Serialization {
             // value is a `SerializableObject` at this point.
             return {
                 type: SerializedObjectPropertyValueType.Reference,
-                uuid: this._getSerializationOfObject(value as SerializableObject),
+                uuid: this._serializeObject(value as SerializableObject),
             };
         }
 
