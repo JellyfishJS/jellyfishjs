@@ -22,7 +22,7 @@ export interface SerializationResult {
  *
  * These potentially require different deserialization.
  */
-export enum SerializedObjectType {
+export enum SerializedObjectMetadataType {
 
     /**
      * Indicates this serialized object is an object.
@@ -37,10 +37,33 @@ export enum SerializedObjectType {
 }
 
 /**
+ * Metadata describing an serialized item that is an object.
+ */
+export interface SerializedObjectObjectMetadata {
+    type: SerializedObjectMetadataType.Object;
+}
+
+/**
+ * Metadata describing an serialized item that is an array.
+ */
+export interface SerializedObjectArrayMetadata {
+    type: SerializedObjectMetadataType.Array;
+}
+
+/**
+ * Information describing a serialized item.
+ *
+ * Different kinds of items need to be deserialized differently.
+ */
+export type SerializedObjectMetadata =
+    | SerializedObjectObjectMetadata
+    | SerializedObjectArrayMetadata;
+
+/**
  * The serialization of a single object.
  */
 export interface SerializedObject {
-    type: SerializedObjectType;
+    metadata: SerializedObjectMetadata;
     stringKeyedProperties: {
         [key: string]: SerializedObjectPropertyValue;
     };
