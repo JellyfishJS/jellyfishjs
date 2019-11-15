@@ -18,19 +18,19 @@ export interface SerializedEntity {
 }
 
 /**
- * Represents what kind of object a serialized object is.
+ * Represents what kind of item a serialized item is.
  *
  * These potentially require different deserialization.
  */
 export enum SerializedItemMetadataType {
 
     /**
-     * Indicates this serialized object is an object.
+     * Indicates this serialized item is an object.
      */
     Object = 'object',
 
     /**
-     * Indicates this serialized object is an array.
+     * Indicates this serialized item is an array.
      */
     Array = 'array',
 
@@ -60,7 +60,7 @@ export type SerializedItemMetadata =
     | SerializedItemArrayMetadata;
 
 /**
- * The serialization of a single object.
+ * The serialization of a single item.
  */
 export interface SerializedItem {
     metadata: SerializedItemMetadata;
