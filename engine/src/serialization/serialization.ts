@@ -6,8 +6,8 @@ import {
     SerializedItem,
     SerializedItemMetadata,
     SerializedItemMetadataType,
-    SerializedItemPropertyValue,
-    SerializedItemPropertyValueType,
+    SerializedProperty,
+    SerializedPropertyType,
 } from './serialization-result';
 
 /**
@@ -119,9 +119,9 @@ export class Serialization {
     }
 
     /**
-     * Converts the specified value to a `SerializedItemPropertyValue`.
+     * Converts the specified value to a `SerializedProperty`.
      */
-    private _serializePropertyValue(value: unknown): SerializedItemPropertyValue {
+    private _serializePropertyValue(value: unknown): SerializedProperty {
         if (
             typeof value === 'string'
                 || typeof value === 'number'
@@ -135,7 +135,7 @@ export class Serialization {
 
         if (typeof value === 'bigint') {
             return {
-                type: SerializedItemPropertyValueType.BigInt,
+                type: SerializedPropertyType.BigInt,
                 // BigInt constructors don't take arbitrary radixes.
                 value: value.toString(10),
             };
@@ -144,7 +144,7 @@ export class Serialization {
         if (Array.isArray(value) || typeof value === 'object') {
             // value is a `SerializableEntity` at this point.
             return {
-                type: SerializedItemPropertyValueType.Reference,
+                type: SerializedPropertyType.Reference,
                 uuid: this._serializeObject(value as SerializableEntity),
             };
         }

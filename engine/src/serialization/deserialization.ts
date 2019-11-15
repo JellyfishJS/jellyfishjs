@@ -2,8 +2,8 @@ import {
     SerializableEntity,
     SerializedEntity,
     SerializedItemMetadataType,
-    SerializedItemPropertyValue,
-    SerializedItemPropertyValueType,
+    SerializedProperty,
+    SerializedPropertyType,
 } from './serialization-result';
 
 /**
@@ -130,7 +130,7 @@ export class Deserialization {
      *
      * Caches results, so can be called multiple times.
      */
-    private _deserializePropertyValue(value: SerializedItemPropertyValue): unknown {
+    private _deserializePropertyValue(value: SerializedProperty): unknown {
         if (
             typeof value === 'string'
                 || typeof value === 'number'
@@ -151,7 +151,7 @@ export class Deserialization {
         }
 
         switch (value.type) {
-            case SerializedItemPropertyValueType.Reference:
+            case SerializedPropertyType.Reference:
                 const uuid = value.uuid;
                 if (typeof uuid !== 'string') {
                     throw new Error(`Bad deserialization: Property .uuid is not a string in ${value}.`);
@@ -159,7 +159,7 @@ export class Deserialization {
 
                 return this._deserializeObject(uuid);
 
-            case SerializedItemPropertyValueType.BigInt:
+            case SerializedPropertyType.BigInt:
                 if (typeof BigInt !== 'undefined') {
                     // Automatically throws if the value is not well-formed.
                     return BigInt(value.value);

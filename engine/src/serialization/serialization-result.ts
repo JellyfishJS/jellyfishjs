@@ -65,7 +65,7 @@ export type SerializedItemMetadata =
 export interface SerializedItem {
     metadata: SerializedItemMetadata;
     stringKeyedProperties: {
-        [key: string]: SerializedItemPropertyValue;
+        [key: string]: SerializedProperty;
     };
 }
 
@@ -73,7 +73,7 @@ export interface SerializedItem {
  * Represents the type of property value,
  * if the property cannot be serialized directly.
  */
-export enum SerializedItemPropertyValueType {
+export enum SerializedPropertyType {
 
     /**
      * Indicates this property value references another serialized object.
@@ -91,7 +91,7 @@ export enum SerializedItemPropertyValueType {
  * References another object in the serialization.
  */
 export interface SerializedItemReference {
-    type: SerializedItemPropertyValueType.Reference;
+    type: SerializedPropertyType.Reference;
     uuid: string;
 }
 
@@ -99,14 +99,14 @@ export interface SerializedItemReference {
  * References another object in the serialization.
  */
 export interface SerializedBigInt {
-    type: SerializedItemPropertyValueType.BigInt;
+    type: SerializedPropertyType.BigInt;
     value: string;
 }
 
 /**
  * A value on a serialized object.
  */
-export type SerializedItemPropertyValue =
+export type SerializedProperty =
     | number
     | bigint
     | string

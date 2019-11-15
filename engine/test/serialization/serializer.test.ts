@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import 'mocha';
 
 import { Serializer } from '../../src/serialization';
-import { SerializedItemMetadataType, SerializedItemPropertyValueType } from '../../src/serialization/serialization-result';
+import { SerializedItemMetadataType, SerializedPropertyType } from '../../src/serialization/serialization-result';
 
 describe('User', function () {
 
@@ -44,7 +44,7 @@ describe('User', function () {
                         type: SerializedItemMetadataType.Object,
                         stringKeyedProperties: {
                             a: {
-                                type: SerializedItemPropertyValueType.BigInt,
+                                type: SerializedPropertyType.BigInt,
                                 value: '1234567890987654321',
                             },
                         },
