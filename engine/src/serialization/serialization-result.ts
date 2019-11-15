@@ -70,35 +70,35 @@ export interface SerializedItem {
 }
 
 /**
- * Represents the type of property value,
- * if the property cannot be serialized directly.
+ * Represents the type of the property,
+ * if the property cannot be represented by a literal.
  */
 export enum SerializedPropertyType {
 
     /**
-     * Indicates this property value references another serialized object.
+     * Indicates this property references another serialized item.
      */
     Reference = 'reference',
 
     /**
-     * Indicates this property value is a big integer.
+     * Indicates this property is a big integer.
      */
     BigInt = 'bigint',
 
 }
 
 /**
- * References another object in the serialization.
+ * References another item in the serialized entity.
  */
-export interface SerializedItemReference {
+export interface SerializedPropertyItemReference {
     type: SerializedPropertyType.Reference;
     uuid: string;
 }
 
 /**
- * References another object in the serialization.
+ * Represents a property that is a BigInt.
  */
-export interface SerializedBigInt {
+export interface SerializedPropertyBigInt {
     type: SerializedPropertyType.BigInt;
     value: string;
 }
@@ -113,5 +113,5 @@ export type SerializedProperty =
     | boolean
     | null
     | undefined
-    | SerializedItemReference
-    | SerializedBigInt;
+    | SerializedPropertyItemReference
+    | SerializedPropertyBigInt;
