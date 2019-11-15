@@ -104,7 +104,7 @@ export interface SerializedPropertyBigInt {
 }
 
 /**
- * A value on a serialized object.
+ * A property of a serialized item.
  */
 export type SerializedProperty =
     | number
