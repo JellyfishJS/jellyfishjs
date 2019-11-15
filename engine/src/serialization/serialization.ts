@@ -134,6 +134,12 @@ export class Serialization {
             };
         }
 
+        if (typeof value === 'function') {
+            // Functions cannot (safely) be serialized.
+            // Later, if we wish, we can register functions
+            return undefined;
+        }
+
         throw new Error(`Unrecognized type of value ${value}`);
     }
 
