@@ -147,6 +147,20 @@ export class Deserialization {
 
                 return this._deserializeObject(uuid);
 
+            case SerializedObjectPropertyValueType.BigInt:
+                if (typeof BigInt !== undefined) {
+                    // Automatically throws if the value is not well-formed.
+                    return BigInt(value.value);
+                } else {
+                    // If there is no BigInt support, fall back to using an integer.
+                    // It gets the correct order of magnitude but loses some precision.
+                    const result = parseInt(value.value, 10);
+                    if (Number.isNaN(result)) {
+                        throw new Error(`Bad deserialization: Cannot parse integer ${value.value}.`);
+                    }
+                    return result;
+                }
+
             default:
                 throw new Error(`Bad deserialization: Unknown value type ${(value as any).type}.`);
         }

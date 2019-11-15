@@ -132,6 +132,14 @@ export class Serialization {
             return value;
         }
 
+        if (typeof value === 'bigint') {
+            return {
+                type: SerializedObjectPropertyValueType.BigInt,
+                // BigInt constructors don't take arbitrary radixes.
+                value: value.toString(10),
+            };
+        }
+
         if (Array.isArray(value) || typeof value === 'object') {
             // value is a `SerializableObject` at this point.
             return {

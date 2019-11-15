@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import 'mocha';
 
 import { Serializer } from '../../src/serialization';
+import { SerializedObjectPropertyValueType, SerializedObjectType } from '../../src/serialization/serialization-result';
 
 describe('User', function () {
 
@@ -22,6 +23,40 @@ describe('User', function () {
 
     it('should serialize numbers', function () {
         assertSerializesCorrectly({ a: 7 });
+    });
+
+    it('should serialize BigInts if they are supported', function () {
+        // BigInts aren't universally supported yet,
+        // and don't have great polyfills,
+        // but they will be soon and developers may wish to use them now.
+        // This test tests BigInt parsing if BigInts are available,
+        // otherwise it tests fallback behaviour.
+        // These aren't both testable in the same run,
+        // but the integration tests will check both.
+        if (typeof BigInt !== 'undefined') {
+            assertSerializesCorrectly({ a: BigInt(1234567890987654321) });
+        } else {
+            const serializer = new Serializer();
+            const serializedValue: any = {
+                rootObject: 'id',
+                objects: {
+                    id: {
+                        type: SerializedObjectType.Object,
+                        stringKeyedProperties: {
+                            a: {
+                                type: SerializedObjectPropertyValueType.BigInt,
+                                value: '1234567890987654321',
+                            },
+                        },
+                    },
+                },
+            };
+            const deserialized: any = serializer.deserialize(serializedValue);
+
+            // Both should round the same way.
+            assert.strictEqual(deserialized.a, 1234567890987654321);
+
+        }
     });
 
     it('should serialize strings', function () {
