@@ -138,6 +138,10 @@ export class Deserialization {
             throw new Error(`Bad deserialization: Found a direct array value ${value}.`);
         }
 
+        if (value === null || typeof value !== 'object') {
+            throw new Error(`Bad deserialization: Unexpected value ${value} of type ${typeof value}.`);
+        }
+
         switch (value.type) {
             case SerializedObjectPropertyValueType.Reference:
                 const uuid = value.uuid;
