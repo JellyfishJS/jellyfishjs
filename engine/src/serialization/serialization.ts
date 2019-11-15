@@ -62,7 +62,7 @@ export class Serialization {
      * A cache of the result of the serialization.
      */
     private _result: SerializedEntity = {
-        rootObject: '',
+        rootItem: '',
         objects: {},
     };
 
@@ -78,7 +78,7 @@ export class Serialization {
      * so it will not work correctly.
      */
     private _runSerialization() {
-        this._result.rootObject = this._serializeObject(this._originalObject);
+        this._result.rootItem = this._serializeObject(this._originalObject);
     }
 
     /**

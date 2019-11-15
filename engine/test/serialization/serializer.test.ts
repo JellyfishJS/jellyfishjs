@@ -38,7 +38,7 @@ describe('User', function () {
         } else {
             const serializer = new Serializer();
             const serializedValue: any = {
-                rootObject: 'id',
+                rootItem: 'id',
                 objects: {
                     id: {
                         type: SerializedObjectMetadataType.Object,

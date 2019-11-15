@@ -11,7 +11,7 @@ export interface SerializableEntity {
  * Compatible with JSON.
  */
 export interface SerializedEntity {
-    rootObject: string;
+    rootItem: string;
     objects: {
         [uuid: string]: SerializedObject,
     };

@@ -60,11 +60,11 @@ export class Deserialization {
      * or the results will be strange.
      */
     private _runDeserialization() {
-        if (typeof this._originalObject.rootObject !== 'string') {
-            throw new Error(`Bad deserialization: Property .rootObject is not a string in ${this._originalObject}.`);
+        if (typeof this._originalObject.rootItem !== 'string') {
+            throw new Error(`Bad deserialization: Property .rootItem is not a string in ${this._originalObject}.`);
         }
 
-        this._result = this._deserializeObject(this._originalObject.rootObject);
+        this._result = this._deserializeObject(this._originalObject.rootItem);
     }
 
     /**
