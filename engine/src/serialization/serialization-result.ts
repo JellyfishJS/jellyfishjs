@@ -23,15 +23,24 @@ export interface SerializationResult {
  * These potentially require different deserialization.
  */
 export enum SerializedObjectType {
+
+    /**
+     * Indicates this serialized object is an object.
+     */
     Object = 'object',
+
+    /**
+     * Indicates this serialized object is an array.
+     */
     Array = 'array',
+
 }
 
 /**
  * The serialization of a single object.
  */
 export interface SerializedObject {
-    type: 'object' | 'array';
+    type: SerializedObjectType;
     stringKeyedProperties: {
         [key: string]: SerializedObjectPropertyValue;
     };
@@ -42,7 +51,17 @@ export interface SerializedObject {
  * if the property cannot be serialized directly.
  */
 export enum SerializedObjectPropertyValueType {
+
+    /**
+     * Indicates this property value references another serialized object.
+     */
     Reference = 'reference',
+
+    /**
+     * Indicates this property value is a big integer.
+     */
+    BigInt = 'bigint',
+
 }
 
 /**
@@ -51,6 +70,14 @@ export enum SerializedObjectPropertyValueType {
 export interface SerializedObjectReference {
     type: SerializedObjectPropertyValueType.Reference;
     uuid: string;
+}
+
+/**
+ * References another object in the serialization.
+ */
+export interface SerializedBigInt {
+    type: SerializedObjectPropertyValueType.BigInt;
+    value: string;
 }
 
 /**
@@ -63,5 +90,5 @@ export type SerializedObjectPropertyValue =
     | boolean
     | null
     | undefined
-    | SerializedObjectPropertyValue[]
-    | SerializedObjectReference;
+    | SerializedObjectReference
+    | SerializedBigInt;
