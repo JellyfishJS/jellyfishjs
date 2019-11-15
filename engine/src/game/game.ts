@@ -27,7 +27,7 @@ export class Game {
 
     private _pixiSetup: PIXISetup | undefined;
 
-    private _physicsEngine: Matter.Engine | undefined = Matter && Matter.Engine.create();
+    private _physicsEngine: Matter.Engine | undefined = Matter?.Engine.create();
 
     /**
      * Creates an instance of a specified subclass of GameObject,
@@ -85,16 +85,14 @@ export class Game {
      * Returns the height of the canvas
      */
     public getHeight() {
-        const canvas = this.getCanvas();
-        return canvas && canvas.height;
+        return this.getCanvas()?.height;
     }
 
     /**
      * Returns the width of the canvas
      */
     public getWidth() {
-        const canvas = this.getCanvas();
-        return canvas && canvas.width;
+        return this.getCanvas()?.width;
     }
 
     /**

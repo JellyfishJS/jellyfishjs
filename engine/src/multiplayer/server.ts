@@ -54,11 +54,11 @@ export class Server extends GameObject {
             switch (event.type) {
                 case ServerEventType.Connect:
                     this._users.add(event.user);
-                    this.onUserJoined && this.onUserJoined(event.user);
+                    this.onUserJoined?.(event.user);
                     break;
                 case ServerEventType.Disconnect:
                     this._users.delete(event.user);
-                    this.onUserLeft && this.onUserLeft(event.user, event.reason);
+                    this.onUserLeft?.(event.user, event.reason);
                     break;
                 case ServerEventType.Message:
                     this._onMessage(event.user, event.message.type, event.message.contents);
@@ -87,7 +87,7 @@ export class Server extends GameObject {
 
         switch (type) {
             case MessageType.String:
-                this.onMessage && this.onMessage(user, contents);
+                this.onMessage?.(user, contents);
                 break;
             default:
                 console.error(`Unexpected got message from client with type ${type}, which is not recognized.`);

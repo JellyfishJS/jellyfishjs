@@ -45,8 +45,8 @@ export class PIXISetup {
 
         this._application = new PIXI.Application({
             view: canvas || undefined,
-            height: canvas && canvas.height || 300,
-            width: canvas && canvas.width || 300,
+            height: canvas?.height || 300,
+            width: canvas?.width || 300,
             resolution: 1,
             antialias: true,
         });
@@ -56,7 +56,7 @@ export class PIXISetup {
      * Returns the canvas element that the PIXI application this contains uses.
      */
     public getCanvas() {
-        return this._application && this._application.view;
+        return this._application?.view;
     }
 
     /**
@@ -70,7 +70,7 @@ export class PIXISetup {
      * Returns the container at the root of the canvas.
      */
     public getContainer() {
-        return this._application && this._application.stage;
+        return this._application?.stage;
     }
 
     /**
