@@ -148,7 +148,7 @@ export class Deserialization {
                 return this._deserializeObject(uuid);
 
             default:
-                throw new Error(`Bad deserialization: Unknown value type ${value.type}`);
+                throw new Error(`Bad deserialization: Unknown value type ${(value as any).type}.`);
         }
     }
 
