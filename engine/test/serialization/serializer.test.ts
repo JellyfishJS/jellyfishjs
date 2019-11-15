@@ -21,6 +21,10 @@ describe('User', function () {
         assertSerializesCorrectly({ a: { b: { } } });
     });
 
+    it('should serialize simple arrays', function () {
+        assertSerializesCorrectly({ a: [{}, 7, 'string', [1, 2], { c: 'c' }] });
+    });
+
     it('should serialize numbers', function () {
         assertSerializesCorrectly({ a: 7 });
     });
@@ -69,10 +73,6 @@ describe('User', function () {
 
     it('should serialize undefined', function () {
         assertSerializesCorrectly({ a: undefined });
-    });
-
-    it('should serialize simple arrays', function () {
-        assertSerializesCorrectly({ a: [{}, 7, 'string', [1, 2], { c: 'c' }] });
     });
 
     it('should serialize objects with reference cycles', function () {
