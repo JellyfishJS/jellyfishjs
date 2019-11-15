@@ -129,7 +129,7 @@ export class Deserialization {
             case SerializedObjectPropertyValueType.Reference:
                 const uuid = value.uuid;
                 if (typeof uuid !== 'string') {
-                    new Error(`Bad deserialization: Property .uuid is not a string in ${value}.`);
+                    throw new Error(`Bad deserialization: Property .uuid is not a string in ${value}.`);
                 }
 
                 return this._deserializeObject(uuid);
