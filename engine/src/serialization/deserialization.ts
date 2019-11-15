@@ -7,7 +7,7 @@ import {
 } from './serialization-result';
 
 /**
- * A class used to deserialize a single object.
+ * A class used to deserialize a single entity.
  *
  * This is basically just a method,
  * but it's it in its own class
@@ -17,17 +17,17 @@ import {
 export class Deserialization {
 
     /**
-     * Makes a deserialization for the specified serialization.
+     * Makes a deserialization for the specified serialized entity.
      */
     public constructor(object: SerializedEntity) {
         this._originalObject = object;
     }
 
     /**
-     * Gets the deserialization of the object passed in to the constructor.
+     * Gets the deserialization of the entity passed in to the constructor.
      *
      * Caches its result,
-     * so don't modify the object and expect a different result.
+     * so don't modify the entity and expect a different result.
      */
     public getDeserialization(): SerializableItem {
         if (!this._result) {
@@ -38,12 +38,12 @@ export class Deserialization {
     }
 
     /**
-     * The object this deserialization deserializes.
+     * The serialized entity this deserialization deserializes.
      */
     private readonly _originalObject: SerializedEntity;
 
     /**
-     * A map from UUIDs to objects.
+     * A map from UUIDs to items.
      */
     private _uuidToObjects = new Map<string, SerializableItem>();
 
@@ -53,11 +53,13 @@ export class Deserialization {
     private _result: SerializableItem | undefined;
 
     /**
-     * Deserializes the object passed in to the constructor.
+     * Deserializes the entity passed in to the constructor.
      *
-     * Caches things but does not check the caches.
-     * Do not run twice,
-     * or the results will be strange.
+     * Do NOT call more than once.
+     *
+     * If this is called more than once,
+     * then the saved intermediate results will still exist,
+     * so it will not work correctly.
      */
     private _runDeserialization() {
         if (typeof this._originalObject.rootItem !== 'string') {
@@ -68,7 +70,7 @@ export class Deserialization {
     }
 
     /**
-     * Deserializes the object with the specified ID,
+     * Deserializes the item with the specified ID,
      * and returns it.
      *
      * Caches results, so can be called multiple times.
@@ -125,8 +127,7 @@ export class Deserialization {
     }
 
     /**
-     * Deserializes the object with the specified ID,
-     * and returns it.
+     * Deserializes the property and returns it.
      *
      * Caches results, so can be called multiple times.
      */
