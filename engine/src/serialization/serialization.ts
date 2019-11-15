@@ -3,11 +3,11 @@ import uuid = require('uuid');
 import {
     SerializableEntity,
     SerializedEntity,
-    SerializedObject,
-    SerializedObjectMetadata,
-    SerializedObjectMetadataType,
-    SerializedObjectPropertyValue,
-    SerializedObjectPropertyValueType,
+    SerializedItem,
+    SerializedItemMetadata,
+    SerializedItemMetadataType,
+    SerializedItemPropertyValue,
+    SerializedItemPropertyValueType,
 } from './serialization-result';
 
 /**
@@ -94,7 +94,7 @@ export class Serialization {
         const id = uuid();
         this._objectsToUUID.set(object, id);
 
-        const stringKeyedProperties: SerializedObject['stringKeyedProperties'] = {};
+        const stringKeyedProperties: SerializedItem['stringKeyedProperties'] = {};
 
         Object.keys(object).forEach((key) => {
             const value = object[key];
@@ -102,12 +102,12 @@ export class Serialization {
             stringKeyedProperties[key] = this._serializePropertyValue(value);
         });
 
-        let metadata: SerializedObjectMetadata;
+        let metadata: SerializedItemMetadata;
 
         if (Array.isArray(object)) {
-            metadata = { type: SerializedObjectMetadataType.Array };
+            metadata = { type: SerializedItemMetadataType.Array };
         } else {
-            metadata = { type: SerializedObjectMetadataType.Object };
+            metadata = { type: SerializedItemMetadataType.Object };
         }
 
         this._result.items[id] = {
@@ -119,9 +119,9 @@ export class Serialization {
     }
 
     /**
-     * Converts the specified value to a `SerializedObjectPropertyValue`.
+     * Converts the specified value to a `SerializedItemPropertyValue`.
      */
-    private _serializePropertyValue(value: unknown): SerializedObjectPropertyValue {
+    private _serializePropertyValue(value: unknown): SerializedItemPropertyValue {
         if (
             typeof value === 'string'
                 || typeof value === 'number'
@@ -135,7 +135,7 @@ export class Serialization {
 
         if (typeof value === 'bigint') {
             return {
-                type: SerializedObjectPropertyValueType.BigInt,
+                type: SerializedItemPropertyValueType.BigInt,
                 // BigInt constructors don't take arbitrary radixes.
                 value: value.toString(10),
             };
@@ -144,7 +144,7 @@ export class Serialization {
         if (Array.isArray(value) || typeof value === 'object') {
             // value is a `SerializableEntity` at this point.
             return {
-                type: SerializedObjectPropertyValueType.Reference,
+                type: SerializedItemPropertyValueType.Reference,
                 uuid: this._serializeObject(value as SerializableEntity),
             };
         }

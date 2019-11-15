@@ -1,9 +1,9 @@
 import {
     SerializableEntity,
     SerializedEntity,
-    SerializedObjectMetadataType,
-    SerializedObjectPropertyValue,
-    SerializedObjectPropertyValueType,
+    SerializedItemMetadataType,
+    SerializedItemPropertyValue,
+    SerializedItemPropertyValueType,
 } from './serialization-result';
 
 /**
@@ -98,12 +98,12 @@ export class Deserialization {
         }
 
         switch (serializedObject.metadata.type) {
-            case SerializedObjectMetadataType.Array:
+            case SerializedItemMetadataType.Array:
                 // It is safe to treat an array like an object with arbitrary access,
                 // it's just usually a bad idea so TypeScript complains.
                 result = [] as unknown as SerializableEntity;
                 break;
-            case SerializedObjectMetadataType.Object:
+            case SerializedItemMetadataType.Object:
                 result = {};
                 break;
             default:
@@ -130,7 +130,7 @@ export class Deserialization {
      *
      * Caches results, so can be called multiple times.
      */
-    private _deserializePropertyValue(value: SerializedObjectPropertyValue): unknown {
+    private _deserializePropertyValue(value: SerializedItemPropertyValue): unknown {
         if (
             typeof value === 'string'
                 || typeof value === 'number'
@@ -151,7 +151,7 @@ export class Deserialization {
         }
 
         switch (value.type) {
-            case SerializedObjectPropertyValueType.Reference:
+            case SerializedItemPropertyValueType.Reference:
                 const uuid = value.uuid;
                 if (typeof uuid !== 'string') {
                     throw new Error(`Bad deserialization: Property .uuid is not a string in ${value}.`);
@@ -159,7 +159,7 @@ export class Deserialization {
 
                 return this._deserializeObject(uuid);
 
-            case SerializedObjectPropertyValueType.BigInt:
+            case SerializedItemPropertyValueType.BigInt:
                 if (typeof BigInt !== 'undefined') {
                     // Automatically throws if the value is not well-formed.
                     return BigInt(value.value);
