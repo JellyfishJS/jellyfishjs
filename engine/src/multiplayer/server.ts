@@ -162,7 +162,7 @@ export class Server extends GameObject {
      * Before every step, handles all the events and calls the appropriate callbacks.
      */
     public [beforeStepKey]() {
-        super[beforeStepKey]?.();
+        super[beforeStepKey] && super[beforeStepKey]!();
 
         this._handleEvents();
     }
