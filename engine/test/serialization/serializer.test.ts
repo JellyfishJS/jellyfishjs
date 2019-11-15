@@ -43,9 +43,11 @@ describe('User', function () {
             const serializer = new Serializer();
             const serializedValue: any = {
                 rootItem: 'id',
-                objects: {
+                items: {
                     id: {
-                        type: SerializedItemMetadataType.Object,
+                        metadata: {
+                            type: SerializedItemMetadataType.Object,
+                        },
                         stringKeyedProperties: {
                             a: {
                                 type: SerializedPropertyType.BigInt,
