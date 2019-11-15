@@ -1,7 +1,7 @@
 /**
- * Any entity that can be serialized.
+ * Any entity or item that can be serialized.
  */
-export interface SerializableEntity {
+export interface SerializableItem {
     [key: string]: unknown;
 }
 

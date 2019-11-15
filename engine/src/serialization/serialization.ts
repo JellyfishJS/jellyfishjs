@@ -1,7 +1,7 @@
 import { type } from 'os';
 import uuid = require('uuid');
 import {
-    SerializableEntity,
+    SerializableItem,
     SerializedEntity,
     SerializedItem,
     SerializedItemMetadata,
@@ -23,7 +23,7 @@ export class Serialization {
     /**
      * Makes a serialization for the specified entity.
      */
-    public constructor(entity: SerializableEntity) {
+    public constructor(entity: SerializableItem) {
         this._serializableEntity = entity;
     }
 
@@ -49,7 +49,7 @@ export class Serialization {
      * once an instance is serializing something,
      * that's the only thing it can serialize.
      */
-    private readonly _serializableEntity: SerializableEntity;
+    private readonly _serializableEntity: SerializableItem;
 
     /**
      * If the entity has been serialized yet.
@@ -66,7 +66,7 @@ export class Serialization {
         items: {},
     };
 
-    private _serializableEntityToUUID = new WeakMap<SerializableEntity, string>();
+    private _serializableEntityToUUID = new WeakMap<SerializableItem, string>();
 
     /**
      * Serializes the entity without checking the cache.
@@ -87,7 +87,7 @@ export class Serialization {
      *
      * Returns the uuid the item was assigned.
      */
-    private _serializeItem(item: SerializableEntity): string {
+    private _serializeItem(item: SerializableItem): string {
         const existingUUID = this._serializableEntityToUUID.get(item);
         if (existingUUID) { return existingUUID; }
 
@@ -145,7 +145,7 @@ export class Serialization {
             // property is a `SerializableEntity` at this point.
             return {
                 type: SerializedPropertyType.Reference,
-                uuid: this._serializeItem(property as SerializableEntity),
+                uuid: this._serializeItem(property as SerializableItem),
             };
         }
 

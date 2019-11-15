@@ -1,5 +1,5 @@
 import {
-    SerializableEntity,
+    SerializableItem,
     SerializedEntity,
     SerializedItemMetadataType,
     SerializedProperty,
@@ -29,7 +29,7 @@ export class Deserialization {
      * Caches its result,
      * so don't modify the object and expect a different result.
      */
-    public getDeserialization(): SerializableEntity {
+    public getDeserialization(): SerializableItem {
         if (!this._result) {
             this._runDeserialization();
         }
@@ -45,12 +45,12 @@ export class Deserialization {
     /**
      * A map from UUIDs to objects.
      */
-    private _uuidToObjects = new Map<string, SerializableEntity>();
+    private _uuidToObjects = new Map<string, SerializableItem>();
 
     /**
      * A cache of the result of the deserialization.
      */
-    private _result: SerializableEntity | undefined;
+    private _result: SerializableItem | undefined;
 
     /**
      * Deserializes the object passed in to the constructor.
@@ -73,11 +73,11 @@ export class Deserialization {
      *
      * Caches results, so can be called multiple times.
      */
-    private _deserializeObject(id: string): SerializableEntity {
+    private _deserializeObject(id: string): SerializableItem {
         const existingObject = this._uuidToObjects.get(id);
         if (existingObject) { return existingObject; }
 
-        let result: SerializableEntity;
+        let result: SerializableItem;
 
         if (!this._originalObject.items) {
             throw new Error(`Bad deserialization: Missing key .objects in ${this._originalObject}.`);
@@ -101,7 +101,7 @@ export class Deserialization {
             case SerializedItemMetadataType.Array:
                 // It is safe to treat an array like an object with arbitrary access,
                 // it's just usually a bad idea so TypeScript complains.
-                result = [] as unknown as SerializableEntity;
+                result = [] as unknown as SerializableItem;
                 break;
             case SerializedItemMetadataType.Object:
                 result = {};
