@@ -66,7 +66,7 @@ export class Serialization {
         items: {},
     };
 
-    private _serializableEntityToUUID = new WeakMap<SerializableItem, string>();
+    private _serializableEntityToUUID = new Map<SerializableItem, string>();
 
     /**
      * Serializes the entity without checking the cache.
