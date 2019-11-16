@@ -1,7 +1,9 @@
 import * as Matter from 'matter-js';
 import * as PIXI from 'pixi.js';
 import { Game } from '../game/game';
-import { User } from '../multiplayer';
+import { Client } from '../multiplayer/client';
+import { Server } from '../multiplayer/server';
+import { User } from '../multiplayer/user';
 import { AnyAmountOf } from '../util/as-array';
 
 /**
@@ -271,6 +273,30 @@ export abstract class GameObject<
      */
     public setOwner(owner: User | undefined): void {
         this[ownerKey] = owner;
+    }
+
+    /**
+     * Checks if this object is owned by the current user.
+     *
+     * We do this by traversing up the object tree:
+     *   - If we find a Server, we return true when the owner is the server (undefined).
+     *   - If we find a Client, we return true when the owner is the client's User object.
+     *   - If we reach the root without finding either a Client or Server,
+     *     then the object is local and not part of multiplayer, so we always return true.
+     */
+    public isOwnedByCurrentUser(): boolean {
+        let current: GameObject | undefined = this;
+
+        while (current !== undefined) {
+            if (current instanceof Server) {
+                return this[ownerKey] === undefined;
+            } else if (current instanceof Client) {
+                return this[ownerKey] === current.user();
+            }
+            current = current.parent();
+        }
+
+        return true;
     }
 
     /**
