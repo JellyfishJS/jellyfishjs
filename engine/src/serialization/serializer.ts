@@ -20,8 +20,8 @@ export class Serializer {
     /**
      * Deserializes the specified entity.
      */
-    public deserialize(entity: SerializedEntity): SerializableItem {
-        return new Deserialization(entity).getDeserialization();
+    public deserialize(entity: SerializedEntity, toUpdate?: SerializableItem | undefined): SerializableItem {
+        return new Deserialization(entity, toUpdate).getDeserialization();
     }
 
 }

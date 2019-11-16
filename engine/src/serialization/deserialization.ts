@@ -19,8 +19,9 @@ export class Deserialization {
     /**
      * Makes a deserialization for the specified serialized entity.
      */
-    public constructor(entity: SerializedEntity) {
+    public constructor(entity: SerializedEntity, entityToUpdate: SerializableItem | undefined) {
         this._originalEntity = entity;
+        this._result = entityToUpdate;
     }
 
     /**
@@ -30,8 +31,9 @@ export class Deserialization {
      * so don't modify the entity and expect a different result.
      */
     public getDeserialization(): SerializableItem {
-        if (!this._result) {
+        if (!this._hasDeserialized) {
             this._runDeserialization();
+            this._hasDeserialized = true;
         }
 
         return this._result!;
@@ -46,6 +48,13 @@ export class Deserialization {
      * A map from UUIDs to items.
      */
     private _uuidToItems = new Map<string, SerializableItem>();
+
+    /**
+     * If the entity has been serialized yet.
+     *
+     * Used to determine if the cached version should be returned.
+     */
+    private _hasDeserialized = false;
 
     /**
      * A cache of the result of the deserialization.
@@ -66,7 +75,7 @@ export class Deserialization {
             throw new Error(`Bad deserialization: Property .rootItem is not a string in ${this._originalEntity}.`);
         }
 
-        this._result = this._deserializeItem(this._originalEntity.rootItem);
+        this._result = this._deserializeItem(this._originalEntity.rootItem, this._result);
     }
 
     /**
@@ -75,7 +84,7 @@ export class Deserialization {
      *
      * Caches results, so can be called multiple times.
      */
-    private _deserializeItem(id: string): SerializableItem {
+    private _deserializeItem(id: string, originalItem: SerializableItem | undefined): SerializableItem {
         const existingItem = this._uuidToItems.get(id);
         if (existingItem) { return existingItem; }
 
@@ -101,12 +110,20 @@ export class Deserialization {
 
         switch (serializedObject.metadata.type) {
             case SerializedItemMetadataType.Array:
-                // It is safe to treat an array like an object with arbitrary access,
-                // it's just usually a bad idea so TypeScript complains.
-                result = [] as unknown as SerializableItem;
+                if (Array.isArray(originalItem)) {
+                    result = originalItem;
+                } else {
+                    // It is safe to treat an array like an object with arbitrary access,
+                    // it's just usually a bad idea so TypeScript complains.
+                    result = [] as unknown as SerializableItem;
+                }
                 break;
             case SerializedItemMetadataType.Object:
-                result = {};
+                if (typeof originalItem === 'object' && originalItem !== null) {
+                    result = originalItem;
+                } else {
+                    result = {};
+                }
                 break;
             default:
                 throw new Error(`Bad deserialization: Unknown type "${(serializedObject.metadata as any).type}" in ${this._originalEntity.items}.`);
@@ -118,9 +135,16 @@ export class Deserialization {
             throw new Error(`Bad deserialization: Property .stringKeyedProperties is not an object in ${serializedObject}.`);
         }
 
+        const existingKeys = Object.keys(result);
+        const newKeys = Object.keys(serializedObject.stringKeyedProperties);
+        const newKeysSet = new Set(newKeys);
+        const deletedKeys = existingKeys.filter((key) => !newKeysSet.has(key));
+
+        deletedKeys.forEach((key) => { delete result[key]; });
+
         Object.keys(serializedObject.stringKeyedProperties).forEach((key) => {
             const value = serializedObject.stringKeyedProperties[key];
-            result[key] = this._deserializePropertyValue(value);
+            result[key] = this._deserializePropertyValue(value, result[key]);
         });
 
         return result;
@@ -131,7 +155,7 @@ export class Deserialization {
      *
      * Caches results, so can be called multiple times.
      */
-    private _deserializePropertyValue(property: SerializedProperty): unknown {
+    private _deserializePropertyValue(property: SerializedProperty, originalValue: unknown): unknown {
         if (
             typeof property === 'string'
                 || typeof property === 'number'
@@ -152,15 +176,22 @@ export class Deserialization {
         }
 
         switch (property.type) {
-            case SerializedPropertyType.Reference:
+            case SerializedPropertyType.Reference: {
                 const uuid = property.uuid;
                 if (typeof uuid !== 'string') {
                     throw new Error(`Bad deserialization: Property .uuid is not a string in ${property}.`);
                 }
 
-                return this._deserializeItem(uuid);
+                let itemToReplace: SerializableItem | undefined;
 
-            case SerializedPropertyType.BigInt:
+                if (typeof originalValue === 'object' && originalValue !== null) {
+                    itemToReplace = originalValue as SerializableItem;
+                }
+
+                return this._deserializeItem(uuid, itemToReplace);
+            }
+
+            case SerializedPropertyType.BigInt: {
                 if (typeof BigInt !== 'undefined') {
                     // Automatically throws if the value is not well-formed.
                     return BigInt(property.value);
@@ -173,8 +204,9 @@ export class Deserialization {
                     }
                     return result;
                 }
+            }
 
-            case SerializedPropertyType.Map:
+            case SerializedPropertyType.Map: {
                 const entries = property.entries;
                 if (!Array.isArray(entries)) {
                     throw new Error(`Bad deserialization: Map entries is not list: ${entries}.`);
@@ -186,13 +218,35 @@ export class Deserialization {
                     }
                 });
 
-                return new Map(entries.map(([key, value]) => [
-                    this._deserializePropertyValue(key),
-                    this._deserializePropertyValue(value),
-                ]));
+                let result: Map<unknown, unknown>;
 
-            default:
+                if (originalValue instanceof Map) {
+                    result = originalValue;
+                } else {
+                    result = new Map();
+                }
+
+                const addedKeys = new Set<unknown>();
+
+                entries.forEach(([key, value]) => {
+                    const deserializedKey = this._deserializePropertyValue(key, undefined);
+                    addedKeys.add(deserializedKey);
+                    result.set(
+                        deserializedKey,
+                        this._deserializePropertyValue(value, result.get(deserializedKey)),
+                    );
+                });
+
+                Array.from(result.keys()).filter((key) => !addedKeys.has(key)).forEach((key) => {
+                    result.delete(key);
+                });
+
+                return result;
+            }
+
+            default: {
                 throw new Error(`Bad deserialization: Unknown value type ${(property as any).type}.`);
+            }
         }
     }
 
