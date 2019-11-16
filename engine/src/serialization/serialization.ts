@@ -143,7 +143,8 @@ export class Serialization {
         if (property instanceof Map) {
             return {
                 type: SerializedPropertyType.Map,
-                entries: Array.from(property.entries()),
+                entries: Array.from(property.entries())
+                    .map(([key, value]) => [this._serializeProperty(key), this._serializeProperty(value)]),
             };
         }
 

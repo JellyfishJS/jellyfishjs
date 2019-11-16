@@ -186,7 +186,10 @@ export class Deserialization {
                     }
                 });
 
-                return new Map(entries);
+                return new Map(entries.map(([key, value]) => [
+                    this._deserializePropertyValue(key),
+                    this._deserializePropertyValue(value),
+                ]));
 
             default:
                 throw new Error(`Bad deserialization: Unknown value type ${(property as any).type}.`);

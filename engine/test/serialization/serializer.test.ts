@@ -79,6 +79,7 @@ describe('User', function () {
 
     it('should serialize Maps', function () {
         assertSerializesCorrectly({ a: new Map([[1, 2], [3, 4], [5, 6]]) });
+        assertSerializesCorrectly({ a: new Map([[{ a: {} }, []], [[1], { b: { c: {} } }]]) });
     });
 
     it('should serialize objects with reference cycles', function () {
