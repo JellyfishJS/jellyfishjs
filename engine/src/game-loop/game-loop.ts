@@ -10,6 +10,7 @@ import {
     GameObject,
     GameObjectBody,
     GameObjectSprite,
+    idKey,
     keyHeldKey,
     keyPressedKey,
     keyReleasedKey,
@@ -68,16 +69,25 @@ export class GameLoop {
     /**
      * Runs the function for all children of the game object.
      */
-    private _forEachInTree(gameObject: GameObject, callback: (gameObject: GameObject) => void) {
-        callback(gameObject);
-        gameObject[childrenKey].forEach((child) => this._forEachInTree(child, callback));
+    private _forEachInTree(container: Map<string, GameObject>, gameObject: GameObject,
+                           callback: (gameObject: GameObject, container: Map<string, GameObject>) => void) {
+        callback(gameObject, container);
+        gameObject[childrenKey].forEach((child) => this._forEachInTree(gameObject[childrenKey], child, callback));
     }
 
     /**
      * Runs the function for each game object recursively.
      */
-    private _forEachObject(callback: (gameObject: GameObject) => void) {
-        this._gameObjects.forEach((gameObject) => this._forEachInTree(gameObject, callback));
+    private _forEachObject(callback: (gameObject: GameObject, container: Map<string, GameObject>) => void) {
+        this._gameObjects.forEach((gameObject) => this._forEachInTree(this._gameObjects, gameObject, callback));
+    }
+
+    /**
+     * Returns true if some object in the tree matches the predicate.
+     */
+    private _someInTree(gameObject: GameObject, callback: (gameObject: GameObject) => boolean): boolean {
+        return callback(gameObject) ||
+            someValue(gameObject[childrenKey], (gameObject) => this._someInTree(gameObject, callback));
     }
 
     /**
@@ -285,13 +295,14 @@ export class GameLoop {
      * and calls their `onDestroy` hook.
      */
     private _handleDestruction() {
-        while (someValue(this._gameObjects, (gameObject) => gameObject[toBeDestroyedKey])) {
-            this._gameObjects.forEach((gameObject, id) => {
+        while (someValue(this._gameObjects,
+                         (gameObject) => this._someInTree(gameObject, (gameObject) => gameObject[toBeDestroyedKey]))) {
+            this._forEachObject((gameObject, container) => {
                 if (gameObject[toBeDestroyedKey]) {
                     gameObject[onDestroyKey]?.();
                     gameObject.onDestroy?.();
                     gameObject[wasDestroyedKey] = true;
-                    this._gameObjects.delete(id);
+                    container.delete(gameObject[idKey]);
                 }
             });
         }
