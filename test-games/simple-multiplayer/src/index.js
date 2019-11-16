@@ -54,6 +54,10 @@ class Client extends Jellyfish.Client {
         console.log('Connected!');
     }
 
+    onRegistered() {
+        console.log(`Registered as ${this.user().id()}`);
+    }
+
     onDisconnect(message) {
         console.log('Disconnected', message);
     }
