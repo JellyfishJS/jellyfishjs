@@ -166,7 +166,7 @@ export abstract class GameObject<
     /**
      * List of children objects of this GameObject.
      */
-    private [childrenKey]: GameObject[] = [];
+    private [childrenKey]: Map<string, GameObject> = new Map<string, GameObject>();
 
     /**
      * The game this GameObject belongs to.
@@ -213,7 +213,7 @@ export abstract class GameObject<
      * Returns the children GameObjects, or an empty array if there are none.
      */
     public children() {
-        return this[childrenKey];
+        return this[childrenKey].values();
     }
 
     /**
