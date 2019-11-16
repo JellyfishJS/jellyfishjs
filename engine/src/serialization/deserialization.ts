@@ -31,9 +31,9 @@ export class Deserialization {
      * so don't modify the entity and expect a different result.
      */
     public getDeserialization(): SerializableItem {
-        if (!this._hasSerialized) {
+        if (!this._hasDeserialized) {
             this._runDeserialization();
-            this._hasSerialized = true;
+            this._hasDeserialized = true;
         }
 
         return this._result!;
@@ -54,7 +54,7 @@ export class Deserialization {
      *
      * Used to determine if the cached version should be returned.
      */
-    private _hasSerialized = false;
+    private _hasDeserialized = false;
 
     /**
      * A cache of the result of the deserialization.
