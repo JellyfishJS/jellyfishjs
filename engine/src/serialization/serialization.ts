@@ -1,4 +1,3 @@
-import { type } from 'os';
 import uuid = require('uuid');
 import {
     SerializableItem,
@@ -138,6 +137,14 @@ export class Serialization {
                 type: SerializedPropertyType.BigInt,
                 // BigInt constructors don't take arbitrary radixes.
                 value: property.toString(10),
+            };
+        }
+
+        if (property instanceof Map) {
+            return {
+                type: SerializedPropertyType.Map,
+                entries: Array.from(property.entries())
+                    .map(([key, value]) => [this._serializeProperty(key), this._serializeProperty(value)]),
             };
         }
 
