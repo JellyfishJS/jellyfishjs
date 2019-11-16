@@ -24,6 +24,7 @@ import { Keyboard, KeyEvent } from '../keyboard/keyboard';
 import { Matter } from '../matter-setup/matter-setup';
 import { PIXI, PIXISetup } from '../pixi-setup/pixi-setup';
 import { asArray } from '../util/as-array';
+import { someValue } from '../util/map';
 
 /**
  * How many times to add the objects that have been created
@@ -44,7 +45,7 @@ export class GameLoop {
     /**
      * An array of the GameObjects that exist in this game loop.
      */
-    private _gameObjects: GameObject[] = [];
+    private _gameObjects: Map<string, GameObject> = new Map<string, GameObject>();
 
     /**
      * An array of the GameObjects in this GameLoop
@@ -172,7 +173,7 @@ export class GameLoop {
         while (this._gameObjectsToBeCreated.length !== 0 && ++iterations < maxCreationDepth) {
             this._gameObjectsToBeCreated.forEach((gameObject) => {
                 const parent = gameObject.parent();
-                (parent ? parent[childrenKey] : this._gameObjects).push(gameObject);
+                (parent ? parent[childrenKey] : this._gameObjects).set(gameObject.id(), gameObject);
             });
             const gameObjectsCreatedThisIteration = this._gameObjectsToBeCreated;
             this._gameObjectsToBeCreated = [];
@@ -284,15 +285,14 @@ export class GameLoop {
      * and calls their `onDestroy` hook.
      */
     private _handleDestruction() {
-        while (this._gameObjects.some((gameObject) => gameObject[toBeDestroyedKey])) {
-            this._gameObjects = this._gameObjects.filter((gameObject) => {
-                if (!gameObject[toBeDestroyedKey]) { return true; }
-
-                gameObject[onDestroyKey]?.();
-                gameObject.onDestroy?.();
-                gameObject[wasDestroyedKey] = true;
-
-                return false;
+        while (someValue(this._gameObjects, (gameObject) => gameObject[toBeDestroyedKey])) {
+            this._gameObjects.forEach((gameObject, id) => {
+                if (gameObject[toBeDestroyedKey]) {
+                    gameObject[onDestroyKey]?.();
+                    gameObject.onDestroy?.();
+                    gameObject[wasDestroyedKey] = true;
+                    this._gameObjects.delete(id);
+                }
             });
         }
     }
