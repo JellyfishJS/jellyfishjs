@@ -1,5 +1,6 @@
+import uuid = require('uuid');
 import { GameLoop } from '../game-loop/game-loop';
-import { gameKey, GameObject } from '../game-object/game-object';
+import { gameKey, GameObject, idKey } from '../game-object/game-object';
 import { Keyboard } from '../keyboard/keyboard';
 import { Matter } from '../matter-setup/matter-setup';
 import { PIXISetup } from '../pixi-setup/pixi-setup';
@@ -42,6 +43,7 @@ export class Game {
         ...args: ConstructorParameters<Subclass>
     ): InstanceType<Subclass> {
         const newObject = new Class(...args) as InstanceType<Subclass>;
+        newObject[idKey] = uuid();
         newObject[gameKey] = this;
 
         if (this._physicsEngine) {
