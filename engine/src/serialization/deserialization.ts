@@ -22,7 +22,6 @@ export class Deserialization {
     public constructor(entity: SerializedEntity, entityToUpdate: SerializableItem | undefined) {
         this._originalEntity = entity;
         this._result = entityToUpdate;
-        console.log('?');
     }
 
     /**
