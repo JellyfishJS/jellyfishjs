@@ -108,21 +108,25 @@ export class Deserialization {
 
         let result: SerializableItem;
 
-        if (originalItem) {
-            result = originalItem;
-        } else {
-            switch (serializedObject.metadata.type) {
-                case SerializedItemMetadataType.Array:
+        switch (serializedObject.metadata.type) {
+            case SerializedItemMetadataType.Array:
+                if (Array.isArray(originalItem)) {
+                    result = originalItem;
+                } else {
                     // It is safe to treat an array like an object with arbitrary access,
                     // it's just usually a bad idea so TypeScript complains.
                     result = [] as unknown as SerializableItem;
-                    break;
-                case SerializedItemMetadataType.Object:
+                }
+                break;
+            case SerializedItemMetadataType.Object:
+                if (typeof originalItem === 'object' && originalItem !== null) {
+                    result = originalItem;
+                } else {
                     result = {};
-                    break;
-                default:
-                    throw new Error(`Bad deserialization: Unknown type "${(serializedObject.metadata as any).type}" in ${this._originalEntity.items}.`);
-            }
+                }
+                break;
+            default:
+                throw new Error(`Bad deserialization: Unknown type "${(serializedObject.metadata as any).type}" in ${this._originalEntity.items}.`);
         }
 
         this._uuidToItems.set(id, result);

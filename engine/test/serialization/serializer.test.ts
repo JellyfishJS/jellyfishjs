@@ -173,6 +173,18 @@ describe('Serialization', function () {
             assert.deepEqual(target[0], mirror);
         });
 
+        it('should not update objects as arrays', function () {
+            const serializer = new Serializer();
+
+            const target: any = { a: {} };
+            const result: any = { a: [] };
+
+            const serialization = serializer.serialize(result);
+            serializer.deserialize(serialization, target);
+
+            assert.deepEqual(target, result);
+        });
+
     });
 
 });
