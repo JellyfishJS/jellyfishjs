@@ -121,7 +121,6 @@ export interface SerializedPropertyMap {
  */
 export type SerializedProperty =
     | number
-    | bigint
     | string
     | boolean
     | null

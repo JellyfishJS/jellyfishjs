@@ -160,7 +160,6 @@ export class Deserialization {
             typeof property === 'string'
                 || typeof property === 'number'
                 || typeof property === 'boolean'
-                || typeof property === 'bigint'
                 || property === null
                 || property === undefined
         ) {

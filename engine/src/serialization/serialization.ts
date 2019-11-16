@@ -33,9 +33,9 @@ export class Serialization {
      * so don't modify the entity and expect to be able to reserialize it.
      */
     public getSerialization(): SerializedEntity {
-        if (!this.hasSerialized) {
+        if (!this._hasSerialized) {
             this._runSerialization();
-            this.hasSerialized = true;
+            this._hasSerialized = true;
         }
 
         return this._result;
@@ -55,7 +55,7 @@ export class Serialization {
      *
      * Used to determine if the cached version should be returned.
      */
-    private hasSerialized = false;
+    private _hasSerialized = false;
 
     /**
      * A cache of the serialized entity.
@@ -65,7 +65,7 @@ export class Serialization {
         items: {},
     };
 
-    private _serializableEntityToUUID = new Map<SerializableItem, string>();
+    private _serializableItemToUUID = new Map<SerializableItem, string>();
 
     /**
      * Serializes the entity without checking the cache.
@@ -87,11 +87,11 @@ export class Serialization {
      * Returns the uuid the item was assigned.
      */
     private _serializeItem(item: SerializableItem): string {
-        const existingUUID = this._serializableEntityToUUID.get(item);
+        const existingUUID = this._serializableItemToUUID.get(item);
         if (existingUUID) { return existingUUID; }
 
         const id = uuid();
-        this._serializableEntityToUUID.set(item, id);
+        this._serializableItemToUUID.set(item, id);
 
         const stringKeyedProperties: SerializedItem['stringKeyedProperties'] = {};
 
@@ -125,7 +125,6 @@ export class Serialization {
             typeof property === 'string'
                 || typeof property === 'number'
                 || typeof property === 'boolean'
-                || typeof property === 'bigint'
                 || property === null
                 || property === undefined
         ) {
