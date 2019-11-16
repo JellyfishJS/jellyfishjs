@@ -113,7 +113,7 @@ export class Client extends GameObject {
         if (!this._user) {
             throw new Error('User is only available after onRegistered fires');
         }
-        return this._user!;
+        return this._user;
     }
 
     /**
