@@ -286,6 +286,8 @@ export abstract class GameObject<
      */
     public isOwnedByCurrentUser(): boolean {
         let current: GameObject | undefined = this;
+
+        // This avoids circular dependencies.
         const ClientClass: typeof Client = require('../multiplayer/client').Client;
         const ServerClass: typeof Server = require('../multiplayer/server').Server;
 
