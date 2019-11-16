@@ -174,6 +174,23 @@ export class Deserialization {
                     return result;
                 }
 
+            case SerializedPropertyType.Map:
+                const entries = property.entries;
+                if (!Array.isArray(entries)) {
+                    throw new Error(`Bad deserialization: Map entries is not list: ${entries}.`);
+                }
+
+                entries.forEach((entry) => {
+                    if (!Array.isArray(entry) || entry.length !== 2) {
+                        throw new Error(`Bad deserialization: Map entry is not a pair: ${entry}`);
+                    }
+                });
+
+                return new Map(entries.map(([key, value]) => [
+                    this._deserializePropertyValue(key),
+                    this._deserializePropertyValue(value),
+                ]));
+
             default:
                 throw new Error(`Bad deserialization: Unknown value type ${(property as any).type}.`);
         }
