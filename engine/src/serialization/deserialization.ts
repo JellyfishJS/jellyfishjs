@@ -22,6 +22,7 @@ export class Deserialization {
     public constructor(entity: SerializedEntity, entityToUpdate: SerializableItem | undefined) {
         this._originalEntity = entity;
         this._result = entityToUpdate;
+        console.log('?');
     }
 
     /**
@@ -31,8 +32,9 @@ export class Deserialization {
      * so don't modify the entity and expect a different result.
      */
     public getDeserialization(): SerializableItem {
-        if (!this._result) {
+        if (!this._hasSerialized) {
             this._runDeserialization();
+            this._hasSerialized = true;
         }
 
         return this._result!;
@@ -47,6 +49,13 @@ export class Deserialization {
      * A map from UUIDs to items.
      */
     private _uuidToItems = new Map<string, SerializableItem>();
+
+    /**
+     * If the entity has been serialized yet.
+     *
+     * Used to determine if the cached version should be returned.
+     */
+    private _hasSerialized = false;
 
     /**
      * A cache of the result of the deserialization.
