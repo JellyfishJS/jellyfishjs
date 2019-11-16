@@ -114,4 +114,60 @@ describe('Serialization', function () {
 
     });
 
+    describe('Deserializing into existing objects', function () {
+
+        it('should update the passed object', function () {
+            const serializer = new Serializer();
+
+            const target: any = {};
+            const result: any = { a: 3 };
+
+            const serialization = serializer.serialize(result);
+            serializer.deserialize(serialization, target);
+
+            assert.deepEqual(target, result);
+        });
+
+        it('should update references in objects', function () {
+            const serializer = new Serializer();
+
+            const target: any = { a: {} };
+            const mirror: any = target.a;
+            const result: any = { a: { b: 3 } };
+
+            const serialization = serializer.serialize(result);
+            serializer.deserialize(serialization, target);
+
+            assert.deepEqual(target, result);
+            assert.deepEqual(target.a, mirror);
+        });
+
+        it('should update the passed array', function () {
+            const serializer = new Serializer();
+
+            const target: any = [];
+            const result: any = [3];
+
+            const serialization = serializer.serialize(result);
+            serializer.deserialize(serialization, target);
+
+            assert.deepEqual(target, result);
+        });
+
+        it('should update references in arrays', function () {
+            const serializer = new Serializer();
+
+            const target: any = [[]];
+            const mirror: any = target[0];
+            const result: any = [[3]];
+
+            const serialization = serializer.serialize(result);
+            serializer.deserialize(serialization, target);
+
+            assert.deepEqual(target, result);
+            assert.deepEqual(target[0], mirror);
+        });
+
+    });
+
 });
