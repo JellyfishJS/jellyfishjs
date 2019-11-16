@@ -33,9 +33,9 @@ export class Serialization {
      * so don't modify the entity and expect to be able to reserialize it.
      */
     public getSerialization(): SerializedEntity {
-        if (!this.hasSerialized) {
+        if (!this._hasSerialized) {
             this._runSerialization();
-            this.hasSerialized = true;
+            this._hasSerialized = true;
         }
 
         return this._result;
@@ -55,7 +55,7 @@ export class Serialization {
      *
      * Used to determine if the cached version should be returned.
      */
-    private hasSerialized = false;
+    private _hasSerialized = false;
 
     /**
      * A cache of the serialized entity.
