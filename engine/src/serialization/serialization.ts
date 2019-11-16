@@ -93,28 +93,30 @@ export class Serialization {
         const id = uuid();
         this._serializableItemToUUID.set(item, id);
 
+        this._result.items[id] = this._serializeItemObjectOrArray(item);
+
+        return id;
+    }
+
+    /**
+     * Serializes the specified item,
+     * assuming it is an object or an array.
+     */
+    private _serializeItemObjectOrArray(item: SerializableItem): SerializedItem {
         const stringKeyedProperties: SerializedItem['stringKeyedProperties'] = {};
 
         Object.keys(item).forEach((key) => {
-            const serializableProperty = item[key];
-
-            stringKeyedProperties[key] = this._serializeProperty(serializableProperty);
+            stringKeyedProperties[key] = this._serializeProperty(item[key]);
         });
 
-        let metadata: SerializedItemMetadata;
+        const metadata: SerializedItemMetadata = {
+            type: Array.isArray(item) ? SerializedItemMetadataType.Array : SerializedItemMetadataType.Object,
+        };
 
-        if (Array.isArray(item)) {
-            metadata = { type: SerializedItemMetadataType.Array };
-        } else {
-            metadata = { type: SerializedItemMetadataType.Object };
-        }
-
-        this._result.items[id] = {
+        return {
             metadata,
             stringKeyedProperties,
         };
-
-        return id;
     }
 
     /**
@@ -127,41 +129,72 @@ export class Serialization {
                 || typeof property === 'boolean'
                 || property === null
                 || property === undefined
-        ) {
-            return property;
-        }
+        ) { return this._serializePropertyPrimitive(property); }
 
-        if (typeof property === 'bigint') {
-            return {
-                type: SerializedPropertyType.BigInt,
-                // BigInt constructors don't take arbitrary radixes.
-                value: property.toString(10),
-            };
-        }
+        if (typeof property === 'bigint') { return this._serializePropertyBigInt(property); }
 
-        if (property instanceof Map) {
-            return {
-                type: SerializedPropertyType.Map,
-                entries: Array.from(property.entries())
-                    .map(([key, value]) => [this._serializeProperty(key), this._serializeProperty(value)]),
-            };
-        }
+        if (property instanceof Map) { return this._serializePropertyMap(property); }
 
-        if (Array.isArray(property) || typeof property === 'object') {
-            // property is a `SerializableEntity` at this point.
-            return {
-                type: SerializedPropertyType.Reference,
-                uuid: this._serializeItem(property as SerializableItem),
-            };
-        }
+        if (typeof property === 'object') { return this._serializePropertyReference(property as SerializableItem); }
 
         if (typeof property === 'function') {
-            // Functions cannot (safely) be serialized.
-            // Later, if we wish, we can register functions
-            return undefined;
+            return this._serializePropertyFunction(property as (...args: any[]) => void);
         }
 
         throw new Error(`Bad serialization: Unrecognized type of property ${property}.`);
+    }
+
+    /**
+     * Returns the specified property,
+     * assuming it is a primitive.
+     */
+    private _serializePropertyPrimitive(property: string | number | boolean | null | undefined): SerializedProperty {
+        return property;
+    }
+
+    /**
+     * Returns the specified property,
+     * assuming it is a bigint.
+     */
+    private _serializePropertyBigInt(property: bigint): SerializedProperty {
+        return {
+            type: SerializedPropertyType.BigInt,
+            // BigInt constructors don't take arbitrary radixes.
+            value: property.toString(10),
+        };
+    }
+
+    /**
+     * Returns the specified property,
+     * assuming it is a bigint.
+     */
+    private _serializePropertyMap(property: Map<unknown, unknown>): SerializedProperty {
+        return {
+            type: SerializedPropertyType.Map,
+            entries: Array.from(property.entries())
+                .map(([key, value]) => [this._serializeProperty(key), this._serializeProperty(value)]),
+        };
+    }
+
+    /**
+     * Returns the specified property,
+     * assuming it is a reference.
+     */
+    private _serializePropertyReference(property: SerializableItem): SerializedProperty {
+        return {
+            type: SerializedPropertyType.Reference,
+            uuid: this._serializeItem(property as SerializableItem),
+        };
+    }
+
+    /**
+     * Returns the specified property,
+     * assuming it is a function.
+     */
+    private _serializePropertyFunction(property: (...args: any[]) => void): SerializedProperty {
+        // Functions cannot (safely) be serialized.
+        // Later, if we wish, we can register functions
+        return undefined;
     }
 
 }
