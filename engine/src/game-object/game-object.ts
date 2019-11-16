@@ -14,20 +14,21 @@ export type GameObjectBody = AnyAmountOf<Matter.Body>;
 export type GameObjectSprite = AnyAmountOf<PIXI.DisplayObject>;
 
 /**
- * The symbol used to access containers.
+ * The symbol used to store the game object ID.
  *
  * A symbol is used instead of a private variable,
  * since user code will subclass this class,
  * so private variables can collide.
  */
+export const idKey = Symbol('id');
+
+/**
+ * The symbol used to access containers.
+ */
 export const containerKey = Symbol('container');
 
 /**
  * The symbol used to access sprites.
- *
- * A symbol is used instead of a private variable,
- * since user code will subclass this class,
- * so private variables can collide.
  */
 export const spriteKey = Symbol('sprite');
 
@@ -118,6 +119,10 @@ export abstract class GameObject<
     Sprite extends GameObjectSprite = GameObjectSprite,
     Body extends GameObjectBody = GameObjectBody
 > {
+    /**
+     * The ID for this GameObject.
+     */
+    public [idKey]: string;
 
     /**
      * The container for this GameObject.
@@ -180,6 +185,13 @@ export abstract class GameObject<
         const newObject = this.game().createObject(Class, ...args);
         newObject[parentKey] = this;
         return newObject;
+    }
+
+    /**
+     * Returns the ID of this object.
+     */
+    public id() {
+        return this[idKey];
     }
 
     /**
