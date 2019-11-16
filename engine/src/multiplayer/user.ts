@@ -24,8 +24,8 @@ export class User {
     /**
      * Constructs a new user with a unique id.
      */
-    public constructor() {
-        this._id = uuid();
+    public constructor(id: string = uuid()) {
+        this._id = id;
     }
 
 }

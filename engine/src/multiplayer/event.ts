@@ -97,5 +97,6 @@ interface Message {
  * Represents a type of message sent between the client and server.
  */
 export enum MessageType {
+    User = 'user',
     String = 'string',
 }

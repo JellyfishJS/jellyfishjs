@@ -127,6 +127,8 @@ export class Server extends GameObject {
             this._userToSocket.set(user.id(), socket);
             this._eventQueue.push({ type: ServerEventType.Connect, user });
 
+            socket.send(MessageType.User, user.id());
+
             socket.on('message', (type: unknown, contents: unknown) => {
                 this._eventQueue.push({ type: ServerEventType.Message, user, message: { type, contents } });
             });

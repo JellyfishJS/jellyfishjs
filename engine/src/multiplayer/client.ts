@@ -3,6 +3,7 @@ import { beforeStepKey, GameObject } from '../game-object/game-object';
 import { ClientEvent, ClientEventType, MessageType } from './event';
 import { isServer } from './is-server';
 import { Server } from './server';
+import { User } from './user';
 
 /**
  * Represents a client-side connection to a server.
@@ -20,6 +21,13 @@ export class Client extends GameObject {
      * An array of events yet to be processed.
      */
     private _eventQueue: ClientEvent[] = [];
+
+    /**
+     * The user object this client controls.
+     *
+     * This is guaranteed to be available after onRegistered fires.
+     */
+    private _user: User | undefined;
 
     /**
      * Handles the events in the event queue.
@@ -62,6 +70,10 @@ export class Client extends GameObject {
         }
 
         switch (type) {
+            case MessageType.User:
+                this._user = new User(contents);
+                this.onRegistered?.();
+                break;
             case MessageType.String:
                 this.onMessage?.(contents);
                 break;
@@ -95,6 +107,16 @@ export class Client extends GameObject {
     }
 
     /**
+     * Returns the user associated with this client.
+     */
+    public user(): User {
+        if (!this._user) {
+            throw new Error('User is only available after onRegistered fires');
+        }
+        return this._user;
+    }
+
+    /**
      * Sends the specified message to the server.
      */
     public sendMessage(message: string) {
@@ -118,6 +140,11 @@ export class Client extends GameObject {
      * Meant to be overridden.
      */
     public onConnected?(): void;
+
+    /**
+     * Called when the client is successfully registered on the server.
+     */
+    public onRegistered?(): void;
 
     /**
      * Called when successfully connected to the server.
