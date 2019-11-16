@@ -1,7 +1,7 @@
 import {
     SerializableItem,
     SerializedEntity,
-    SerializedItemMetadataType,
+    SerializedItemType,
     SerializedProperty,
     SerializedPropertyType,
 } from './serialization-result';
@@ -102,14 +102,10 @@ export class Deserialization {
             throw new Error(`Bad deserialization: Unexpected type of object "${serializedObject}" with type ${typeof serializedObject}.`);
         }
 
-        if (serializedObject.metadata === null || typeof serializedObject.metadata !== 'object') {
-            throw new Error(`Bad deserialization: Unexpected type of metadata "${serializedObject}" with type ${typeof serializedObject}.`);
-        }
-
         let result: SerializableItem;
 
-        switch (serializedObject.metadata.type) {
-            case SerializedItemMetadataType.Array:
+        switch (serializedObject.type) {
+            case SerializedItemType.Array:
                 if (Array.isArray(originalItem)) {
                     result = originalItem;
                 } else {
@@ -118,7 +114,7 @@ export class Deserialization {
                     result = [] as unknown as SerializableItem;
                 }
                 break;
-            case SerializedItemMetadataType.Object:
+            case SerializedItemType.Object:
                 if (typeof originalItem === 'object' && originalItem !== null) {
                     result = originalItem;
                 } else {
@@ -126,7 +122,7 @@ export class Deserialization {
                 }
                 break;
             default:
-                throw new Error(`Bad deserialization: Unknown type "${(serializedObject.metadata as any).type}" in ${this._originalEntity.items}.`);
+                throw new Error(`Bad deserialization: Unknown type "${(serializedObject as any).type}" in ${this._originalEntity.items}.`);
         }
 
         this._uuidToItems.set(id, result);

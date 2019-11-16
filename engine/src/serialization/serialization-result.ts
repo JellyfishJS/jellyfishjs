@@ -22,7 +22,7 @@ export interface SerializedEntity {
  *
  * These potentially require different deserialization.
  */
-export enum SerializedItemMetadataType {
+export enum SerializedItemType {
 
     /**
      * Indicates this serialized item is an object.
@@ -37,37 +37,33 @@ export enum SerializedItemMetadataType {
 }
 
 /**
- * Metadata describing an serialized item that is an object.
+ * A serialized item that is an object.
  */
-export interface SerializedItemObjectMetadata {
-    type: SerializedItemMetadataType.Object;
-}
-
-/**
- * Metadata describing an serialized item that is an array.
- */
-export interface SerializedItemArrayMetadata {
-    type: SerializedItemMetadataType.Array;
-}
-
-/**
- * Information describing a serialized item.
- *
- * Different kinds of items need to be deserialized differently.
- */
-export type SerializedItemMetadata =
-    | SerializedItemObjectMetadata
-    | SerializedItemArrayMetadata;
-
-/**
- * The serialization of a single item.
- */
-export interface SerializedItem {
-    metadata: SerializedItemMetadata;
+export interface SerializedItemObject {
+    type: SerializedItemType.Object;
     stringKeyedProperties: {
         [key: string]: SerializedProperty;
     };
 }
+
+/**
+ * A serialized item that is an array.
+ */
+export interface SerializedItemArray {
+    type: SerializedItemType.Array;
+    stringKeyedProperties: {
+        [key: string]: SerializedProperty;
+    };
+}
+
+/**
+ * The serialization of a single item.
+ *
+ * Different kinds of items need to be deserialized differently.
+ */
+export type SerializedItem =
+    | SerializedItemObject
+    | SerializedItemArray;
 
 /**
  * Represents the type of the property,

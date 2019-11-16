@@ -3,8 +3,7 @@ import {
     SerializableItem,
     SerializedEntity,
     SerializedItem,
-    SerializedItemMetadata,
-    SerializedItemMetadataType,
+    SerializedItemType,
     SerializedProperty,
     SerializedPropertyType,
 } from './serialization-result';
@@ -109,12 +108,8 @@ export class Serialization {
             stringKeyedProperties[key] = this._serializeProperty(item[key]);
         });
 
-        const metadata: SerializedItemMetadata = {
-            type: Array.isArray(item) ? SerializedItemMetadataType.Array : SerializedItemMetadataType.Object,
-        };
-
         return {
-            metadata,
+            type: Array.isArray(item) ? SerializedItemType.Array : SerializedItemType.Object,
             stringKeyedProperties,
         };
     }
