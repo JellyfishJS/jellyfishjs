@@ -113,7 +113,7 @@ export interface SerializedPropertyBigInt {
  */
 export interface SerializedPropertyMap {
     type: SerializedPropertyType.Map;
-    entries: [any, any][];
+    entries: [SerializedProperty, SerializedProperty][];
 }
 
 /**
