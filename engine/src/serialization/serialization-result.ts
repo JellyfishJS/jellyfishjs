@@ -85,6 +85,11 @@ export enum SerializedPropertyType {
      */
     BigInt = 'bigint',
 
+    /**
+     * Indicates this property is a Map.
+     */
+    Map = 'map',
+
 }
 
 /**
@@ -104,6 +109,14 @@ export interface SerializedPropertyBigInt {
 }
 
 /**
+ * Represent a property that is a Map.
+ */
+export interface SerializedPropertyMap {
+    type: SerializedPropertyType.Map;
+    entries: [any, any][];
+}
+
+/**
  * A property of a serialized item.
  */
 export type SerializedProperty =
@@ -114,4 +127,5 @@ export type SerializedProperty =
     | null
     | undefined
     | SerializedPropertyItemReference
-    | SerializedPropertyBigInt;
+    | SerializedPropertyBigInt
+    | SerializedPropertyMap;
