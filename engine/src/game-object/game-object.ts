@@ -1,6 +1,7 @@
 import * as Matter from 'matter-js';
 import * as PIXI from 'pixi.js';
 import { Game } from '../game/game';
+import { User } from '../multiplayer';
 import { AnyAmountOf } from '../util/as-array';
 
 /**
@@ -56,6 +57,11 @@ export const childrenKey = Symbol('children');
  * The symbol used to access the game.
  */
 export const gameKey = Symbol('game');
+
+/**
+ * The symbol used to access the owning User.
+ */
+export const ownerKey = Symbol('owner');
 
 /**
  * The symbol used to add an unoverridable `beforeStep` hook.
@@ -174,6 +180,11 @@ export abstract class GameObject<
     public [gameKey]: Game = undefined as any;
 
     /**
+     * The user this GameObject belongs to, or undefined if it's the server.
+     */
+    private [ownerKey]: User | undefined;
+
+    /**
      * Creates an object with parameters specified as the child of this GameObject.
      */
     public createObject<
@@ -244,6 +255,22 @@ export abstract class GameObject<
      */
     public wasDestroyed(): boolean {
         return this[wasDestroyedKey];
+    }
+
+    /**
+     * Returns the User that owns this GameObject,
+     * or undefined if owned by the server.
+     */
+    public getOwner(): User | undefined {
+        return this[ownerKey];
+    }
+
+    /**
+     * Sets the User that owns this GameObject.
+     * Use undefined to give ownership to the server.
+     */
+    public setOwner(owner: User | undefined): void {
+        this[ownerKey] = owner;
     }
 
     /**
