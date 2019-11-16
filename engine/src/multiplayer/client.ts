@@ -3,7 +3,7 @@ import { beforeStepKey, GameObject } from '../game-object/game-object';
 import { ClientEvent, ClientEventType, MessageType } from './event';
 import { isServer } from './is-server';
 import { Server } from './server';
-import { User } from "./user";
+import { User } from './user';
 
 /**
  * Represents a client-side connection to a server.
