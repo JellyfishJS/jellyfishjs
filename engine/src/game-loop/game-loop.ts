@@ -69,8 +69,10 @@ export class GameLoop {
     /**
      * Runs the function for all children of the game object.
      */
-    private _forEachInTree(container: Map<string, GameObject>, gameObject: GameObject,
-                           callback: (gameObject: GameObject, container: Map<string, GameObject>) => void) {
+    private _forEachInTree(
+        container: Map<string, GameObject>, gameObject: GameObject,
+        callback: (gameObject: GameObject, container: Map<string, GameObject>) => void,
+    ) {
         callback(gameObject, container);
         gameObject[childrenKey].forEach((child) => this._forEachInTree(gameObject[childrenKey], child, callback));
     }
@@ -295,8 +297,12 @@ export class GameLoop {
      * and calls their `onDestroy` hook.
      */
     private _handleDestruction() {
-        while (someValue(this._gameObjects,
-                         (gameObject) => this._someInTree(gameObject, (gameObject) => gameObject[toBeDestroyedKey]))) {
+        while (
+            someValue(
+                this._gameObjects,
+                (gameObject) => this._someInTree(gameObject, (gameObject) => gameObject[toBeDestroyedKey]),
+            )
+        ) {
             this._forEachObject((gameObject, container) => {
                 if (gameObject[toBeDestroyedKey]) {
                     gameObject[onDestroyKey]?.();
