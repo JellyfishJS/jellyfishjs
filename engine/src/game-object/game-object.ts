@@ -286,11 +286,13 @@ export abstract class GameObject<
      */
     public isOwnedByCurrentUser(): boolean {
         let current: GameObject | undefined = this;
+        const ClientClass: typeof Client = require('../multiplayer/client').Client;
+        const ServerClass: typeof Server = require('../multiplayer/server').Server;
 
         while (current !== undefined) {
-            if (current instanceof Server) {
+            if (current instanceof ServerClass) {
                 return this[ownerKey] === undefined;
-            } else if (current instanceof Client) {
+            } else if (current instanceof ClientClass) {
                 return this[ownerKey] === current.user();
             }
             current = current.parent();
