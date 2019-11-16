@@ -172,7 +172,7 @@ export class Deserialization {
         }
 
         switch (property.type) {
-            case SerializedPropertyType.Reference:
+            case SerializedPropertyType.Reference: {
                 const uuid = property.uuid;
                 if (typeof uuid !== 'string') {
                     throw new Error(`Bad deserialization: Property .uuid is not a string in ${property}.`);
@@ -185,8 +185,9 @@ export class Deserialization {
                 }
 
                 return this._deserializeItem(uuid, itemToReplace);
+            }
 
-            case SerializedPropertyType.BigInt:
+            case SerializedPropertyType.BigInt: {
                 if (typeof BigInt !== 'undefined') {
                     // Automatically throws if the value is not well-formed.
                     return BigInt(property.value);
@@ -199,8 +200,9 @@ export class Deserialization {
                     }
                     return result;
                 }
+            }
 
-            case SerializedPropertyType.Map:
+            case SerializedPropertyType.Map: {
                 const entries = property.entries;
                 if (!Array.isArray(entries)) {
                     throw new Error(`Bad deserialization: Map entries is not list: ${entries}.`);
@@ -212,13 +214,35 @@ export class Deserialization {
                     }
                 });
 
-                return new Map(entries.map(([key, value]) => [
-                    this._deserializePropertyValue(key),
-                    this._deserializePropertyValue(value),
-                ]));
+                let result: Map<unknown, unknown>;
 
-            default:
+                if (originalValue instanceof Map) {
+                    result = originalValue;
+                } else {
+                    result = new Map();
+                }
+
+                const addedKeys = new Set<unknown>();
+
+                entries.forEach(([key, value]) => {
+                    const deserializedKey = this._deserializePropertyValue(key, undefined);
+                    addedKeys.add(deserializedKey);
+                    result.set(
+                        deserializedKey,
+                        this._deserializePropertyValue(value, result.get(deserializedKey)),
+                    );
+                });
+
+                Array.from(result.keys()).filter((key) => !addedKeys.has(key)).forEach((key) => {
+                    result.delete(key);
+                });
+
+                return result;
+            }
+
+            default: {
                 throw new Error(`Bad deserialization: Unknown value type ${(property as any).type}.`);
+            }
         }
     }
 
