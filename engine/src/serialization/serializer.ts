@@ -42,7 +42,7 @@ export class Serializer {
     }
 
     /**
-     * Registers a symbol the be serializable.
+     * Registers a symbol to be serializable.
      */
     public registerSymbol(symbol: symbol) {
         this._configuration.registerSymbol(symbol);

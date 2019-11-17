@@ -364,7 +364,7 @@ export class Deserialization {
     }
 
     /**
-     * Deserializes the specified property, assuming it's a date.
+     * Deserializes the specified property, assuming it's a symbol.
      */
     private _deserializePropertySymbol(property: SerializedPropertySymbol): unknown {
         const symbol = this._configuration.symbolNameToSymbol.get(property.name);
