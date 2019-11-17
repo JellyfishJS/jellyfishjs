@@ -2,6 +2,7 @@ import {
     SerializableItem,
     SerializedEntity,
     SerializedItemArray,
+    SerializedItemMap,
     SerializedItemObject,
     SerializedItemPrototyped,
     SerializedItemType,
@@ -9,7 +10,6 @@ import {
     SerializedPropertyBigInt,
     SerializedPropertyDate,
     SerializedPropertyItemReference,
-    SerializedPropertyMap,
     SerializedPropertyType,
 } from './serialization-result';
 import { SerializerConfiguration } from './serializer-configuration';
@@ -127,6 +127,8 @@ export class Deserialization {
                 return this._deserializeItemObject(id, serializedItem, originalItem);
             case SerializedItemType.Prototyped:
                 return this._deserializeItemPrototyped(id, serializedItem, originalItem);
+            case SerializedItemType.Map:
+                return this._deserializeItemMap(id, serializedItem, originalItem);
             default:
                 throw new Error(`Bad deserialization: Unknown type "${(serializedItem as any).type}" in ${this._originalEntity.items}.`);
         }
@@ -209,6 +211,50 @@ export class Deserialization {
     }
 
     /**
+     * Deserializes the specified Map.
+     */
+    private _deserializeItemMap(
+        id: string,
+        serializedItem: SerializedItemMap,
+        originalItem: SerializableItem | undefined,
+    ): SerializableItem {
+        const canUseOriginal =
+            typeof originalItem === 'object'
+            && originalItem instanceof Map;
+        const result: Map<any, any> = canUseOriginal ? originalItem as unknown as Map<any, any> : new Map();
+
+        this._uuidToItems.set(id, result as unknown as SerializableItem);
+
+        const entries = serializedItem.entries;
+        if (!Array.isArray(entries)) {
+            throw new Error(`Bad deserialization: Map entries is not list: ${entries}.`);
+        }
+
+        entries.forEach((entry) => {
+            if (!Array.isArray(entry) || entry.length !== 2) {
+                throw new Error(`Bad deserialization: Map entry is not a pair: ${entry}`);
+            }
+        });
+
+        const addedKeys = new Set<unknown>();
+
+        entries.forEach(([key, value]) => {
+            const deserializedKey = this._deserializePropertyValue(key, undefined);
+            addedKeys.add(deserializedKey);
+            result.set(
+                deserializedKey,
+                this._deserializePropertyValue(value, result.get(deserializedKey)),
+            );
+        });
+
+        Array.from(result.keys()).filter((key) => !addedKeys.has(key)).forEach((key) => {
+            result.delete(key);
+        });
+
+        return result as unknown as SerializableItem;
+    }
+
+    /**
      * Adds the specified properties to the specified item.
      */
     private _addPropertiesToItem(
@@ -256,7 +302,6 @@ export class Deserialization {
             case SerializedPropertyType.Reference: return this._deserializePropertyReference(property, originalValue);
             case SerializedPropertyType.BigInt: return this._deserializePropertyBigInt(property);
             case SerializedPropertyType.Date: return this._deserializePropertyDate(property);
-            case SerializedPropertyType.Map: return this._deserializePropertyMap(property, originalValue);
             default: throw new Error(`Bad deserialization: Unknown value type ${(property as any).type}.`);
         }
     }
@@ -312,47 +357,6 @@ export class Deserialization {
             throw new Error(`Bad deserialization: Cannot parse date timestamp ${property.timestamp}.`);
         }
         return new Date(property.timestamp);
-    }
-
-    /**
-     * Deserializes the specified property, assuming it's a map.
-     */
-    private _deserializePropertyMap(property: SerializedPropertyMap, originalValue: unknown): unknown {
-        const entries = property.entries;
-        if (!Array.isArray(entries)) {
-            throw new Error(`Bad deserialization: Map entries is not list: ${entries}.`);
-        }
-
-        entries.forEach((entry) => {
-            if (!Array.isArray(entry) || entry.length !== 2) {
-                throw new Error(`Bad deserialization: Map entry is not a pair: ${entry}`);
-            }
-        });
-
-        let result: Map<unknown, unknown>;
-
-        if (originalValue instanceof Map) {
-            result = originalValue;
-        } else {
-            result = new Map();
-        }
-
-        const addedKeys = new Set<unknown>();
-
-        entries.forEach(([key, value]) => {
-            const deserializedKey = this._deserializePropertyValue(key, undefined);
-            addedKeys.add(deserializedKey);
-            result.set(
-                deserializedKey,
-                this._deserializePropertyValue(value, result.get(deserializedKey)),
-            );
-        });
-
-        Array.from(result.keys()).filter((key) => !addedKeys.has(key)).forEach((key) => {
-            result.delete(key);
-        });
-
-        return result;
     }
 
 }
