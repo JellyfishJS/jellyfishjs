@@ -92,7 +92,16 @@ export class Serialization {
         const id = uuid();
         this._serializableItemToUUID.set(item, id);
 
-        this._result.items[id] = this._serializeItemObjectOrArray(item);
+        const prototype = Object.getPrototypeOf(item);
+        if (
+            prototype === Object.getPrototypeOf({})
+            || prototype === Object.getPrototypeOf([])
+            || prototype === null
+        ) {
+            this._result.items[id] = this._serializeItemObjectOrArray(item);
+        } else {
+            throw new Error(`Bad serialization: Unrecognized prototype ${prototype.constructor.name}`);
+        }
 
         return id;
     }
