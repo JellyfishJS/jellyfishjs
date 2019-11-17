@@ -396,7 +396,7 @@ export abstract class GameObject<
 
     /**
      * Called when this game object collides with another game object.
-     * 
+     *
      * Will be called after the beforePhysics hook and prior to the afterPhysics hook.
      */
     public onCollision?(otherGameObject: GameObject): void;

@@ -1,5 +1,5 @@
-import * as MatterType from 'matter-js';
 import * as _ from 'lodash';
+import * as MatterType from 'matter-js';
 import {
     afterPhysicsKey,
     afterStepKey,
@@ -253,7 +253,9 @@ export class GameLoop {
         engine && Matter?.Engine.update(engine);
 
         const collides = (gameObjectA: GameObject, gameObjectB: GameObject) => {
-            if (gameObjectB === gameObjectA) return false;
+            if (gameObjectB === gameObjectA) {
+                return false;
+            }
             return _.some(asArray(gameObjectA.physicsBody), (bodyA: Body) => {
                 // @ts-ignore Query.collides exist, but @types/matter-js is out of date
                 const collisions = Matter && Matter.Query.collides(bodyA, asArray(gameObjectB.physicsBody));
@@ -261,9 +263,11 @@ export class GameLoop {
             });
         };
 
-        this._gameObjects.forEach(gameObjectA => {
-            this._gameObjects.forEach(gameObjectB => {
-                if (gameObjectB === gameObjectA) return;
+        this._gameObjects.forEach((gameObjectA) => {
+            this._gameObjects.forEach((gameObjectB) => {
+                if (gameObjectB === gameObjectA) {
+                    return;
+                }
                 if (collides(gameObjectA, gameObjectB)) {
                     gameObjectA.onCollision && gameObjectA.onCollision(gameObjectB);
                     gameObjectB.onCollision && gameObjectB.onCollision(gameObjectA);
