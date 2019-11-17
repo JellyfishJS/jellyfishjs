@@ -4,6 +4,7 @@ import {
     SerializedEntity,
     SerializedItem,
     SerializedItemObject,
+    SerializedItemPrototyped,
     SerializedItemType,
     SerializedProperty,
     SerializedPropertyType,
@@ -101,7 +102,9 @@ export class Serialization {
         this._serializableItemToUUID.set(item, id);
 
         const prototype = Object.getPrototypeOf(item);
-        if (
+        if (prototype === Map.prototype) {
+            this._result.items[id] = this._serializeItemMap(item as unknown as Map<any, any>);
+        } else if (
             prototype === Object.getPrototypeOf({})
             || prototype === Object.getPrototypeOf([])
             || prototype === null
@@ -129,6 +132,12 @@ export class Serialization {
         name: string,
         configuration: PrototypeConfiguration,
     ): SerializedItem {
+        const stringKeyedProperties: SerializedItemPrototyped['stringKeyedProperties'] = {};
+
+        Object.keys(item).forEach((key) => {
+            stringKeyedProperties[key] = this._serializeProperty(item[key]);
+        });
+
         return {
             ...this._getProperties(item),
             type: SerializedItemType.Prototyped,
@@ -178,6 +187,18 @@ export class Serialization {
     }
 
     /**
+     * Returns the specified item,
+     * assuming it is a Map.
+     */
+    private _serializeItemMap(property: Map<unknown, unknown>): SerializedItem {
+        return {
+            type: SerializedItemType.Map,
+            entries: Array.from(property.entries())
+                .map(([key, value]) => [this._serializeProperty(key), this._serializeProperty(value)]),
+        };
+    }
+
+    /**
      * Serializes the specified property to a `SerializedProperty`.
      */
     private _serializeProperty(property: unknown): SerializedProperty {
@@ -192,8 +213,6 @@ export class Serialization {
         if (typeof property === 'bigint') { return this._serializePropertyBigInt(property); }
 
         if (property instanceof Date) { return this._serializePropertyDate(property); }
-
-        if (property instanceof Map) { return this._serializePropertyMap(property); }
 
         if (typeof property === 'symbol') { return this._serializePropertySymbol(property); }
 
@@ -239,7 +258,7 @@ export class Serialization {
 
     /**
      * Returns the specified property,
-     * assuming it is a Date.
+     * assuming it is a Symbol.
      */
     private _serializePropertySymbol(property: symbol): SerializedProperty {
         const name = this._configuration.symbolToName.get(property);
@@ -249,18 +268,6 @@ export class Serialization {
         return {
             type: SerializedPropertyType.Symbol,
             name,
-        };
-    }
-
-    /**
-     * Returns the specified property,
-     * assuming it is a Map.
-     */
-    private _serializePropertyMap(property: Map<unknown, unknown>): SerializedProperty {
-        return {
-            type: SerializedPropertyType.Map,
-            entries: Array.from(property.entries())
-                .map(([key, value]) => [this._serializeProperty(key), this._serializeProperty(value)]),
         };
     }
 

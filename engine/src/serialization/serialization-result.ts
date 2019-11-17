@@ -39,6 +39,11 @@ export enum SerializedItemType {
      */
     Prototyped = 'prototyped',
 
+    /**
+     * Indicates this serialized item is a Map.
+     */
+    Map = 'map',
+
 }
 
 /**
@@ -82,6 +87,14 @@ export interface SerializedItemPrototyped {
 }
 
 /**
+ * Represent a property that is a Map.
+ */
+export interface SerializedItemMap {
+    type: SerializedItemType.Map;
+    entries: [SerializedProperty, SerializedProperty][];
+}
+
+/**
  * The serialization of a single item.
  *
  * Different kinds of items need to be deserialized differently.
@@ -89,7 +102,8 @@ export interface SerializedItemPrototyped {
 export type SerializedItem =
     | SerializedItemObject
     | SerializedItemArray
-    | SerializedItemPrototyped;
+    | SerializedItemPrototyped
+    | SerializedItemMap;
 
 /**
  * Represents the type of the property,
@@ -106,11 +120,6 @@ export enum SerializedPropertyType {
      * Indicates this property is a big integer.
      */
     BigInt = 'bigint',
-
-    /**
-     * Indicates this property is a Map.
-     */
-    Map = 'map',
 
     /**
      * Indicates this property is a Date.
@@ -137,14 +146,6 @@ export interface SerializedPropertyItemReference {
 export interface SerializedPropertyBigInt {
     type: SerializedPropertyType.BigInt;
     value: string;
-}
-
-/**
- * Represent a property that is a Map.
- */
-export interface SerializedPropertyMap {
-    type: SerializedPropertyType.Map;
-    entries: [SerializedProperty, SerializedProperty][];
 }
 
 /**
@@ -175,6 +176,6 @@ export type SerializedProperty =
     | undefined
     | SerializedPropertyItemReference
     | SerializedPropertyBigInt
-    | SerializedPropertyMap
     | SerializedPropertyDate
-    | SerializedPropertySymbol;
+    | SerializedPropertySymbol
+    | SerializedPropertyDate;
