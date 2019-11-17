@@ -5,6 +5,9 @@ import {
     SerializedItemObject,
     SerializedItemType,
     SerializedProperty,
+    SerializedPropertyBigInt,
+    SerializedPropertyItemReference,
+    SerializedPropertyMap,
     SerializedPropertyType,
 } from './serialization-result';
 
@@ -194,7 +197,7 @@ export class Deserialization {
                 || property === null
                 || property === undefined
         ) {
-            return property;
+            return this._deserializePropertyPrimitive(property);
         }
 
         if (Array.isArray(property)) {
@@ -206,78 +209,95 @@ export class Deserialization {
         }
 
         switch (property.type) {
-            case SerializedPropertyType.Reference: {
-                const uuid = property.uuid;
-                if (typeof uuid !== 'string') {
-                    throw new Error(`Bad deserialization: Property .uuid is not a string in ${property}.`);
-                }
-
-                let itemToReplace: SerializableItem | undefined;
-
-                if (typeof originalValue === 'object' && originalValue !== null) {
-                    itemToReplace = originalValue as SerializableItem;
-                }
-
-                return this._deserializeItem(uuid, itemToReplace);
-            }
-
-            case SerializedPropertyType.BigInt: {
-                if (typeof BigInt !== 'undefined') {
-                    // Automatically throws if the value is not well-formed.
-                    return BigInt(property.value);
-                } else {
-                    // If there is no BigInt support, fall back to using an integer.
-                    // It gets the correct order of magnitude but loses some precision.
-                    const result = parseInt(property.value, 10);
-                    if (Number.isNaN(result)) {
-                        throw new Error(`Bad deserialization: Cannot parse integer ${property.value}.`);
-                    }
-                    return result;
-                }
-            }
-
-            case SerializedPropertyType.Map: {
-                const entries = property.entries;
-                if (!Array.isArray(entries)) {
-                    throw new Error(`Bad deserialization: Map entries is not list: ${entries}.`);
-                }
-
-                entries.forEach((entry) => {
-                    if (!Array.isArray(entry) || entry.length !== 2) {
-                        throw new Error(`Bad deserialization: Map entry is not a pair: ${entry}`);
-                    }
-                });
-
-                let result: Map<unknown, unknown>;
-
-                if (originalValue instanceof Map) {
-                    result = originalValue;
-                } else {
-                    result = new Map();
-                }
-
-                const addedKeys = new Set<unknown>();
-
-                entries.forEach(([key, value]) => {
-                    const deserializedKey = this._deserializePropertyValue(key, undefined);
-                    addedKeys.add(deserializedKey);
-                    result.set(
-                        deserializedKey,
-                        this._deserializePropertyValue(value, result.get(deserializedKey)),
-                    );
-                });
-
-                Array.from(result.keys()).filter((key) => !addedKeys.has(key)).forEach((key) => {
-                    result.delete(key);
-                });
-
-                return result;
-            }
-
-            default: {
-                throw new Error(`Bad deserialization: Unknown value type ${(property as any).type}.`);
-            }
+            case SerializedPropertyType.Reference: return this._deserializePropertyReference(property, originalValue);
+            case SerializedPropertyType.BigInt: return this._deserializePropertyBigInt(property);
+            case SerializedPropertyType.Map: return this._deserializePropertyMap(property, originalValue);
+            default: throw new Error(`Bad deserialization: Unknown value type ${(property as any).type}.`);
         }
+    }
+
+    /**
+     * Deserializes the specified property, assuming it's a primitive.
+     */
+    private _deserializePropertyPrimitive(property: string | number | boolean | null | undefined): unknown {
+        return property;
+    }
+
+    /**
+     * Deserializes the specified property, assuming it's a reference.
+     */
+    private _deserializePropertyReference(property: SerializedPropertyItemReference, originalValue: unknown): unknown {
+        const uuid = property.uuid;
+        if (typeof uuid !== 'string') {
+            throw new Error(`Bad deserialization: Property .uuid is not a string in ${property}.`);
+        }
+
+        let itemToReplace: SerializableItem | undefined;
+
+        if (typeof originalValue === 'object' && originalValue !== null) {
+            itemToReplace = originalValue as SerializableItem;
+        }
+
+        return this._deserializeItem(uuid, itemToReplace);
+    }
+
+    /**
+     * Deserializes the specified property, assuming it's a reference.
+     */
+    private _deserializePropertyBigInt(property: SerializedPropertyBigInt): unknown {
+        if (typeof BigInt !== 'undefined') {
+            // Automatically throws if the value is not well-formed.
+            return BigInt(property.value);
+        } else {
+            // If there is no BigInt support, fall back to using an integer.
+            // It gets the correct order of magnitude but loses some precision.
+            const result = parseInt(property.value, 10);
+            if (Number.isNaN(result)) {
+                throw new Error(`Bad deserialization: Cannot parse integer ${property.value}.`);
+            }
+            return result;
+        }
+    }
+
+    /**
+     * Deserializes the specified property, assuming it's a map.
+     */
+    private _deserializePropertyMap(property: SerializedPropertyMap, originalValue: unknown): unknown {
+        const entries = property.entries;
+        if (!Array.isArray(entries)) {
+            throw new Error(`Bad deserialization: Map entries is not list: ${entries}.`);
+        }
+
+        entries.forEach((entry) => {
+            if (!Array.isArray(entry) || entry.length !== 2) {
+                throw new Error(`Bad deserialization: Map entry is not a pair: ${entry}`);
+            }
+        });
+
+        let result: Map<unknown, unknown>;
+
+        if (originalValue instanceof Map) {
+            result = originalValue;
+        } else {
+            result = new Map();
+        }
+
+        const addedKeys = new Set<unknown>();
+
+        entries.forEach(([key, value]) => {
+            const deserializedKey = this._deserializePropertyValue(key, undefined);
+            addedKeys.add(deserializedKey);
+            result.set(
+                deserializedKey,
+                this._deserializePropertyValue(value, result.get(deserializedKey)),
+            );
+        });
+
+        Array.from(result.keys()).filter((key) => !addedKeys.has(key)).forEach((key) => {
+            result.delete(key);
+        });
+
+        return result;
     }
 
 }
