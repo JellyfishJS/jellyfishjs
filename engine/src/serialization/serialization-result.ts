@@ -40,10 +40,14 @@ export enum SerializedItemType {
     Prototyped = 'prototyped',
 
     /**
+     * Indicates this serialized item should not be updated.
+     */
+    NoUpdate = 'noupdate',
+
+     /**
      * Indicates this serialized item is a Map.
      */
-    Map = 'map',
-
+     Map = 'map',
 }
 
 /**
@@ -87,6 +91,13 @@ export interface SerializedItemPrototyped {
 }
 
 /**
+ * A serialized item where the corresponding Object should not be updated on deserialization.
+ */
+export interface SerializedItemNoUpdate {
+    type: SerializedItemType.NoUpdate;
+}
+
+ /**
  * Represent a property that is a Map.
  */
 export interface SerializedItemMap {
@@ -103,6 +114,7 @@ export type SerializedItem =
     | SerializedItemObject
     | SerializedItemArray
     | SerializedItemPrototyped
+    | SerializedItemNoUpdate
     | SerializedItemMap;
 
 /**

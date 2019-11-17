@@ -65,6 +65,55 @@ describe('Serialization', function () {
             }
         });
 
+        it('should not update noupdate entities, while still updating object entities', function () {
+
+            const serializer = new Serializer();
+            // This serialized value has two properties of the root object, item1 and item2,
+            // item1 is specified as an object and when deserialized, it's value should be update in the original object
+            // whereas item2 is a noupdate and when deserialized, it's should not be updated in the original object.
+            const serializedValue: any = {
+                rootItem: 'root',
+                items: {
+                    root: {
+                        type: 'object',
+                        stringKeyedProperties: {
+                            item1: {
+                                type: 'reference',
+                                uuid: 'noupdate',
+                            },
+                            item2: {
+                                type: 'reference',
+                                uuid: 'update',
+                            },
+                        },
+                    },
+                    noupdate: {
+                        type: SerializedItemType.Object,
+                        stringKeyedProperties: {
+                            a: 'should-update',
+                        },
+                    },
+                    update: {
+                        type: SerializedItemType.NoUpdate,
+                    },
+                },
+            };
+
+            // Construct the original object.
+            const originalEntity: any = {
+                item1: { a: 'original-value' },
+                item2: { a: 'original-value' },
+            };
+            // Deserialize serializedValue into the originalEntity.
+            const deserialized: any = serializer.deserialize(serializedValue, originalEntity);
+
+            // check that item1 has been updated.
+            assert.strictEqual(deserialized.item1.a, 'should-update');
+            // check that item2 hasn't been updated.
+            assert.strictEqual(deserialized.item2.a, 'original-value');
+
+        });
+
         it('should serialize the current date', function () {
             assertSerializesCorrectly({ a: new Date() });
         });
