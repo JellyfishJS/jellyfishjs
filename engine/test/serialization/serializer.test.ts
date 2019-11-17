@@ -199,4 +199,39 @@ describe('Serialization', function () {
 
     });
 
+    describe('Prototype serialization', function () {
+
+        it('should serialize registered prototypes', function () {
+            const serializer = new Serializer();
+
+            class B {}
+            serializer.registerClass(B);
+
+            const original: any = new B();
+            const serialization = serializer.serialize(original);
+            const deserialization = serializer.deserialize(serialization);
+            assert.deepEqual(deserialization, original);
+            assert.strictEqual(Object.getPrototypeOf(deserialization), Object.getPrototypeOf(original));
+        });
+
+        it('should serialize replace different prototypes', function () {
+            const serializer = new Serializer();
+
+            class B {}
+            serializer.registerClass(B);
+            class C {}
+            serializer.registerClass(C);
+
+            const original: any = { b: new B() };
+            const target: any = { b: new C() };
+            const serialization = serializer.serialize(original);
+            const deserialization = serializer.deserialize(serialization, target);
+            assert.deepEqual(deserialization, original);
+            assert.deepEqual(target, original);
+            assert.strictEqual(Object.getPrototypeOf(deserialization.b), Object.getPrototypeOf(original.b));
+            assert.strictEqual(Object.getPrototypeOf(target.b), Object.getPrototypeOf(original.b));
+        });
+
+    });
+
 });

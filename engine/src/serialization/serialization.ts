@@ -7,6 +7,7 @@ import {
     SerializedProperty,
     SerializedPropertyType,
 } from './serialization-result';
+import { PrototypeConfiguration, SerializerConfiguration } from './serializer-configuration';
 
 /**
  * A class used to serialize a single entity.
@@ -21,8 +22,9 @@ export class Serialization {
     /**
      * Makes a serialization for the specified entity.
      */
-    public constructor(entity: SerializableItem) {
+    public constructor(entity: SerializableItem, configuration: SerializerConfiguration) {
         this._serializableEntity = entity;
+        this._configuration = configuration;
     }
 
     /**
@@ -39,6 +41,11 @@ export class Serialization {
 
         return this._result;
     }
+
+    /**
+     * The configuration for this serialization to use.
+     */
+    private readonly _configuration: SerializerConfiguration;
 
     /**
      * The object this instance is serializing.
@@ -92,9 +99,46 @@ export class Serialization {
         const id = uuid();
         this._serializableItemToUUID.set(item, id);
 
-        this._result.items[id] = this._serializeItemObjectOrArray(item);
+        const prototype = Object.getPrototypeOf(item);
+        if (
+            prototype === Object.getPrototypeOf({})
+            || prototype === Object.getPrototypeOf([])
+            || prototype === null
+        ) {
+            this._result.items[id] = this._serializeItemObjectOrArray(item);
+        } else {
+            const name = this._configuration.prototypeToName.get(prototype);
+            if (!name) {
+                throw new Error(`Bad serialization: Unrecognized prototype ${prototype.constructor.name}`);
+            }
+            const configuration = this._configuration.prototypeNameToConfiguration.get(name)!;
+
+            this._result.items[id] = this._serializeItemPrototyped(item, name, configuration);
+        }
 
         return id;
+    }
+
+    /**
+     * Serializes the specified item,
+     * with a custom prototype configuration
+     */
+    private _serializeItemPrototyped(
+        item: SerializableItem,
+        name: string,
+        configuration: PrototypeConfiguration,
+    ): SerializedItem {
+        const stringKeyedProperties: SerializedItem['stringKeyedProperties'] = {};
+
+        Object.keys(item).forEach((key) => {
+            stringKeyedProperties[key] = this._serializeProperty(item[key]);
+        });
+
+        return {
+            type: SerializedItemType.Prototyped,
+            prototype: name,
+            stringKeyedProperties,
+        };
     }
 
     /**
