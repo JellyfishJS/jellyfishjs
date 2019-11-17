@@ -331,7 +331,7 @@ export abstract class GameObject<
      * If this GameObject needs any physics bodies,
      * override this and return them.
      *
-     * A single `Matter.Body`, and array of `Matter.Body`s,
+     * A single `Matter.Body`, an array of `Matter.Body`s,
      * or `undefined` can be returned.
      *
      * Only called if the optional dependency "matter-js" is installed.
@@ -393,6 +393,13 @@ export abstract class GameObject<
      * Meant to be overridden.
      */
     public beforePhysics?(): void;
+
+    /**
+     * Called when this game object collides with another game object.
+     * 
+     * Will be called after the beforePhysics hook and prior to the afterPhysics hook.
+     */
+    public onCollision?(otherGameObject: GameObject): void;
 
     /**
      * A private `afterPhysics` hook for the system.
