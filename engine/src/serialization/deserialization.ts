@@ -1,4 +1,3 @@
-import { prototype } from 'events';
 import {
     SerializableItem,
     SerializedEntity,
@@ -195,7 +194,9 @@ export class Deserialization {
         const canUseOriginal = originalItem
             && typeof originalItem === 'object'
             && Object.getPrototypeOf(originalItem) === configuration.prototype;
-        const result: SerializableItem = canUseOriginal ? originalItem as SerializableItem : Object.create(prototype);
+        const result: SerializableItem = canUseOriginal
+            ? originalItem as SerializableItem
+            : Object.create(configuration.prototype);
 
         this._uuidToItems.set(id, result);
 
