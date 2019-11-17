@@ -54,6 +54,7 @@ describe('Serialization', function () {
                                     value: '1234567890987654321',
                                 },
                             },
+                            symbolKeyedProperties: {},
                         },
                     },
                 };
@@ -86,12 +87,14 @@ describe('Serialization', function () {
                                 uuid: 'update',
                             },
                         },
+                        symbolKeyedProperties: {},
                     },
                     noupdate: {
                         type: SerializedItemType.Object,
                         stringKeyedProperties: {
                             a: 'should-update',
                         },
+                        symbolKeyedProperties: {},
                     },
                     update: {
                         type: SerializedItemType.NoUpdate,
