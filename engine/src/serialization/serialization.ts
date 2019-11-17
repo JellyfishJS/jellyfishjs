@@ -104,7 +104,11 @@ export class Serialization {
         ) {
             this._result.items[id] = this._serializeItemObjectOrArray(item);
         } else {
-            throw new Error(`Bad serialization: Unrecognized prototype ${prototype.constructor.name}`);
+            const name = this._configuration.prototypeToName.get(prototype);
+            if (!name) {
+                throw new Error(`Bad serialization: Unrecognized prototype ${prototype.constructor.name}`);
+            }
+            const configuration = this._configuration.prototypeNameToConfiguration.get(name)!;
         }
 
         return id;
