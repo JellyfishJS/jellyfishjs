@@ -2,6 +2,7 @@ import {
     SerializableItem,
     SerializedEntity,
     SerializedItemArray,
+    SerializedItemMap,
     SerializedItemObject,
     SerializedItemPrototyped,
     SerializedItemType,
@@ -9,7 +10,6 @@ import {
     SerializedPropertyBigInt,
     SerializedPropertyDate,
     SerializedPropertyItemReference,
-    SerializedPropertyMap,
     SerializedPropertySymbol,
     SerializedPropertyType,
 } from './serialization-result';
