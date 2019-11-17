@@ -15,7 +15,7 @@ export class Serializer {
      * Serializes the specified entity.
      */
     public serialize(entity: {}): SerializedEntity {
-        return new Serialization(entity as SerializableItem).getSerialization();
+        return new Serialization(entity as SerializableItem, this._configuration).getSerialization();
     }
 
     /**
@@ -31,7 +31,7 @@ export class Serializer {
     /**
      * The configuration of this serializer.
      */
-    private _configuration = new SerializerConfiguration();
+    private readonly _configuration = new SerializerConfiguration();
 
     /**
      * Registers a class to be serializable.

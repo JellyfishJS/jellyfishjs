@@ -7,6 +7,7 @@ import {
     SerializedProperty,
     SerializedPropertyType,
 } from './serialization-result';
+import { SerializerConfiguration } from './serializer-configuration';
 
 /**
  * A class used to serialize a single entity.
@@ -21,8 +22,9 @@ export class Serialization {
     /**
      * Makes a serialization for the specified entity.
      */
-    public constructor(entity: SerializableItem) {
+    public constructor(entity: SerializableItem, configuration: SerializerConfiguration) {
         this._serializableEntity = entity;
+        this._configuration = configuration;
     }
 
     /**
@@ -39,6 +41,8 @@ export class Serialization {
 
         return this._result;
     }
+
+    private readonly _configuration: SerializerConfiguration;
 
     /**
      * The object this instance is serializing.
