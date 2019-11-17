@@ -2,7 +2,9 @@ import uuid = require('uuid');
 import {
     SerializableItem,
     SerializedEntity,
-    SerializedItem, SerializedItemObject, SerializedItemPrototyped,
+    SerializedItem, 
+    SerializedItemObject, 
+    SerializedItemPrototyped,
     SerializedItemType,
     SerializedProperty,
     SerializedPropertyType,
