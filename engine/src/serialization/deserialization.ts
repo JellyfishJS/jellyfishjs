@@ -1,6 +1,8 @@
 import {
     SerializableItem,
     SerializedEntity,
+    SerializedItemArray,
+    SerializedItemObject,
     SerializedItemType,
     SerializedProperty,
     SerializedPropertyType,
@@ -92,58 +94,91 @@ export class Deserialization {
             throw new Error(`Bad deserialization: Missing key .items in ${this._originalEntity}.`);
         }
 
-        const serializedObject = this._originalEntity.items[id];
+        const serializedItem = this._originalEntity.items[id];
 
-        if (!serializedObject) {
+        if (!serializedItem) {
             throw new Error(`Bad deserialization: Missing key "${id}" in ${this._originalEntity.items}.`);
         }
 
-        if (serializedObject === null || typeof serializedObject !== 'object') {
-            throw new Error(`Bad deserialization: Unexpected type of object "${serializedObject}" with type ${typeof serializedObject}.`);
+        if (typeof serializedItem !== 'object') {
+            throw new Error(`Bad deserialization: Unexpected type of object "${serializedItem}" with type ${typeof serializedObject}.`);
         }
 
-        let result: SerializableItem;
-
-        switch (serializedObject.type) {
+        switch (serializedItem.type) {
             case SerializedItemType.Array:
-                if (Array.isArray(originalItem)) {
-                    result = originalItem;
-                } else {
-                    // It is safe to treat an array like an object with arbitrary access,
-                    // it's just usually a bad idea so TypeScript complains.
-                    result = [] as unknown as SerializableItem;
-                }
-                break;
+                return this._deserializeItemArray(id, serializedItem, originalItem);
             case SerializedItemType.Object:
-                if (typeof originalItem === 'object' && originalItem !== null) {
-                    result = originalItem;
-                } else {
-                    result = {};
-                }
-                break;
+                return this._deserializeItemObject(id, serializedItem, originalItem);
             default:
-                throw new Error(`Bad deserialization: Unknown type "${(serializedObject as any).type}" in ${this._originalEntity.items}.`);
+                throw new Error(`Bad deserialization: Unknown type "${(serializedItem as any).type}" in ${this._originalEntity.items}.`);
         }
+    }
+
+    /**
+     * Deserializes the specified array.
+     */
+    private _deserializeItemArray(
+        id: string,
+        serializedItem: SerializedItemArray,
+        originalItem: SerializableItem | undefined,
+    ): SerializableItem {
+        // It is safe to treat an array like an object with arbitrary access,
+        // it's just usually a bad idea so TypeScript complains.
+        // Hence the `as unknown as SerializableItem`.
+        const result: SerializableItem = Array.isArray(originalItem) ? originalItem : [] as unknown as SerializableItem;
 
         this._uuidToItems.set(id, result);
 
-        if (typeof serializedObject.stringKeyedProperties !== 'object') {
-            throw new Error(`Bad deserialization: Property .stringKeyedProperties is not an object in ${serializedObject}.`);
+        if (typeof serializedItem.stringKeyedProperties !== 'object') {
+            throw new Error(`Bad deserialization: Property .stringKeyedProperties is not an object in ${serializedItem}.`);
         }
 
-        const existingKeys = Object.keys(result);
-        const newKeys = Object.keys(serializedObject.stringKeyedProperties);
+        this._addPropertiesToItem(result, serializedItem.stringKeyedProperties);
+
+        return result;
+    }
+
+    /**
+     * Deserializes the specified array.
+     */
+    private _deserializeItemObject(
+        id: string,
+        serializedItem: SerializedItemObject,
+        originalItem: SerializableItem | undefined,
+    ): SerializableItem {
+        const canUseOriginal =
+            typeof originalItem === 'object'
+            && originalItem !== null
+            && !Array.isArray(originalItem);
+        const result: SerializableItem = canUseOriginal ? originalItem as SerializableItem : {};
+
+        this._uuidToItems.set(id, result);
+
+        if (typeof serializedItem.stringKeyedProperties !== 'object') {
+            throw new Error(`Bad deserialization: Property .stringKeyedProperties is not an object in ${serializedItem}.`);
+        }
+        this._addPropertiesToItem(result, serializedItem.stringKeyedProperties);
+        return result;
+    }
+
+    /**
+     * Adds the specified properties to the specified item.
+     */
+    private _addPropertiesToItem(
+        item: SerializableItem,
+        properties: { [key: string]: SerializedProperty },
+    ) {
+        const existingKeys = Object.keys(item);
+        const newKeys = Object.keys(properties);
         const newKeysSet = new Set(newKeys);
         const deletedKeys = existingKeys.filter((key) => !newKeysSet.has(key));
 
-        deletedKeys.forEach((key) => { delete result[key]; });
+        deletedKeys.forEach((key) => { delete item[key]; });
 
-        Object.keys(serializedObject.stringKeyedProperties).forEach((key) => {
-            const value = serializedObject.stringKeyedProperties[key];
-            result[key] = this._deserializePropertyValue(value, result[key]);
+        Object.keys(properties).forEach((key) => {
+            const value = properties[key];
+            item[key] = this._deserializePropertyValue(value, item[key]);
         });
-
-        return result;
     }
 
     /**
