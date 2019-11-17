@@ -86,6 +86,10 @@ export enum SerializedPropertyType {
      */
     Map = 'map',
 
+    /**
+     * Indicates this property is a Date.
+     */
+    Date = 'date',
 }
 
 /**
@@ -113,6 +117,15 @@ export interface SerializedPropertyMap {
 }
 
 /**
+ * Represents a property that is a Date.
+ */
+export interface SerializedPropertyDate {
+    type: SerializedPropertyType.Date;
+    // The number of milliseconds since Epoch, this value is retrieved from calling Date.getTime().
+    timestamp: number;
+}
+
+/**
  * A property of a serialized item.
  */
 export type SerializedProperty =
@@ -123,4 +136,5 @@ export type SerializedProperty =
     | undefined
     | SerializedPropertyItemReference
     | SerializedPropertyBigInt
-    | SerializedPropertyMap;
+    | SerializedPropertyMap
+    | SerializedPropertyDate;
