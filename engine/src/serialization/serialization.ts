@@ -3,6 +3,7 @@ import {
     SerializableItem,
     SerializedEntity,
     SerializedItem,
+    SerializedItemArray,
     SerializedItemObject,
     SerializedItemPrototyped,
     SerializedItemType,
@@ -150,7 +151,7 @@ export class Serialization {
      * assuming it is an object or an array.
      */
     private _serializeItemObjectOrArray(item: SerializableItem): SerializedItem {
-        const stringKeyedProperties: SerializedItemObject['stringKeyedProperties'] = {};
+        const stringKeyedProperties: SerializedItemObject['stringKeyedProperties'] | SerializedItemArray['stringKeyedProperties'] = {};
 
         Object.keys(item).forEach((key) => {
             stringKeyedProperties[key] = this._serializeProperty(item[key]);
@@ -163,7 +164,16 @@ export class Serialization {
     }
 
     /**
-     * Returns the specified item,
+     * Serializes the specified item,
+     * assuming it is an no update item.
+     */
+    private _serializeItemNoUpdate(item: SerializableItem): SerializedItem {
+        return {
+            type: SerializedItemType.NoUpdate,
+        };
+    }
+
+    /* Returns the specified item,
      * assuming it is a Map.
      */
     private _serializeItemMap(property: Map<unknown, unknown>): SerializedItem {
@@ -171,6 +181,7 @@ export class Serialization {
             type: SerializedItemType.Map,
             entries: Array.from(property.entries())
                 .map(([key, value]) => [this._serializeProperty(key), this._serializeProperty(value)]),
+
         };
     }
 
