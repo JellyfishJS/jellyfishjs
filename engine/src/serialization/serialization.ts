@@ -172,6 +172,8 @@ export class Serialization {
 
         if (typeof property === 'bigint') { return this._serializePropertyBigInt(property); }
 
+        if (property instanceof  Date) { return this._serializePropertyDate(property); }
+
         if (property instanceof Map) { return this._serializePropertyMap(property); }
 
         if (typeof property === 'object') { return this._serializePropertyReference(property as SerializableItem); }
@@ -205,7 +207,18 @@ export class Serialization {
 
     /**
      * Returns the specified property,
-     * assuming it is a bigint.
+     * assuming it is a Date.
+     */
+    private _serializePropertyDate(property: Date): SerializedProperty {
+        return {
+            type: SerializedPropertyType.Date,
+            timestamp: property.getTime(),
+        };
+    }
+
+    /**
+     * Returns the specified property,
+     * assuming it is a Map.
      */
     private _serializePropertyMap(property: Map<unknown, unknown>): SerializedProperty {
         return {

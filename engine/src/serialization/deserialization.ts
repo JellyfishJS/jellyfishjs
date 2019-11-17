@@ -7,6 +7,7 @@ import {
     SerializedItemType,
     SerializedProperty,
     SerializedPropertyBigInt,
+    SerializedPropertyDate,
     SerializedPropertyItemReference,
     SerializedPropertyMap,
     SerializedPropertyType,
@@ -254,6 +255,7 @@ export class Deserialization {
         switch (property.type) {
             case SerializedPropertyType.Reference: return this._deserializePropertyReference(property, originalValue);
             case SerializedPropertyType.BigInt: return this._deserializePropertyBigInt(property);
+            case SerializedPropertyType.Date: return this._deserializePropertyDate(property);
             case SerializedPropertyType.Map: return this._deserializePropertyMap(property, originalValue);
             default: throw new Error(`Bad deserialization: Unknown value type ${(property as any).type}.`);
         }
@@ -300,6 +302,16 @@ export class Deserialization {
             }
             return result;
         }
+    }
+
+    /**
+     * Deserializes the specified property, assuming it's a date.
+     */
+    private _deserializePropertyDate(property: SerializedPropertyDate): unknown {
+        if (typeof property.timestamp as any !== 'number' || isNaN(property.timestamp)) {
+            throw new Error(`Bad deserialization: Cannot parse date timestamp ${property.timestamp}.`);
+        }
+        return new Date(property.timestamp);
     }
 
     /**
