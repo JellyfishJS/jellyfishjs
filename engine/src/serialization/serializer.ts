@@ -14,15 +14,18 @@ export class Serializer {
     /**
      * Serializes the specified entity.
      */
-    public serialize(entity: SerializableItem): SerializedEntity {
-        return new Serialization(entity).getSerialization();
+    public serialize(entity: {}): SerializedEntity {
+        return new Serialization(entity as SerializableItem).getSerialization();
     }
 
     /**
      * Deserializes the specified entity.
      */
-    public deserialize(entity: SerializedEntity, toUpdate?: SerializableItem | undefined): SerializableItem {
-        return new Deserialization(entity, toUpdate).getDeserialization();
+    public deserialize(entity: {}, toUpdate?: {} | undefined): SerializableItem {
+        return new Deserialization(
+            entity as SerializedEntity,
+            toUpdate as SerializableItem | undefined,
+        ).getDeserialization();
     }
 
     /**
