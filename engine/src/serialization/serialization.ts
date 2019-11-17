@@ -42,6 +42,9 @@ export class Serialization {
         return this._result;
     }
 
+    /**
+     * The configuration for this serialization to use.
+     */
     private readonly _configuration: SerializerConfiguration;
 
     /**
