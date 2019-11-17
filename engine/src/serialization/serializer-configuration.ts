@@ -33,6 +33,6 @@ export class SerializerConfiguration {
 /**
  * Represents settings for the serialization of some prototype.
  */
-interface PrototypeConfiguration {
+export interface PrototypeConfiguration {
     prototype: {};
 }

@@ -7,7 +7,7 @@ import {
     SerializedProperty,
     SerializedPropertyType,
 } from './serialization-result';
-import { SerializerConfiguration } from './serializer-configuration';
+import { PrototypeConfiguration, SerializerConfiguration } from './serializer-configuration';
 
 /**
  * A class used to serialize a single entity.
@@ -109,9 +109,33 @@ export class Serialization {
                 throw new Error(`Bad serialization: Unrecognized prototype ${prototype.constructor.name}`);
             }
             const configuration = this._configuration.prototypeNameToConfiguration.get(name)!;
+
+            this._result.items[id] = this._serializeItemPrototyped(item, name, configuration);
         }
 
         return id;
+    }
+
+    /**
+     * Serializes the specified item,
+     * with a custom prototype configuration
+     */
+    private _serializeItemPrototyped(
+        item: SerializableItem,
+        name: string,
+        configuration: PrototypeConfiguration,
+    ): SerializedItem {
+        const stringKeyedProperties: SerializedItem['stringKeyedProperties'] = {};
+
+        Object.keys(item).forEach((key) => {
+            stringKeyedProperties[key] = this._serializeProperty(item[key]);
+        });
+
+        return {
+            type: SerializedItemType.Prototyped,
+            prototype: name,
+            stringKeyedProperties,
+        };
     }
 
     /**

@@ -34,6 +34,11 @@ export enum SerializedItemType {
      */
     Array = 'array',
 
+    /**
+     * Indicates this serialized item has a custom prototype
+     */
+    Prototyped = 'prototyped',
+
 }
 
 /**
@@ -57,13 +62,25 @@ export interface SerializedItemArray {
 }
 
 /**
+ * A serialized item that is an array.
+ */
+export interface SerializedItemPrototyped {
+    type: SerializedItemType.Prototyped;
+    prototype: string;
+    stringKeyedProperties: {
+        [key: string]: SerializedProperty;
+    };
+}
+
+/**
  * The serialization of a single item.
  *
  * Different kinds of items need to be deserialized differently.
  */
 export type SerializedItem =
     | SerializedItemObject
-    | SerializedItemArray;
+    | SerializedItemArray
+    | SerializedItemPrototyped;
 
 /**
  * Represents the type of the property,
