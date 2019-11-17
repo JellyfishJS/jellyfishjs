@@ -2,7 +2,7 @@ import uuid = require('uuid');
 import {
     SerializableItem,
     SerializedEntity,
-    SerializedItem,
+    SerializedItem, SerializedItemObject, SerializedItemPrototyped,
     SerializedItemType,
     SerializedProperty,
     SerializedPropertyType,
@@ -100,7 +100,9 @@ export class Serialization {
         this._serializableItemToUUID.set(item, id);
 
         const prototype = Object.getPrototypeOf(item);
-        if (
+        if (prototype === Map.prototype) {
+            this._result.items[id] = this._serializeItemMap(item as unknown as Map<any, any>);
+        } else if (
             prototype === Object.getPrototypeOf({})
             || prototype === Object.getPrototypeOf([])
             || prototype === null
@@ -128,7 +130,7 @@ export class Serialization {
         name: string,
         configuration: PrototypeConfiguration,
     ): SerializedItem {
-        const stringKeyedProperties: SerializedItem['stringKeyedProperties'] = {};
+        const stringKeyedProperties: SerializedItemPrototyped['stringKeyedProperties'] = {};
 
         Object.keys(item).forEach((key) => {
             stringKeyedProperties[key] = this._serializeProperty(item[key]);
@@ -146,7 +148,7 @@ export class Serialization {
      * assuming it is an object or an array.
      */
     private _serializeItemObjectOrArray(item: SerializableItem): SerializedItem {
-        const stringKeyedProperties: SerializedItem['stringKeyedProperties'] = {};
+        const stringKeyedProperties: SerializedItemObject['stringKeyedProperties'] = {};
 
         Object.keys(item).forEach((key) => {
             stringKeyedProperties[key] = this._serializeProperty(item[key]);
@@ -155,6 +157,18 @@ export class Serialization {
         return {
             type: Array.isArray(item) ? SerializedItemType.Array : SerializedItemType.Object,
             stringKeyedProperties,
+        };
+    }
+
+    /**
+     * Returns the specified item,
+     * assuming it is a Map.
+     */
+    private _serializeItemMap(property: Map<unknown, unknown>): SerializedItem {
+        return {
+            type: SerializedItemType.Map,
+            entries: Array.from(property.entries())
+                .map(([key, value]) => [this._serializeProperty(key), this._serializeProperty(value)]),
         };
     }
 
@@ -172,9 +186,7 @@ export class Serialization {
 
         if (typeof property === 'bigint') { return this._serializePropertyBigInt(property); }
 
-        if (property instanceof  Date) { return this._serializePropertyDate(property); }
-
-        if (property instanceof Map) { return this._serializePropertyMap(property); }
+        if (property instanceof Date) { return this._serializePropertyDate(property); }
 
         if (typeof property === 'object') { return this._serializePropertyReference(property as SerializableItem); }
 
@@ -213,18 +225,6 @@ export class Serialization {
         return {
             type: SerializedPropertyType.Date,
             timestamp: property.getTime(),
-        };
-    }
-
-    /**
-     * Returns the specified property,
-     * assuming it is a Map.
-     */
-    private _serializePropertyMap(property: Map<unknown, unknown>): SerializedProperty {
-        return {
-            type: SerializedPropertyType.Map,
-            entries: Array.from(property.entries())
-                .map(([key, value]) => [this._serializeProperty(key), this._serializeProperty(value)]),
         };
     }
 
