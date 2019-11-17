@@ -41,4 +41,11 @@ export class Serializer {
         this._configuration.registerClass(Class);
     }
 
+    /**
+     * Registers a symbol the be serializable.
+     */
+    public registerSymbol(symbol: symbol) {
+        this._configuration.registerSymbol(symbol);
+    }
+
 }

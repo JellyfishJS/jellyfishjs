@@ -10,6 +10,7 @@ import {
     SerializedPropertyDate,
     SerializedPropertyItemReference,
     SerializedPropertyMap,
+    SerializedPropertySymbol,
     SerializedPropertyType,
 } from './serialization-result';
 import { SerializerConfiguration } from './serializer-configuration';
@@ -256,6 +257,7 @@ export class Deserialization {
             case SerializedPropertyType.Reference: return this._deserializePropertyReference(property, originalValue);
             case SerializedPropertyType.BigInt: return this._deserializePropertyBigInt(property);
             case SerializedPropertyType.Date: return this._deserializePropertyDate(property);
+            case SerializedPropertyType.Symbol: return this._deserializePropertySymbol(property);
             case SerializedPropertyType.Map: return this._deserializePropertyMap(property, originalValue);
             default: throw new Error(`Bad deserialization: Unknown value type ${(property as any).type}.`);
         }
@@ -312,6 +314,17 @@ export class Deserialization {
             throw new Error(`Bad deserialization: Cannot parse date timestamp ${property.timestamp}.`);
         }
         return new Date(property.timestamp);
+    }
+
+    /**
+     * Deserializes the specified property, assuming it's a date.
+     */
+    private _deserializePropertySymbol(property: SerializedPropertySymbol): unknown {
+        const symbol = this._configuration.symbolNameToSymbol.get(property.name);
+        if (!symbol) {
+            throw new Error(`Bad deserialization: Unrecognized symbol name ${property.name}.`);
+        }
+        return symbol;
     }
 
     /**
