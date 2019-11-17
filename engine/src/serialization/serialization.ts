@@ -2,7 +2,7 @@ import uuid = require('uuid');
 import {
     SerializableItem,
     SerializedEntity,
-    SerializedItem,
+    SerializedItem, SerializedItemArray, SerializedItemObject, SerializedItemPrototyped,
     SerializedItemType,
     SerializedProperty,
     SerializedPropertyType,
@@ -128,7 +128,7 @@ export class Serialization {
         name: string,
         configuration: PrototypeConfiguration,
     ): SerializedItem {
-        const stringKeyedProperties: SerializedItem['stringKeyedProperties'] = {};
+        const stringKeyedProperties: SerializedItemPrototyped['stringKeyedProperties'] = {};
 
         Object.keys(item).forEach((key) => {
             stringKeyedProperties[key] = this._serializeProperty(item[key]);
@@ -146,7 +146,7 @@ export class Serialization {
      * assuming it is an object or an array.
      */
     private _serializeItemObjectOrArray(item: SerializableItem): SerializedItem {
-        const stringKeyedProperties: SerializedItem['stringKeyedProperties'] = {};
+        const stringKeyedProperties: SerializedItemObject['stringKeyedProperties'] | SerializedItemArray['stringKeyedProperties'] = {};
 
         Object.keys(item).forEach((key) => {
             stringKeyedProperties[key] = this._serializeProperty(item[key]);
@@ -155,6 +155,16 @@ export class Serialization {
         return {
             type: Array.isArray(item) ? SerializedItemType.Array : SerializedItemType.Object,
             stringKeyedProperties,
+        };
+    }
+
+    /**
+     * Serializes the specified item,
+     * assuming it is an no update item.
+     */
+    private _serializeItemNoUpdate(item: SerializableItem): SerializedItem {
+        return {
+            type: SerializedItemType.NoUpdate,
         };
     }
 

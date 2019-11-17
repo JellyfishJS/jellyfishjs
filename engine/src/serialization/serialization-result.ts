@@ -39,6 +39,10 @@ export enum SerializedItemType {
      */
     Prototyped = 'prototyped',
 
+    /**
+     * Indicates this serialized item should not be updated.
+     */
+    NoUpdate = 'noupdate',
 }
 
 /**
@@ -73,6 +77,13 @@ export interface SerializedItemPrototyped {
 }
 
 /**
+ * A serialized item where the corresponding Object should not be updated on deserialization.
+ */
+export interface SerializedItemNoUpdate {
+    type: SerializedItemType.NoUpdate;
+}
+
+/**
  * The serialization of a single item.
  *
  * Different kinds of items need to be deserialized differently.
@@ -80,7 +91,8 @@ export interface SerializedItemPrototyped {
 export type SerializedItem =
     | SerializedItemObject
     | SerializedItemArray
-    | SerializedItemPrototyped;
+    | SerializedItemPrototyped
+    | SerializedItemNoUpdate;
 
 /**
  * Represents the type of the property,

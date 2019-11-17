@@ -102,7 +102,7 @@ export class Deserialization {
      *
      * Caches results, so can be called multiple times.
      */
-    private _deserializeItem(id: string, originalItem: SerializableItem | undefined): SerializableItem {
+    private _deserializeItem(id: string, originalItem: SerializableItem | undefined): SerializableItem | undefined {
         const existingItem = this._uuidToItems.get(id);
         if (existingItem) { return existingItem; }
 
@@ -127,6 +127,8 @@ export class Deserialization {
                 return this._deserializeItemObject(id, serializedItem, originalItem);
             case SerializedItemType.Prototyped:
                 return this._deserializeItemPrototyped(id, serializedItem, originalItem);
+            case SerializedItemType.NoUpdate:
+                return originalItem;
             default:
                 throw new Error(`Bad deserialization: Unknown type "${(serializedItem as any).type}" in ${this._originalEntity.items}.`);
         }
