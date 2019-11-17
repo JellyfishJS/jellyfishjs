@@ -262,7 +262,7 @@ export class Deserialization {
     }
 
     /**
-     * Deserializes the specified property, assuming it's a reference.
+     * Deserializes the specified property, assuming it's a date.
      */
     private _deserializePropertyDate(property: SerializedPropertyDate): unknown {
 
