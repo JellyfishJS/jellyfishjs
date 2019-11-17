@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import * as MatterType from 'matter-js';
 import {
     afterPhysicsKey,
@@ -256,7 +255,7 @@ export class GameLoop {
             if (gameObjectB === gameObjectA) {
                 return false;
             }
-            return _.some(asArray(gameObjectA.physicsBody), (bodyA: Body) => {
+            return asArray(gameObjectA.physicsBody).some((bodyA) => {
                 // @ts-ignore Query.collides exist, but @types/matter-js is out of date
                 const collisions = Matter && Matter.Query.collides(bodyA, asArray(gameObjectB.physicsBody));
                 return collisions.length > 0;
