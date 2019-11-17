@@ -70,17 +70,13 @@ describe('Serialization', function () {
         });
 
         it('should serialize past dates', function () {
-            const testDate = new Date();
             // This timestamp is: Sun Nov 17 2019 14:40:45 GMT-0500 (Eastern Standard Time).
-            testDate.setTime(1574019645740);
-            assertSerializesCorrectly({ a: testDate });
+            assertSerializesCorrectly({ a: new Date(1574019645740) });
         });
 
         it('should serialize future dates', function () {
-            const testDate = new Date();
-            // This timestamp is: Mon Dec 21 2020 14:40:45 GMT-0500 (Eastern Standard Time).
-            testDate.setTime(1608579645740);
-            assertSerializesCorrectly({ a: testDate });
+            // This timestamp is: Tue Nov 09 2049 15:14:09 GMT-0500 (Eastern Standard Time).
+            assertSerializesCorrectly({ a: new Date(2520101649755) });
         });
 
         it('should serialize strings', function () {

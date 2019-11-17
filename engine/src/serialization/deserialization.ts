@@ -265,14 +265,10 @@ export class Deserialization {
      * Deserializes the specified property, assuming it's a date.
      */
     private _deserializePropertyDate(property: SerializedPropertyDate): unknown {
-
-        if (isNaN(property.timestamp)) {
+        if (typeof property.timestamp as any !== 'number' || isNaN(property.timestamp)) {
             throw new Error(`Bad deserialization: Cannot parse date timestamp ${property.timestamp}.`);
         }
-
-        const result = new Date();
-        result.setTime(property.timestamp);
-        return result;
+        return new Date(property.timestamp);
     }
 
     /**
