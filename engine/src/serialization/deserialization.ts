@@ -1,7 +1,8 @@
 import {
     SerializableItem,
     SerializedEntity,
-    SerializedItemArray, SerializedItemMap,
+    SerializedItemArray,
+    SerializedItemMap,
     SerializedItemObject,
     SerializedItemPrototyped,
     SerializedItemType,
