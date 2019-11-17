@@ -234,4 +234,20 @@ describe('Serialization', function () {
 
     });
 
+    describe('Symbol serialization', function () {
+
+        it('should serialize registered symbols', function () {
+            const serializer = new Serializer();
+
+            const b = Symbol('b');
+            serializer.registerSymbol(b);
+
+            const original: any = { a: 'a', b };
+            const serialization = serializer.serialize(original);
+            const deserialization = serializer.deserialize(serialization);
+            assert.deepEqual(deserialization, original);
+        });
+
+    });
+
 });
