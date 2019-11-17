@@ -62,7 +62,7 @@ export interface SerializedItemArray {
 }
 
 /**
- * A serialized item that is an array.
+ * A serialized item that has a prototype.
  */
 export interface SerializedItemPrototyped {
     type: SerializedItemType.Prototyped;
