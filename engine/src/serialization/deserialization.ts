@@ -157,6 +157,7 @@ export class Deserialization {
         }
 
         this._addPropertiesToItem(result, serializedItem.stringKeyedProperties);
+        this._addSymbolPropertiesToItem(result, serializedItem.symbolKeyedProperties);
 
         return result;
     }
@@ -181,6 +182,7 @@ export class Deserialization {
             throw new Error(`Bad deserialization: Property .stringKeyedProperties is not an object in ${serializedItem}.`);
         }
         this._addPropertiesToItem(result, serializedItem.stringKeyedProperties);
+        this._addSymbolPropertiesToItem(result, serializedItem.symbolKeyedProperties);
         return result;
     }
 
@@ -210,6 +212,7 @@ export class Deserialization {
             throw new Error(`Bad deserialization: Property .stringKeyedProperties is not an object in ${serializedItem}.`);
         }
         this._addPropertiesToItem(result, serializedItem.stringKeyedProperties);
+        this._addSymbolPropertiesToItem(result, serializedItem.symbolKeyedProperties);
         return result;
     }
 
@@ -274,6 +277,23 @@ export class Deserialization {
         Object.keys(properties).forEach((key) => {
             const value = properties[key];
             item[key] = this._deserializePropertyValue(value, item[key]);
+        });
+    }
+
+    /**
+     * Adds the specified properties to the specified item.
+     */
+    private _addSymbolPropertiesToItem(
+        item: SerializableItem,
+        properties: { [key: string]: SerializedProperty },
+    ) {
+        Object.keys(properties).forEach((key) => {
+            const symbol = this._configuration.symbolNameToSymbol.get(key);
+            if (!symbol) {
+                throw new Error(`Bad deserialization: Unrecognized symbol name ${key}.`);
+            }
+
+            item[symbol as any] = this._deserializePropertyValue(properties[key], item[symbol as any]);
         });
     }
 
