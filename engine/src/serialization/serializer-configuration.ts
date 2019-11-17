@@ -25,7 +25,7 @@ export class SerializerConfiguration {
 
         const configuration = { prototype };
 
-        this.prototypeNameToConfiguration.set(prototype, configuration);
+        this.prototypeNameToConfiguration.set(name, configuration);
     }
 
 }

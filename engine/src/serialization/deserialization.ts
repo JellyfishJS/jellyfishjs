@@ -1,8 +1,10 @@
+import { prototype } from 'events';
 import {
     SerializableItem,
     SerializedEntity,
     SerializedItemArray,
     SerializedItemObject,
+    SerializedItemPrototyped,
     SerializedItemType,
     SerializedProperty,
     SerializedPropertyBigInt,
@@ -123,6 +125,8 @@ export class Deserialization {
                 return this._deserializeItemArray(id, serializedItem, originalItem);
             case SerializedItemType.Object:
                 return this._deserializeItemObject(id, serializedItem, originalItem);
+            case SerializedItemType.Prototyped:
+                return this._deserializeItemPrototyped(id, serializedItem, originalItem);
             default:
                 throw new Error(`Bad deserialization: Unknown type "${(serializedItem as any).type}" in ${this._originalEntity.items}.`);
         }
@@ -153,7 +157,7 @@ export class Deserialization {
     }
 
     /**
-     * Deserializes the specified array.
+     * Deserializes the specified object.
      */
     private _deserializeItemObject(
         id: string,
@@ -165,6 +169,33 @@ export class Deserialization {
             && originalItem !== null
             && !Array.isArray(originalItem);
         const result: SerializableItem = canUseOriginal ? originalItem as SerializableItem : {};
+
+        this._uuidToItems.set(id, result);
+
+        if (typeof serializedItem.stringKeyedProperties !== 'object') {
+            throw new Error(`Bad deserialization: Property .stringKeyedProperties is not an object in ${serializedItem}.`);
+        }
+        this._addPropertiesToItem(result, serializedItem.stringKeyedProperties);
+        return result;
+    }
+
+    /**
+     * Deserializes the specified prototyped item.
+     */
+    private _deserializeItemPrototyped(
+        id: string,
+        serializedItem: SerializedItemPrototyped,
+        originalItem: SerializableItem | undefined,
+    ): SerializableItem {
+        const configuration = this._configuration.prototypeNameToConfiguration.get(serializedItem.prototype);
+        if (!configuration) {
+            throw new Error(`Bad deserialization: Unrecognized prototype name: ${serializedItem.prototype}`);
+        }
+
+        const canUseOriginal = originalItem
+            && typeof originalItem === 'object'
+            && Object.getPrototypeOf(originalItem) === configuration.prototype;
+        const result: SerializableItem = canUseOriginal ? originalItem as SerializableItem : Object.create(prototype);
 
         this._uuidToItems.set(id, result);
 
