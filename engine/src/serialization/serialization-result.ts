@@ -107,6 +107,11 @@ export enum SerializedPropertyType {
      * Indicates this property is a Date.
      */
     Date = 'date',
+
+    /**
+     * Indicates this property is a Symbol.
+     */
+    Symbol = 'symbol',
 }
 
 /**
@@ -143,6 +148,14 @@ export interface SerializedPropertyDate {
 }
 
 /**
+ * Represents a property that is a Symbol.
+ */
+export interface SerializedPropertySymbol {
+    type: SerializedPropertyType.Symbol;
+    name: string;
+}
+
+/**
  * A property of a serialized item.
  */
 export type SerializedProperty =
@@ -154,4 +167,5 @@ export type SerializedProperty =
     | SerializedPropertyItemReference
     | SerializedPropertyBigInt
     | SerializedPropertyMap
-    | SerializedPropertyDate;
+    | SerializedPropertyDate
+    | SerializedPropertySymbol;

@@ -172,9 +172,11 @@ export class Serialization {
 
         if (typeof property === 'bigint') { return this._serializePropertyBigInt(property); }
 
-        if (property instanceof  Date) { return this._serializePropertyDate(property); }
+        if (property instanceof Date) { return this._serializePropertyDate(property); }
 
         if (property instanceof Map) { return this._serializePropertyMap(property); }
+
+        if (typeof property === 'symbol') { return this._serializePropertySymbol(property); }
 
         if (typeof property === 'object') { return this._serializePropertyReference(property as SerializableItem); }
 
@@ -213,6 +215,21 @@ export class Serialization {
         return {
             type: SerializedPropertyType.Date,
             timestamp: property.getTime(),
+        };
+    }
+
+    /**
+     * Returns the specified property,
+     * assuming it is a Date.
+     */
+    private _serializePropertySymbol(property: symbol): SerializedProperty {
+        const name = this._configuration.symbolToName.get(property);
+        if (!name) {
+            throw new Error(`Bad serialization: Unrecognized symbol ${property.toString()}.`);
+        }
+        return {
+            type: SerializedPropertyType.Symbol,
+            name,
         };
     }
 
