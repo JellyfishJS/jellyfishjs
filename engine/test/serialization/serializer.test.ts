@@ -300,6 +300,19 @@ describe('Serialization', function () {
             assert.deepEqual(deserialization, original);
         });
 
+        it('should serialize registered symbol keys', function () {
+            const serializer = new Serializer();
+
+            const b = Symbol('b');
+            serializer.registerSymbol(b);
+
+            const original: any = { a: 'a', [b]: 'b' };
+            const serialization = serializer.serialize(original);
+            const deserialization = serializer.deserialize(serialization);
+            assert.deepEqual(deserialization, original);
+            assert.deepEqual(deserialization[b as any], original[b]);
+        });
+
     });
 
 });
