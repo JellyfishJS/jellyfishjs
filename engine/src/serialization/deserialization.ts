@@ -104,7 +104,7 @@ export class Deserialization {
         }
 
         if (typeof serializedItem !== 'object') {
-            throw new Error(`Bad deserialization: Unexpected type of object "${serializedItem}" with type ${typeof serializedObject}.`);
+            throw new Error(`Bad deserialization: Unexpected type of object "${serializedItem}" with type ${typeof serializedItem}.`);
         }
 
         switch (serializedItem.type) {
