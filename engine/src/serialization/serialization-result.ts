@@ -43,6 +43,11 @@ export enum SerializedItemType {
      * Indicates this serialized item should not be updated.
      */
     NoUpdate = 'noupdate',
+
+     /**
+     * Indicates this serialized item is a Map.
+     */
+     Map = 'map',
 }
 
 /**
@@ -83,6 +88,14 @@ export interface SerializedItemNoUpdate {
     type: SerializedItemType.NoUpdate;
 }
 
+ /**
+ * Represent a property that is a Map.
+ */
+export interface SerializedItemMap {
+    type: SerializedItemType.Map;
+    entries: [SerializedProperty, SerializedProperty][];
+}
+
 /**
  * The serialization of a single item.
  *
@@ -92,7 +105,8 @@ export type SerializedItem =
     | SerializedItemObject
     | SerializedItemArray
     | SerializedItemPrototyped
-    | SerializedItemNoUpdate;
+    | SerializedItemNoUpdate
+    | SerializedItemMap;
 
 /**
  * Represents the type of the property,
@@ -109,11 +123,6 @@ export enum SerializedPropertyType {
      * Indicates this property is a big integer.
      */
     BigInt = 'bigint',
-
-    /**
-     * Indicates this property is a Map.
-     */
-    Map = 'map',
 
     /**
      * Indicates this property is a Date.
@@ -138,14 +147,6 @@ export interface SerializedPropertyBigInt {
 }
 
 /**
- * Represent a property that is a Map.
- */
-export interface SerializedPropertyMap {
-    type: SerializedPropertyType.Map;
-    entries: [SerializedProperty, SerializedProperty][];
-}
-
-/**
  * Represents a property that is a Date.
  */
 export interface SerializedPropertyDate {
@@ -165,5 +166,4 @@ export type SerializedProperty =
     | undefined
     | SerializedPropertyItemReference
     | SerializedPropertyBigInt
-    | SerializedPropertyMap
     | SerializedPropertyDate;

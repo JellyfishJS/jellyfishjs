@@ -103,7 +103,9 @@ export class Serialization {
         this._serializableItemToUUID.set(item, id);
 
         const prototype = Object.getPrototypeOf(item);
-        if (
+        if (prototype === Map.prototype) {
+            this._result.items[id] = this._serializeItemMap(item as unknown as Map<any, any>);
+        } else if (
             prototype === Object.getPrototypeOf({})
             || prototype === Object.getPrototypeOf([])
             || prototype === null
@@ -171,6 +173,18 @@ export class Serialization {
         };
     }
 
+    /* Returns the specified item,
+     * assuming it is a Map.
+     */
+    private _serializeItemMap(property: Map<unknown, unknown>): SerializedItem {
+        return {
+            type: SerializedItemType.Map,
+            entries: Array.from(property.entries())
+                .map(([key, value]) => [this._serializeProperty(key), this._serializeProperty(value)]),
+
+        };
+    }
+
     /**
      * Serializes the specified property to a `SerializedProperty`.
      */
@@ -185,9 +199,7 @@ export class Serialization {
 
         if (typeof property === 'bigint') { return this._serializePropertyBigInt(property); }
 
-        if (property instanceof  Date) { return this._serializePropertyDate(property); }
-
-        if (property instanceof Map) { return this._serializePropertyMap(property); }
+        if (property instanceof Date) { return this._serializePropertyDate(property); }
 
         if (typeof property === 'object') { return this._serializePropertyReference(property as SerializableItem); }
 
@@ -226,18 +238,6 @@ export class Serialization {
         return {
             type: SerializedPropertyType.Date,
             timestamp: property.getTime(),
-        };
-    }
-
-    /**
-     * Returns the specified property,
-     * assuming it is a Map.
-     */
-    private _serializePropertyMap(property: Map<unknown, unknown>): SerializedProperty {
-        return {
-            type: SerializedPropertyType.Map,
-            entries: Array.from(property.entries())
-                .map(([key, value]) => [this._serializeProperty(key), this._serializeProperty(value)]),
         };
     }
 
