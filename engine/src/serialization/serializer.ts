@@ -1,7 +1,6 @@
 import { Deserialization } from './deserialization';
 import { Serialization } from './serialization';
-import { SerializableItem } from './serialization-result';
-import { SerializedEntity } from './serialization-result';
+import { SerializableItem, SerializedEntity } from './serialization-result';
 import { SerializerConfiguration } from './serializer-configuration';
 
 /**
