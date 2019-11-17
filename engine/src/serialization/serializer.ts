@@ -25,6 +25,7 @@ export class Serializer {
         return new Deserialization(
             entity as SerializedEntity,
             toUpdate as SerializableItem | undefined,
+            this._configuration,
         ).getDeserialization();
     }
 

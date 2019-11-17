@@ -10,6 +10,7 @@ import {
     SerializedPropertyMap,
     SerializedPropertyType,
 } from './serialization-result';
+import { SerializerConfiguration } from './serializer-configuration';
 
 /**
  * A class used to deserialize a single entity.
@@ -24,9 +25,14 @@ export class Deserialization {
     /**
      * Makes a deserialization for the specified serialized entity.
      */
-    public constructor(entity: SerializedEntity, entityToUpdate: SerializableItem | undefined) {
+    public constructor(
+        entity: SerializedEntity,
+        entityToUpdate: SerializableItem | undefined,
+        configuration: SerializerConfiguration,
+    ) {
         this._originalEntity = entity;
         this._result = entityToUpdate;
+        this._configuration = configuration;
     }
 
     /**
@@ -43,6 +49,11 @@ export class Deserialization {
 
         return this._result!;
     }
+
+    /**
+     * The configuration for this serialization to use.
+     */
+    private readonly _configuration: SerializerConfiguration;
 
     /**
      * The serialized entity this deserialization deserializes.
