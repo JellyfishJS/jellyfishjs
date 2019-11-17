@@ -49,6 +49,9 @@ export interface SerializedItemObject {
     stringKeyedProperties: {
         [key: string]: SerializedProperty;
     };
+    symbolKeyedProperties: {
+        [key: string]: SerializedProperty;
+    };
 }
 
 /**
@@ -57,6 +60,9 @@ export interface SerializedItemObject {
 export interface SerializedItemArray {
     type: SerializedItemType.Array;
     stringKeyedProperties: {
+        [key: string]: SerializedProperty;
+    };
+    symbolKeyedProperties: {
         [key: string]: SerializedProperty;
     };
 }
@@ -68,6 +74,9 @@ export interface SerializedItemPrototyped {
     type: SerializedItemType.Prototyped;
     prototype: string;
     stringKeyedProperties: {
+        [key: string]: SerializedProperty;
+    };
+    symbolKeyedProperties: {
         [key: string]: SerializedProperty;
     };
 }
