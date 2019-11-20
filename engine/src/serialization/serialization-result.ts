@@ -58,6 +58,9 @@ export interface SerializedItemObject {
     stringKeyedProperties: {
         [key: string]: SerializedProperty;
     };
+    symbolKeyedProperties: {
+        [key: string]: SerializedProperty;
+    };
 }
 
 /**
@@ -66,6 +69,9 @@ export interface SerializedItemObject {
 export interface SerializedItemArray {
     type: SerializedItemType.Array;
     stringKeyedProperties: {
+        [key: string]: SerializedProperty;
+    };
+    symbolKeyedProperties: {
         [key: string]: SerializedProperty;
     };
 }
@@ -77,6 +83,9 @@ export interface SerializedItemPrototyped {
     type: SerializedItemType.Prototyped;
     prototype: string;
     stringKeyedProperties: {
+        [key: string]: SerializedProperty;
+    };
+    symbolKeyedProperties: {
         [key: string]: SerializedProperty;
     };
 }
@@ -128,6 +137,11 @@ export enum SerializedPropertyType {
      * Indicates this property is a Date.
      */
     Date = 'date',
+
+    /**
+     * Indicates this property is a Symbol.
+     */
+    Symbol = 'symbol',
 }
 
 /**
@@ -156,6 +170,14 @@ export interface SerializedPropertyDate {
 }
 
 /**
+ * Represents a property that is a Symbol.
+ */
+export interface SerializedPropertySymbol {
+    type: SerializedPropertyType.Symbol;
+    name: string;
+}
+
+/**
  * A property of a serialized item.
  */
 export type SerializedProperty =
@@ -166,4 +188,6 @@ export type SerializedProperty =
     | undefined
     | SerializedPropertyItemReference
     | SerializedPropertyBigInt
+    | SerializedPropertyDate
+    | SerializedPropertySymbol
     | SerializedPropertyDate;

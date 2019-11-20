@@ -140,9 +140,9 @@ export class Serialization {
         });
 
         return {
+            ...this._getProperties(item),
             type: SerializedItemType.Prototyped,
             prototype: name,
-            stringKeyedProperties,
         };
     }
 
@@ -151,15 +151,39 @@ export class Serialization {
      * assuming it is an object or an array.
      */
     private _serializeItemObjectOrArray(item: SerializableItem): SerializedItem {
-        const stringKeyedProperties: SerializedItemObject['stringKeyedProperties'] | SerializedItemArray['stringKeyedProperties'] = {};
+        return {
+            ...this._getProperties(item),
+            type: Array.isArray(item) ? SerializedItemType.Array : SerializedItemType.Object,
+        };
+    }
+
+    /**
+     * Returns the properties on the specified item.
+     */
+    private _getProperties(item: SerializableItem) {
+        const stringKeyedProperties: SerializedItemObject['stringKeyedProperties'] = {};
+        const symbolKeyedProperties: SerializedItemObject['symbolKeyedProperties'] = {};
 
         Object.keys(item).forEach((key) => {
             stringKeyedProperties[key] = this._serializeProperty(item[key]);
         });
 
+        Object.getOwnPropertySymbols(item).forEach((symbol) => {
+            const name = this._configuration.symbolToName.get(symbol);
+            if (!name) {
+                // Unknown symbols are ignored.
+                return;
+            }
+
+            // TypeScript doesn't support symbol indexers yet
+            // https://github.com/microsoft/TypeScript/issues/1863
+            // Hence the as any.
+            symbolKeyedProperties[name] = this._serializeProperty(item[symbol as any]);
+        });
+
         return {
-            type: Array.isArray(item) ? SerializedItemType.Array : SerializedItemType.Object,
             stringKeyedProperties,
+            symbolKeyedProperties,
         };
     }
 
@@ -201,6 +225,8 @@ export class Serialization {
 
         if (property instanceof Date) { return this._serializePropertyDate(property); }
 
+        if (typeof property === 'symbol') { return this._serializePropertySymbol(property); }
+
         if (typeof property === 'object') { return this._serializePropertyReference(property as SerializableItem); }
 
         if (typeof property === 'function') {
@@ -238,6 +264,21 @@ export class Serialization {
         return {
             type: SerializedPropertyType.Date,
             timestamp: property.getTime(),
+        };
+    }
+
+    /**
+     * Returns the specified property,
+     * assuming it is a Symbol.
+     */
+    private _serializePropertySymbol(property: symbol): SerializedProperty {
+        const name = this._configuration.symbolToName.get(property);
+        if (!name) {
+            throw new Error(`Bad serialization: Unrecognized symbol ${property.toString()}.`);
+        }
+        return {
+            type: SerializedPropertyType.Symbol,
+            name,
         };
     }
 

@@ -54,6 +54,7 @@ describe('Serialization', function () {
                                     value: '1234567890987654321',
                                 },
                             },
+                            symbolKeyedProperties: {},
                         },
                     },
                 };
@@ -86,12 +87,14 @@ describe('Serialization', function () {
                                 uuid: 'update',
                             },
                         },
+                        symbolKeyedProperties: {},
                     },
                     noupdate: {
                         type: SerializedItemType.Object,
                         stringKeyedProperties: {
                             a: 'should-update',
                         },
+                        symbolKeyedProperties: {},
                     },
                     update: {
                         type: SerializedItemType.NoUpdate,
@@ -279,6 +282,35 @@ describe('Serialization', function () {
             assert.deepEqual(target, original);
             assert.strictEqual(Object.getPrototypeOf(deserialization.b), Object.getPrototypeOf(original.b));
             assert.strictEqual(Object.getPrototypeOf(target.b), Object.getPrototypeOf(original.b));
+        });
+
+    });
+
+    describe('Symbol serialization', function () {
+
+        it('should serialize registered symbols', function () {
+            const serializer = new Serializer();
+
+            const b = Symbol('b');
+            serializer.registerSymbol(b);
+
+            const original: any = { a: 'a', b };
+            const serialization = serializer.serialize(original);
+            const deserialization = serializer.deserialize(serialization);
+            assert.deepEqual(deserialization, original);
+        });
+
+        it('should serialize registered symbol keys', function () {
+            const serializer = new Serializer();
+
+            const b = Symbol('b');
+            serializer.registerSymbol(b);
+
+            const original: any = { a: 'a', [b]: 'b' };
+            const serialization = serializer.serialize(original);
+            const deserialization = serializer.deserialize(serialization);
+            assert.deepEqual(deserialization, original);
+            assert.deepEqual(deserialization[b as any], original[b]);
         });
 
     });

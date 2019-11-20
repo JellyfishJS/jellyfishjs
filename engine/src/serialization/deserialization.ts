@@ -10,6 +10,7 @@ import {
     SerializedPropertyBigInt,
     SerializedPropertyDate,
     SerializedPropertyItemReference,
+    SerializedPropertySymbol,
     SerializedPropertyType,
 } from './serialization-result';
 import { SerializerConfiguration } from './serializer-configuration';
@@ -156,6 +157,7 @@ export class Deserialization {
         }
 
         this._addPropertiesToItem(result, serializedItem.stringKeyedProperties);
+        this._addSymbolPropertiesToItem(result, serializedItem.symbolKeyedProperties);
 
         return result;
     }
@@ -180,6 +182,7 @@ export class Deserialization {
             throw new Error(`Bad deserialization: Property .stringKeyedProperties is not an object in ${serializedItem}.`);
         }
         this._addPropertiesToItem(result, serializedItem.stringKeyedProperties);
+        this._addSymbolPropertiesToItem(result, serializedItem.symbolKeyedProperties);
         return result;
     }
 
@@ -209,6 +212,7 @@ export class Deserialization {
             throw new Error(`Bad deserialization: Property .stringKeyedProperties is not an object in ${serializedItem}.`);
         }
         this._addPropertiesToItem(result, serializedItem.stringKeyedProperties);
+        this._addSymbolPropertiesToItem(result, serializedItem.symbolKeyedProperties);
         return result;
     }
 
@@ -277,6 +281,23 @@ export class Deserialization {
     }
 
     /**
+     * Adds the specified properties to the specified item.
+     */
+    private _addSymbolPropertiesToItem(
+        item: SerializableItem,
+        properties: { [key: string]: SerializedProperty },
+    ) {
+        Object.keys(properties).forEach((key) => {
+            const symbol = this._configuration.symbolNameToSymbol.get(key);
+            if (!symbol) {
+                throw new Error(`Bad deserialization: Unrecognized symbol name ${key}.`);
+            }
+
+            item[symbol as any] = this._deserializePropertyValue(properties[key], item[symbol as any]);
+        });
+    }
+
+    /**
      * Deserializes the property and returns it.
      *
      * Caches results, so can be called multiple times.
@@ -304,6 +325,7 @@ export class Deserialization {
             case SerializedPropertyType.Reference: return this._deserializePropertyReference(property, originalValue);
             case SerializedPropertyType.BigInt: return this._deserializePropertyBigInt(property);
             case SerializedPropertyType.Date: return this._deserializePropertyDate(property);
+            case SerializedPropertyType.Symbol: return this._deserializePropertySymbol(property);
             default: throw new Error(`Bad deserialization: Unknown value type ${(property as any).type}.`);
         }
     }
@@ -359,6 +381,17 @@ export class Deserialization {
             throw new Error(`Bad deserialization: Cannot parse date timestamp ${property.timestamp}.`);
         }
         return new Date(property.timestamp);
+    }
+
+    /**
+     * Deserializes the specified property, assuming it's a symbol.
+     */
+    private _deserializePropertySymbol(property: SerializedPropertySymbol): unknown {
+        const symbol = this._configuration.symbolNameToSymbol.get(property.name);
+        if (!symbol) {
+            throw new Error(`Bad deserialization: Unrecognized symbol name ${property.name}.`);
+        }
+        return symbol;
     }
 
 }
