@@ -37,6 +37,46 @@ Jellyfish isn't magic
 — it does things automatically when you want,
 but let's you control the details when you need.
 
+## Simple Multiplayer Game
+
+**NOTE:**
+This doesn't work yet,
+but something like this should work
+once it is released.
+
+```js
+const { GameObject, keys, isServer, Client, Server } = require('jellyfish');
+
+@register
+class Player extends GameObject {
+    x = 0;
+    y = 0;
+    sprite = this.graphics.image('/assets/player.png');
+
+    keyHeld(keycode) {
+        if (!this.isOwnedByCurrentUser()) { return; }
+        switch (keycode) {
+            case keys.up: this.y++; break;
+            case keys.down: this.y--; break;
+            case keys.left: this.x--; break;
+            case keys.right: this.x++; break;
+        }
+    }
+}
+
+class GameServer extends Server {
+    onUserJoined(user) {
+        const player = this.createObject(Player);
+        player.setOwner(user);
+    }
+}
+
+if (isServer) { game.createObject(GameServer); }
+else { game.createObject(Client);
+
+game.start();
+```
+
 ## Getting Started
 
 To get started quickly, check out the [quick start guide](./docs/use/articles/quick-start.md).
