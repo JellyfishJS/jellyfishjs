@@ -92,3 +92,11 @@ or a new [pull request](https://github.com/NicholasThrom/jellyfishjs/pulls).
 
 Check out the [development docs](./docs/development)
 for more information.
+
+## Contact Us
+
+If you have a question,
+have general feedback,
+want to insult us,
+or want to help out,
+that that's too bad because we don't have a slack yet.
