@@ -90,7 +90,7 @@ Ideas? Want to help out? Great!
 Make a [new issue](https://github.com/NicholasThrom/jellyfishjs/issues)
 or a new [pull request](https://github.com/NicholasThrom/jellyfishjs/pulls).
 
-Check out the [development docs](./docs/development)
+Check out the [development docs](./docs/development/development.md)
 for more information.
 
 ## Contact Us
