@@ -45,9 +45,8 @@ but something like this should work
 once it is released.
 
 ```js
-const { GameObject, keys, isServer, Client, Server } = require('jellyfish');
+const { GameObject, keys, isServer, Client, Server, game } = require('jellyfish');
 
-@register
 class Player extends GameObject {
     x = 0;
     y = 0;
@@ -63,6 +62,7 @@ class Player extends GameObject {
         }
     }
 }
+game.register(Player);
 
 class GameServer extends Server {
     onUserJoined(user) {
