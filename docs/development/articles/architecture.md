@@ -32,7 +32,7 @@ stored under the `childKey` key.
 Each of these `GameObject`s has a number of hooks
 that are called at various times.
 
-## `GameLoop
+## `GameLoop`
 
 Each `Game` has one `GameLoop`.
 The `GameLoop` has a tree of `GameObject`s,
@@ -88,7 +88,7 @@ except where otherwise specified:
 - `endStep`:
     - All the `endStep` hooks are called.
 
-## Servers and Clients
+## `Server`s and `Client`s
 
 Servers and clients
 synchronize everything beneath them
