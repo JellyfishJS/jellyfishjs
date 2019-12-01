@@ -10,7 +10,7 @@ Clone this repository.
 ## Building
 
 It is easiest to run the `./build` script
-or the `./build.bat` batch file
+or the `build.bat` batch file
 in the root directory
 to set everything up initially.
 

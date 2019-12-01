@@ -43,7 +43,7 @@ and also output a summary of the coverage results.
 
 ## CI Tests
 
-The github actions
+GitHub actions
 automatically run linting and unit tests
 on the engine and all the test games.
 
