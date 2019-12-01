@@ -1,6 +1,5 @@
 const Jellyfish = require('engine');
 const keycode = require('keycode');
-const GameObject = Jellyfish.GameObject;
 const Vector = Jellyfish.Vector;
 
 class Server extends Jellyfish.Server {
@@ -51,7 +50,7 @@ class Client extends Jellyfish.Client {
     onCreate() {
         this.position = Vector.xy(Math.floor(Math.random() * 400), Math.floor(Math.random() * 300));
         this.others = [];
-        this.connect(process.env.MULTIPLAYER_CIRCLES_SERVER || 'http://localhost');
+        this.connect(process.env.MULTIPLAYER_CIRCLES_SERVER);
     }
 
     onConnect() {

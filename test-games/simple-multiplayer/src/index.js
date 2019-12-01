@@ -43,7 +43,7 @@ class Server extends Jellyfish.Server {
 class Client extends Jellyfish.Client {
 
     onCreate() {
-        this.connect('http://localhost');
+        this.connect();
     }
 
     keyPressed(keyCode) {
