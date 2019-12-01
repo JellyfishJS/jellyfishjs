@@ -51,7 +51,7 @@ class Client extends Jellyfish.Client {
     onCreate() {
         this.position = Vector.xy(Math.floor(Math.random() * 400), Math.floor(Math.random() * 300));
         this.others = [];
-        this.connect('http://localhost');
+        this.connect(process.env.MULTIPLAYER_CIRCLES_SERVER || 'http://localhost');
     }
 
     onConnect() {
