@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
         "declaration": true,
+        "importsNotUsedAsValues": "error",
         "noEmit": false,
         "module": "commonjs",
         "moduleResolution": "Node",

@@ -1,4 +1,4 @@
-import { User } from './user';
+import type { User } from './user';
 
 /**
  * Represents the various kinds of events that can happen to a client.

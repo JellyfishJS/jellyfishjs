@@ -1,10 +1,10 @@
-import * as Matter from 'matter-js';
-import * as PIXI from 'pixi.js';
-import { Game } from '../game/game';
-import { Client } from '../multiplayer/client';
-import { Server } from '../multiplayer/server';
-import { User } from '../multiplayer/user';
-import { AnyAmountOf } from '../util/as-array';
+import type * as Matter from 'matter-js';
+import type * as PIXI from 'pixi.js';
+import type { Game } from '../game/game';
+import type { Client } from '../multiplayer/client';
+import type { Server } from '../multiplayer/server';
+import type { User } from '../multiplayer/user';
+import type { AnyAmountOf } from '../util/as-array';
 
 /**
  * Allowable types for GameObject bodies.
