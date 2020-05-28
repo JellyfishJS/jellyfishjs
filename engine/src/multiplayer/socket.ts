@@ -11,6 +11,8 @@ export function getSocketIO(): typeof SocketIOForType | undefined {
         // if it is re-required here.
         // This makes it not crash client-side,
         // since socket.io cannot be imported in the browser.
-        return require('socket.io');
+        // The weird require hack makes webpack ignore this require.
+        // @ts-ignore
+        return __non_webpack_require__('socket.io');
     }
 }
