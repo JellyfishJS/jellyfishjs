@@ -18,9 +18,6 @@ module.exports = {
     resolve: {
         extensions: ['.ts', '.js']
     },
-    externals: {
-        "socket.io": "commonjs socket.io",
-    },
     mode: process.env.NODE_ENV || "development",
     devtool: "cheap-eval-source-map",
 }
