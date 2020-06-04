@@ -26,14 +26,16 @@ export class SerializerConfiguration {
     /**
      * Registers a class to be serializable.
      */
-    public registerClass(Class: new () => unknown) {
+    public registerClass(Class: new () => unknown, options: PrototypeRegistrationOptions = {}) {
         const { name, prototype } = Class;
+        const { blacklistedKeys } = options;
+
         if (this.prototypeNameToConfiguration.has(name)) {
             throw new Error(`Serialization registration error: Duplicate prototype name ${name}`);
         }
         this.prototypeToName.set(prototype, name);
 
-        const configuration = { prototype };
+        const configuration = { prototype, blacklistedKeys };
 
         this.prototypeNameToConfiguration.set(name, configuration);
     }
@@ -54,8 +56,17 @@ export class SerializerConfiguration {
 }
 
 /**
+ * Represents settings provided by the developer on how objects
+ * of a certain prototype are serialized.
+ */
+export interface PrototypeRegistrationOptions {
+    blacklistedKeys?: string[];
+}
+
+/**
  * Represents settings for the serialization of some prototype.
  */
 export interface PrototypeConfiguration {
     prototype: {};
+    blacklistedKeys?: string[];
 }
