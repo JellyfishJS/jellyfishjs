@@ -30,7 +30,7 @@ export class SerializerConfiguration {
         Class: new () => unknown,
         {
             blacklistedKeys = [],
-        }: PrototypeRegistrationOptions,
+        }: PrototypeRegistrationOptions = {},
     ) {
         const { name, prototype } = Class;
 
