@@ -1,7 +1,7 @@
 import { Deserialization } from './deserialization';
 import { Serialization } from './serialization';
 import { SerializableItem, SerializedEntity } from './serialization-result';
-import { SerializerConfiguration } from './serializer-configuration';
+import { PrototypeRegistrationOptions, SerializerConfiguration } from './serializer-configuration';
 
 /**
  * Serializes and deserializes entities.
@@ -37,8 +37,8 @@ export class Serializer {
     /**
      * Registers a class to be serializable.
      */
-    public registerClass(Class: new () => unknown) {
-        this._configuration.registerClass(Class);
+    public registerClass(Class: new () => unknown, options?: PrototypeRegistrationOptions) {
+        this._configuration.registerClass(Class, options);
     }
 
     /**
