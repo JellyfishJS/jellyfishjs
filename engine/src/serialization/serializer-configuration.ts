@@ -26,16 +26,23 @@ export class SerializerConfiguration {
     /**
      * Registers a class to be serializable.
      */
-    public registerClass(Class: new () => unknown, options: PrototypeRegistrationOptions = {}) {
+    public registerClass(
+        Class: new () => unknown,
+        {
+            blacklistedKeys = [],
+        }: PrototypeRegistrationOptions,
+    ) {
         const { name, prototype } = Class;
-        const { blacklistedKeys } = options;
 
         if (this.prototypeNameToConfiguration.has(name)) {
             throw new Error(`Serialization registration error: Duplicate prototype name ${name}`);
         }
         this.prototypeToName.set(prototype, name);
 
-        const configuration = { prototype, blacklistedKeys };
+        const configuration = {
+            prototype,
+            blacklistedKeys: new Set(blacklistedKeys),
+        };
 
         this.prototypeNameToConfiguration.set(name, configuration);
     }
@@ -68,5 +75,5 @@ export interface PrototypeRegistrationOptions {
  */
 export interface PrototypeConfiguration {
     prototype: {};
-    blacklistedKeys?: string[];
+    blacklistedKeys?: Set<string>;
 }
