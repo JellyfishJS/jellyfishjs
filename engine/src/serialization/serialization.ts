@@ -133,12 +133,6 @@ export class Serialization {
         name: string,
         configuration: PrototypeConfiguration,
     ): SerializedItem {
-        const stringKeyedProperties: SerializedItemPrototyped['stringKeyedProperties'] = {};
-
-        Object.keys(item).forEach((key) => {
-            stringKeyedProperties[key] = this._serializeProperty(item[key]);
-        });
-
         return {
             ...this._getProperties(item),
             type: SerializedItemType.Prototyped,
