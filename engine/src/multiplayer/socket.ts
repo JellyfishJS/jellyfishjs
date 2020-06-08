@@ -1,4 +1,4 @@
-import * as SocketIOForType from 'socket.io';
+import type * as SocketIOForType from 'socket.io';
 import { isServer } from './is-server';
 
 /**

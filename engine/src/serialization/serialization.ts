@@ -10,7 +10,7 @@ import {
     SerializedProperty,
     SerializedPropertyType,
 } from './serialization-result';
-import { PrototypeConfiguration, SerializerConfiguration } from './serializer-configuration';
+import type { PrototypeConfiguration, SerializerConfiguration } from './serializer-configuration';
 
 /**
  * A class used to serialize a single entity.
