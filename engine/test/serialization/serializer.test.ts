@@ -355,6 +355,56 @@ describe('Serialization', function () {
             assert.strictEqual(deserialization.key2, 'value2');
         });
 
+        it('should omit blacklisted symbol keys', function () {
+            const serializer = new Serializer();
+
+            const key = Symbol('key');
+            serializer.registerSymbol(key);
+
+            const key2 = Symbol('key2');
+            serializer.registerSymbol(key2);
+
+            class A {}
+            serializer.registerClass(A, {
+                blacklistedKeys: [key],
+            });
+
+            const original: any = new A();
+            original[key] = 'value';
+            original[key2] = 'value2';
+            const target: any = new A();
+            target[key] = 'otherValue';
+            const serialization = serializer.serialize(original);
+            const deserialization = serializer.deserialize(serialization, target) as any;
+            assert.strictEqual(deserialization[key], 'otherValue');
+            assert.strictEqual(deserialization[key2], 'value2');
+        });
+
+        it('should omit blacklisted symbol keys from a function', function () {
+            const serializer = new Serializer();
+
+            const key = Symbol('key');
+            serializer.registerSymbol(key);
+
+            const key2 = Symbol('key2');
+            serializer.registerSymbol(key2);
+
+            class A {}
+            serializer.registerClass(A, {
+                blacklistedKeys: (k) => k === key,
+            });
+
+            const original: any = new A();
+            original[key] = 'value';
+            original[key2] = 'value2';
+            const target: any = new A();
+            target[key] = 'otherValue';
+            const serialization = serializer.serialize(original);
+            const deserialization = serializer.deserialize(serialization, target) as any;
+            assert.strictEqual(deserialization[key], 'otherValue');
+            assert.strictEqual(deserialization[key2], 'value2');
+        });
+
     });
 
 });
