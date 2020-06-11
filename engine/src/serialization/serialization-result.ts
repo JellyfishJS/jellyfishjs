@@ -40,14 +40,14 @@ export enum SerializedItemType {
     Prototyped = 'prototyped',
 
     /**
-     * Indicates this serialized item should not be updated.
-     */
-    NoUpdate = 'noupdate',
-
-    /**
     * Indicates this serialized item is a Map.
     */
     Map = 'map',
+
+    /**
+     * Indicates this serialized item should not be updated.
+     */
+    NoUpdate = 'noupdate',
 }
 
 /**
@@ -142,6 +142,11 @@ export enum SerializedPropertyType {
      * Indicates this property is a Symbol.
      */
     Symbol = 'symbol',
+
+    /**
+     * Indicates this property should not be updated.
+     */
+    NoUpdate = 'noupdate',
 }
 
 /**
@@ -178,6 +183,13 @@ export interface SerializedPropertySymbol {
 }
 
 /**
+ * Represents a property that should not be updated.
+ */
+export interface SerializedPropertyNoUpdate {
+    type: SerializedPropertyType.NoUpdate;
+}
+
+/**
  * A property of a serialized item.
  */
 export type SerializedProperty =
@@ -190,4 +202,5 @@ export type SerializedProperty =
     | SerializedPropertyBigInt
     | SerializedPropertyDate
     | SerializedPropertySymbol
-    | SerializedPropertyDate;
+    | SerializedPropertyDate
+    | SerializedPropertyNoUpdate;
