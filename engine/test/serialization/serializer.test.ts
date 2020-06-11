@@ -327,11 +327,32 @@ describe('Serialization', function () {
 
             const original: any = new A();
             original.key = 'value';
+            original.key2 = 'value2';
             const target: any = new A();
             target.key = 'otherValue';
             const serialization = serializer.serialize(original);
             const deserialization = serializer.deserialize(serialization, target);
             assert.strictEqual(deserialization.key, 'otherValue');
+            assert.strictEqual(deserialization.key2, 'value2');
+        });
+
+        it('should omit blacklisted keys from a function', function () {
+            const serializer = new Serializer();
+
+            class A {}
+            serializer.registerClass(A, {
+                blacklistedKeys: (key) => key === 'key',
+            });
+
+            const original: any = new A();
+            original.key = 'value';
+            original.key2 = 'value2';
+            const target: any = new A();
+            target.key = 'otherValue';
+            const serialization = serializer.serialize(original);
+            const deserialization = serializer.deserialize(serialization, target);
+            assert.strictEqual(deserialization.key, 'otherValue');
+            assert.strictEqual(deserialization.key2, 'value2');
         });
 
     });
