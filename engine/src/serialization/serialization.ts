@@ -153,13 +153,11 @@ export class Serialization {
      * Returns the properties on the specified item.
      */
     private _getProperties(item: SerializableItem, configuration?: PrototypeConfiguration) {
-        const blacklistedKeys = configuration?.blacklistedKeys || new Set();
-
         const stringKeyedProperties: SerializedItemObject['stringKeyedProperties'] = {};
         const symbolKeyedProperties: SerializedItemObject['symbolKeyedProperties'] = {};
 
         Object.keys(item).forEach((key) => {
-            if (blacklistedKeys.has(key)) {
+            if (this._isKeyBlacklisted(key, item, configuration)) {
                 stringKeyedProperties[key] = this._serializePropertyNoUpdate();
             } else {
                 stringKeyedProperties[key] = this._serializeProperty(item[key]);
@@ -183,6 +181,20 @@ export class Serialization {
             stringKeyedProperties,
             symbolKeyedProperties,
         };
+    }
+
+    /**
+     * Returns `true` if the specified key of the specified item
+     * is blacklisted.
+     */
+    private _isKeyBlacklisted(key: string, item: SerializableItem, configuration?: PrototypeConfiguration): boolean {
+        if (!(configuration?.blacklistedKeys)) { return false; }
+
+        if (typeof configuration.blacklistedKeys === 'function') {
+            return configuration.blacklistedKeys(key, item);
+        }
+
+        return configuration.blacklistedKeys.has(key);
     }
 
     /**

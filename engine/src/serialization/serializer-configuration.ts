@@ -39,9 +39,16 @@ export class SerializerConfiguration {
         }
         this.prototypeToName.set(prototype, name);
 
+        let blacklistedKeysConfigValue;
+        if (typeof blacklistedKeys === 'function') {
+            blacklistedKeysConfigValue = blacklistedKeys;
+        } else {
+            blacklistedKeysConfigValue = new Set(blacklistedKeys);
+        }
+
         const configuration = {
             prototype,
-            blacklistedKeys: new Set(blacklistedKeys),
+            blacklistedKeys: blacklistedKeysConfigValue,
         };
 
         this.prototypeNameToConfiguration.set(name, configuration);
@@ -63,11 +70,17 @@ export class SerializerConfiguration {
 }
 
 /**
+ * A function that returns true if the key should be blacklisted,
+ * otherwise false.
+ */
+type KeyBlacklistFunction = (key: string, item: unknown) => boolean;
+
+/**
  * Represents settings provided by the developer on how objects
  * of a certain prototype are serialized.
  */
 export interface PrototypeRegistrationOptions {
-    blacklistedKeys?: string[];
+    blacklistedKeys?: string[] | KeyBlacklistFunction;
 }
 
 /**
@@ -75,5 +88,5 @@ export interface PrototypeRegistrationOptions {
  */
 export interface PrototypeConfiguration {
     prototype: {};
-    blacklistedKeys?: Set<string>;
+    blacklistedKeys?: Set<string> | KeyBlacklistFunction;
 }
