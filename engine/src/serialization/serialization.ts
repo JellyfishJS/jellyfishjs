@@ -8,6 +8,7 @@ import {
     SerializedItemPrototyped,
     SerializedItemType,
     SerializedProperty,
+    SerializedProperty,
     SerializedPropertyType,
 } from './serialization-result';
 import { PrototypeConfiguration, SerializerConfiguration } from './serializer-configuration';
@@ -288,6 +289,16 @@ export class Serialization {
         return {
             type: SerializedPropertyType.Reference,
             uuid: this._serializeItem(property as SerializableItem),
+        };
+    }
+
+    /**
+     * Serializes the specified item,
+     * assuming it is an no update item.
+     */
+    private _serializePropertyNoUpdate(item: SerializableItem): SerializedProperty {
+        return {
+            type: SerializedPropertyType.NoUpdate,
         };
     }
 
