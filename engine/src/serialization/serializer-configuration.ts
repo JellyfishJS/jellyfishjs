@@ -1,4 +1,4 @@
-import { SerializableItem } from './serialization-result';
+import type { SerializableItem } from './serialization-result';
 
 /**
  * Represents the configuration for a serializer.
