@@ -3,11 +3,8 @@ import {
     SerializableItem,
     SerializedEntity,
     SerializedItem,
-    SerializedItemArray,
     SerializedItemObject,
-    SerializedItemPrototyped,
     SerializedItemType,
-    SerializedProperty,
     SerializedProperty,
     SerializedPropertyType,
 } from './serialization-result';
