@@ -315,4 +315,25 @@ describe('Serialization', function () {
 
     });
 
+    describe('Key blacklisting', function () {
+
+        it('should omit blacklisted keys', function () {
+            const serializer = new Serializer();
+
+            class A {}
+            serializer.registerClass(A, {
+                blacklistedKeys: ['key'],
+            });
+
+            const original: any = new A();
+            original.key = 'value';
+            const target: any = new A();
+            target.key = 'otherValue';
+            const serialization = serializer.serialize(original);
+            const deserialization = serializer.deserialize(serialization, target);
+            assert.strictEqual(deserialization.key, 'otherValue');
+        });
+
+    });
+
 });
