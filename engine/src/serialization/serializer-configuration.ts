@@ -1,3 +1,5 @@
+import { SerializableItem } from './serialization-result';
+
 /**
  * Represents the configuration for a serializer.
  */
@@ -73,7 +75,7 @@ export class SerializerConfiguration {
  * A function that returns true if the key should be blacklisted,
  * otherwise false.
  */
-type KeyBlacklistFunction = (key: string | symbol, item: unknown) => boolean;
+type KeyBlacklistFunction = (key: string | symbol, item: SerializableItem) => boolean;
 
 /**
  * Represents settings provided by the developer on how objects
