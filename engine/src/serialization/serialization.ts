@@ -194,7 +194,8 @@ export class Serialization {
         };
     }
 
-    /* Returns the specified item,
+    /**
+     * Returns the specified item,
      * assuming it is a Map.
      */
     private _serializeItemMap(property: Map<unknown, unknown>): SerializedItem {

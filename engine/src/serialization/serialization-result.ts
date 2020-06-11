@@ -44,10 +44,10 @@ export enum SerializedItemType {
      */
     NoUpdate = 'noupdate',
 
-     /**
-     * Indicates this serialized item is a Map.
-     */
-     Map = 'map',
+    /**
+    * Indicates this serialized item is a Map.
+    */
+    Map = 'map',
 }
 
 /**
@@ -97,8 +97,8 @@ export interface SerializedItemNoUpdate {
     type: SerializedItemType.NoUpdate;
 }
 
- /**
- * Represent a property that is a Map.
+/**
+ * Represent an item that is a Map.
  */
 export interface SerializedItemMap {
     type: SerializedItemType.Map;
