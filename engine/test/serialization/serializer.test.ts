@@ -355,6 +355,25 @@ describe('Serialization', function () {
             assert.strictEqual(deserialization.key2, 'value2');
         });
 
+        it('should pass the relevant item to the blacklist function', function () {
+            const serializer = new Serializer();
+
+            class A {}
+            serializer.registerClass(A, {
+                blacklistedKeys: (key, item) => item[key as any] === 'value',
+            });
+
+            const original: any = new A();
+            original.key = 'value';
+            original.key2 = 'value2';
+            const target: any = new A();
+            target.key = 'otherValue';
+            const serialization = serializer.serialize(original);
+            const deserialization = serializer.deserialize(serialization, target);
+            assert.strictEqual(deserialization.key, 'otherValue');
+            assert.strictEqual(deserialization.key2, 'value2');
+        });
+
         it('should omit blacklisted symbol keys', function () {
             const serializer = new Serializer();
 
