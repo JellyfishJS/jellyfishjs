@@ -3,9 +3,7 @@ import {
     SerializableItem,
     SerializedEntity,
     SerializedItem,
-    SerializedItemArray,
     SerializedItemObject,
-    SerializedItemPrototyped,
     SerializedItemType,
     SerializedProperty,
     SerializedPropertyType,
@@ -133,14 +131,8 @@ export class Serialization {
         name: string,
         configuration: PrototypeConfiguration,
     ): SerializedItem {
-        const stringKeyedProperties: SerializedItemPrototyped['stringKeyedProperties'] = {};
-
-        Object.keys(item).forEach((key) => {
-            stringKeyedProperties[key] = this._serializeProperty(item[key]);
-        });
-
         return {
-            ...this._getProperties(item),
+            ...this._getProperties(item, configuration),
             type: SerializedItemType.Prototyped,
             prototype: name,
         };
@@ -160,12 +152,16 @@ export class Serialization {
     /**
      * Returns the properties on the specified item.
      */
-    private _getProperties(item: SerializableItem) {
+    private _getProperties(item: SerializableItem, configuration?: PrototypeConfiguration) {
         const stringKeyedProperties: SerializedItemObject['stringKeyedProperties'] = {};
         const symbolKeyedProperties: SerializedItemObject['symbolKeyedProperties'] = {};
 
         Object.keys(item).forEach((key) => {
-            stringKeyedProperties[key] = this._serializeProperty(item[key]);
+            if (this._isKeyBlacklisted(key, item, configuration)) {
+                stringKeyedProperties[key] = this._serializePropertyNoUpdate();
+            } else {
+                stringKeyedProperties[key] = this._serializeProperty(item[key]);
+            }
         });
 
         Object.getOwnPropertySymbols(item).forEach((symbol) => {
@@ -175,10 +171,14 @@ export class Serialization {
                 return;
             }
 
-            // TypeScript doesn't support symbol indexers yet
-            // https://github.com/microsoft/TypeScript/issues/1863
-            // Hence the as any.
-            symbolKeyedProperties[name] = this._serializeProperty(item[symbol as any]);
+            if (this._isKeyBlacklisted(symbol, item, configuration)) {
+                symbolKeyedProperties[name] = this._serializePropertyNoUpdate();
+            } else {
+                // TypeScript doesn't support symbol indexers yet
+                // https://github.com/microsoft/TypeScript/issues/1863
+                // Hence the as any.
+                symbolKeyedProperties[name] = this._serializeProperty(item[symbol as any]);
+            }
         });
 
         return {
@@ -188,16 +188,35 @@ export class Serialization {
     }
 
     /**
+     * Returns `true` if the specified key of the specified item
+     * is blacklisted.
+     */
+    private _isKeyBlacklisted(
+        key: string | symbol,
+        item: SerializableItem,
+        configuration?: PrototypeConfiguration,
+    ): boolean {
+        if (!(configuration?.blacklistedKeys)) { return false; }
+
+        if (typeof configuration.blacklistedKeys === 'function') {
+            return configuration.blacklistedKeys(key, item);
+        }
+
+        return configuration.blacklistedKeys.has(key);
+    }
+
+    /**
      * Serializes the specified item,
      * assuming it is an no update item.
      */
-    private _serializeItemNoUpdate(item: SerializableItem): SerializedItem {
+    private _serializeItemNoUpdate(): SerializedItem {
         return {
             type: SerializedItemType.NoUpdate,
         };
     }
 
-    /* Returns the specified item,
+    /**
+     * Returns the specified item,
      * assuming it is a Map.
      */
     private _serializeItemMap(property: Map<unknown, unknown>): SerializedItem {
@@ -290,6 +309,16 @@ export class Serialization {
         return {
             type: SerializedPropertyType.Reference,
             uuid: this._serializeItem(property as SerializableItem),
+        };
+    }
+
+    /**
+     * Serializes the specified item,
+     * assuming it is an no update item.
+     */
+    private _serializePropertyNoUpdate(): SerializedProperty {
+        return {
+            type: SerializedPropertyType.NoUpdate,
         };
     }
 

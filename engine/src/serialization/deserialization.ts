@@ -326,6 +326,7 @@ export class Deserialization {
             case SerializedPropertyType.BigInt: return this._deserializePropertyBigInt(property);
             case SerializedPropertyType.Date: return this._deserializePropertyDate(property);
             case SerializedPropertyType.Symbol: return this._deserializePropertySymbol(property);
+            case SerializedPropertyType.NoUpdate: return originalValue;
             default: throw new Error(`Bad deserialization: Unknown value type ${(property as any).type}.`);
         }
     }

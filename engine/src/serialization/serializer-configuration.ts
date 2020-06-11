@@ -1,3 +1,5 @@
+import type { SerializableItem } from './serialization-result';
+
 /**
  * Represents the configuration for a serializer.
  */
@@ -26,14 +28,30 @@ export class SerializerConfiguration {
     /**
      * Registers a class to be serializable.
      */
-    public registerClass(Class: new () => unknown) {
+    public registerClass(
+        Class: new () => unknown,
+        {
+            blacklistedKeys = [],
+        }: PrototypeRegistrationOptions = {},
+    ) {
         const { name, prototype } = Class;
+
         if (this.prototypeNameToConfiguration.has(name)) {
             throw new Error(`Serialization registration error: Duplicate prototype name ${name}`);
         }
         this.prototypeToName.set(prototype, name);
 
-        const configuration = { prototype };
+        let blacklistedKeysConfigValue;
+        if (typeof blacklistedKeys === 'function') {
+            blacklistedKeysConfigValue = blacklistedKeys;
+        } else {
+            blacklistedKeysConfigValue = new Set(blacklistedKeys);
+        }
+
+        const configuration = {
+            prototype,
+            blacklistedKeys: blacklistedKeysConfigValue,
+        };
 
         this.prototypeNameToConfiguration.set(name, configuration);
     }
@@ -54,8 +72,23 @@ export class SerializerConfiguration {
 }
 
 /**
+ * A function that returns true if the key should be blacklisted,
+ * otherwise false.
+ */
+type KeyBlacklistFunction = (key: string | symbol, item: SerializableItem) => boolean;
+
+/**
+ * Represents settings provided by the developer on how objects
+ * of a certain prototype are serialized.
+ */
+export interface PrototypeRegistrationOptions {
+    blacklistedKeys?: (string | symbol)[] | KeyBlacklistFunction;
+}
+
+/**
  * Represents settings for the serialization of some prototype.
  */
 export interface PrototypeConfiguration {
     prototype: {};
+    blacklistedKeys?: Set<string | symbol> | KeyBlacklistFunction;
 }
