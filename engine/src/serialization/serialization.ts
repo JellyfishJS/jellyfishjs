@@ -162,8 +162,11 @@ export class Serialization {
         const symbolKeyedProperties: SerializedItemObject['symbolKeyedProperties'] = {};
 
         Object.keys(item).forEach((key) => {
-            if (blacklistedKeys.has(key)) { return; }
-            stringKeyedProperties[key] = this._serializeProperty(item[key]);
+            if (blacklistedKeys.has(key)) {
+                stringKeyedProperties[key] = this._serializePropertyNoUpdate();
+            } else {
+                stringKeyedProperties[key] = this._serializeProperty(item[key]);
+            }
         });
 
         Object.getOwnPropertySymbols(item).forEach((symbol) => {
@@ -189,7 +192,7 @@ export class Serialization {
      * Serializes the specified item,
      * assuming it is an no update item.
      */
-    private _serializeItemNoUpdate(item: SerializableItem): SerializedItem {
+    private _serializeItemNoUpdate(): SerializedItem {
         return {
             type: SerializedItemType.NoUpdate,
         };
@@ -296,7 +299,7 @@ export class Serialization {
      * Serializes the specified item,
      * assuming it is an no update item.
      */
-    private _serializePropertyNoUpdate(item: SerializableItem): SerializedProperty {
+    private _serializePropertyNoUpdate(): SerializedProperty {
         return {
             type: SerializedPropertyType.NoUpdate,
         };
