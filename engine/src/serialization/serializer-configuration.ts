@@ -73,14 +73,14 @@ export class SerializerConfiguration {
  * A function that returns true if the key should be blacklisted,
  * otherwise false.
  */
-type KeyBlacklistFunction = (key: string, item: unknown) => boolean;
+type KeyBlacklistFunction = (key: string | symbol, item: unknown) => boolean;
 
 /**
  * Represents settings provided by the developer on how objects
  * of a certain prototype are serialized.
  */
 export interface PrototypeRegistrationOptions {
-    blacklistedKeys?: string[] | KeyBlacklistFunction;
+    blacklistedKeys?: (string | symbol)[] | KeyBlacklistFunction;
 }
 
 /**
@@ -88,5 +88,5 @@ export interface PrototypeRegistrationOptions {
  */
 export interface PrototypeConfiguration {
     prototype: {};
-    blacklistedKeys?: Set<string> | KeyBlacklistFunction;
+    blacklistedKeys?: Set<string | symbol> | KeyBlacklistFunction;
 }

@@ -171,10 +171,14 @@ export class Serialization {
                 return;
             }
 
-            // TypeScript doesn't support symbol indexers yet
-            // https://github.com/microsoft/TypeScript/issues/1863
-            // Hence the as any.
-            symbolKeyedProperties[name] = this._serializeProperty(item[symbol as any]);
+            if (this._isKeyBlacklisted(symbol, item, configuration)) {
+                symbolKeyedProperties[name] = this._serializePropertyNoUpdate();
+            } else {
+                // TypeScript doesn't support symbol indexers yet
+                // https://github.com/microsoft/TypeScript/issues/1863
+                // Hence the as any.
+                symbolKeyedProperties[name] = this._serializeProperty(item[symbol as any]);
+            }
         });
 
         return {
@@ -187,7 +191,11 @@ export class Serialization {
      * Returns `true` if the specified key of the specified item
      * is blacklisted.
      */
-    private _isKeyBlacklisted(key: string, item: SerializableItem, configuration?: PrototypeConfiguration): boolean {
+    private _isKeyBlacklisted(
+        key: string | symbol,
+        item: SerializableItem,
+        configuration?: PrototypeConfiguration,
+    ): boolean {
         if (!(configuration?.blacklistedKeys)) { return false; }
 
         if (typeof configuration.blacklistedKeys === 'function') {
