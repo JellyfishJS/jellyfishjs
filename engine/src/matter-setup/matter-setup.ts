@@ -1,4 +1,4 @@
-import * as MatterForType from 'matter-js';
+import type * as MatterForType from 'matter-js';
 
 let Matter: typeof MatterForType | undefined;
 

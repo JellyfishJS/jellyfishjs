@@ -13,7 +13,7 @@ import {
     SerializedPropertySymbol,
     SerializedPropertyType,
 } from './serialization-result';
-import { SerializerConfiguration } from './serializer-configuration';
+import type { SerializerConfiguration } from './serializer-configuration';
 
 /**
  * A class used to deserialize a single entity.

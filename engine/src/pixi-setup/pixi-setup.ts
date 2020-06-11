@@ -1,4 +1,4 @@
-import * as PIXIForType from 'pixi.js';
+import type * as PIXIForType from 'pixi.js';
 
 let PIXI: typeof PIXIForType | undefined;
 

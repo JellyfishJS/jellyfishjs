@@ -1,10 +1,10 @@
-import * as Matter from 'matter-js';
-import * as PIXI from 'pixi.js';
-import { Game } from '../game/game';
-import { Client } from '../multiplayer/client';
-import { Server } from '../multiplayer/server';
-import { User } from '../multiplayer/user';
-import { AnyAmountOf } from '../util/as-array';
+import type * as Matter from 'matter-js';
+import type * as PIXI from 'pixi.js';
+import type { Game } from '../game/game';
+import type { Client } from '../multiplayer/client';
+import type { Server } from '../multiplayer/server';
+import type { User } from '../multiplayer/user';
+import type { AnyAmountOf } from '../util/as-array';
 
 /**
  * Allowable types for GameObject bodies.
@@ -17,7 +17,7 @@ export type GameObjectBody = AnyAmountOf<Matter.Body>;
 export type GameObjectSprite = AnyAmountOf<PIXI.DisplayObject>;
 
 /**
- * The symbol used to store the game object ID.
+ * The symbol used to store the GameObject ID.
  *
  * A symbol is used instead of a private variable,
  * since user code will subclass this class,
@@ -36,22 +36,22 @@ export const containerKey = Symbol('container');
 export const spriteKey = Symbol('sprite');
 
 /**
- * The symbol used to access the object's to-be-destroyed status.
+ * The symbol used to access the GameObject's to-be-destroyed status.
  */
 export const toBeDestroyedKey = Symbol('to-be-destroyed');
 
 /**
- * The symbol used to access the object's destroyed status.
+ * The symbol used to access the GameObject's destroyed status.
  */
 export const wasDestroyedKey = Symbol('was-destroyed');
 
 /**
- * The symbol used to access the object's parent.
+ * The symbol used to access the GameObject's parent.
  */
 export const parentKey = Symbol('parent');
 
 /**
- * The symbol used to access the object's children.
+ * The symbol used to access the GameObject's children.
  */
 export const childrenKey = Symbol('children');
 
@@ -157,12 +157,12 @@ export abstract class GameObject<
     public physicsBody: Body | undefined;
 
     /**
-     * Whether this object should be destroyed by the end of the current step.
+     * Whether this GameObject should be destroyed by the end of the current step.
      */
     public [toBeDestroyedKey] = false;
 
     /**
-     * Whether this object was destroyed.
+     * Whether this GameObject was destroyed.
      */
     public [wasDestroyedKey] = false;
 
@@ -172,7 +172,7 @@ export abstract class GameObject<
     private [parentKey]: GameObject;
 
     /**
-     * List of children objects of this GameObject.
+     * List of children GameObjects of this GameObject.
      */
     private [childrenKey]: Map<string, GameObject> = new Map<string, GameObject>();
 
@@ -187,7 +187,7 @@ export abstract class GameObject<
     private [ownerKey]: User | undefined;
 
     /**
-     * Creates an object with parameters specified as the child of this GameObject.
+     * Creates a GameObject with parameters specified as the child of this GameObject.
      */
     public createObject<
         Subclass extends new (...args: any[]) => GameObject,
@@ -201,15 +201,15 @@ export abstract class GameObject<
     }
 
     /**
-     * Returns the ID of this object.
+     * Returns the ID of this GameObject.
      */
     public id() {
         return this[idKey];
     }
 
     /**
-     * Returns the Game containing this object.
-     * If the constructor for this object was called directly, returns undefined.
+     * Returns the Game containing this GameObject.
+     * If the constructor for this GameObject was called directly, returns undefined.
      */
     public game() {
         return this[gameKey];
@@ -240,7 +240,7 @@ export abstract class GameObject<
     }
 
     /**
-     * Schedule the game object for destruction at the end of the current step.
+     * Schedule the GameObject for destruction at the end of the current step.
      * This done recursively for all children as well.
      *
      * Do not override.
@@ -251,7 +251,7 @@ export abstract class GameObject<
     }
 
     /**
-     * Returns whether this object has been destroyed.
+     * Returns whether this GameObject has been destroyed.
      *
      * Do not override.
      */
@@ -276,13 +276,13 @@ export abstract class GameObject<
     }
 
     /**
-     * Checks if this object is owned by the current user.
+     * Checks if this GameObject is owned by the current user.
      *
      * We do this by traversing up the object tree:
      *   - If we find a Server, we return true when the owner is the server (undefined).
      *   - If we find a Client, we return true when the owner is the client's User object.
      *   - If we reach the root without finding either a Client or Server,
-     *     then the object is local and not part of multiplayer, so we always return true.
+     *     then the GameObject is local and not part of multiplayer, so we always return true.
      */
     public isOwnedByCurrentUser(): boolean {
         let current: GameObject | undefined = this;
@@ -321,7 +321,7 @@ export abstract class GameObject<
     public [onCreateKey]?(): void;
 
     /**
-     * Called when the object is created.
+     * Called when the GameObject is created.
      *
      * Meant to be overridden.
      */
@@ -395,7 +395,7 @@ export abstract class GameObject<
     public beforePhysics?(): void;
 
     /**
-     * Called when this game object collides with another game object.
+     * Called when this GameObject collides with another GameObject.
      *
      * Will be called after the beforePhysics hook and prior to the afterPhysics hook.
      */
@@ -445,7 +445,7 @@ export abstract class GameObject<
     public [onDestroyKey]?(): void;
 
     /**
-     * Called when the object is destroyed.
+     * Called when the GameObject is destroyed.
      *
      * Meant to be overridden.
      */

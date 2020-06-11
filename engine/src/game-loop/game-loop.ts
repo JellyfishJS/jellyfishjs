@@ -1,4 +1,4 @@
-import * as MatterType from 'matter-js';
+import type * as MatterType from 'matter-js';
 import {
     afterPhysicsKey,
     afterStepKey,

@@ -1,4 +1,4 @@
-import * as SocketIOForType from 'socket.io';
+import type * as SocketIOForType from 'socket.io';
 import { beforeStepKey, GameObject } from '../game-object/game-object';
 import { MessageType, ServerEvent, ServerEventType } from './event';
 import { getSocketIO } from './socket';
