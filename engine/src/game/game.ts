@@ -3,7 +3,11 @@ import { GameLoop } from '../game-loop/game-loop';
 import { gameKey, GameObject, idKey } from '../game-object/game-object';
 import { Keyboard } from '../keyboard/keyboard';
 import { Matter } from '../matter-setup/matter-setup';
+import { Client, Server } from '../multiplayer';
 import { PIXISetup } from '../pixi-setup/pixi-setup';
+import { Serializer } from '../serialization';
+import type { PrototypeRegistrationOptions } from '../serialization/serializer-configuration';
+import type { Class } from '../util/class-type';
 import { Vector } from '../util/geometry';
 
 /**
@@ -29,6 +33,8 @@ export class Game {
     private _pixiSetup: PIXISetup | undefined;
 
     private _physicsEngine: Matter.Engine | undefined = Matter?.Engine.create();
+
+    private _serializer: Serializer = new Serializer();
 
     /**
      * Creates an instance of a specified subclass of GameObject,
@@ -108,9 +114,46 @@ export class Game {
     }
 
     /**
+     * Registers the specified class with the serializer.
+     *
+     * Every class involved in multiplayer should be registered.
+     */
+    public registerClass<T>(Class: Class<T>, options?: PrototypeRegistrationOptions<T>) {
+        this._serializer.registerClass(Class, options);
+    }
+
+    /**
+     * Registers the specific symbol with the serializer.
+     *
+     * Every symbol involved in serialization should be registered.
+     */
+    public registerSymbol(symbol: symbol) {
+        this._serializer.registerSymbol(symbol);
+    }
+
+    /**
+     * Serializes the specified entity.
+     */
+    public getSerializer(): Serializer {
+        return this._serializer;
+    }
+
+    /**
+     * Initializes the classes used by the engine
+     * with the game's serializer.
+     */
+    private _initializeSerializer() {
+        this.registerClass(GameObject);
+        this.registerClass(Server);
+        this.registerClass(Client);
+    }
+
+    /**
      * Begins running the game.
      */
     public start() {
+        this._initializeSerializer();
+
         if (!this._pixiSetup) {
             this._pixiSetup = new PIXISetup();
         }

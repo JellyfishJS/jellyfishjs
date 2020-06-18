@@ -360,7 +360,7 @@ describe('Serialization', function () {
 
             class A {}
             serializer.registerClass(A, {
-                blacklistedKeys: (key, item) => item[key as any] === 'value',
+                blacklistedKeys: (key, item) => (item as any)[key] === 'value',
             });
 
             const original: any = new A();
