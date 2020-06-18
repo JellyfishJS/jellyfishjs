@@ -3,9 +3,11 @@ import { GameLoop } from '../game-loop/game-loop';
 import { gameKey, GameObject, idKey } from '../game-object/game-object';
 import { Keyboard } from '../keyboard/keyboard';
 import { Matter } from '../matter-setup/matter-setup';
+import { Client, Server } from '../multiplayer';
 import { PIXISetup } from '../pixi-setup/pixi-setup';
 import { Serializer } from '../serialization';
 import type { PrototypeRegistrationOptions } from '../serialization/serializer-configuration';
+import type { Class } from '../util/class-type';
 import { Vector } from '../util/geometry';
 
 /**
@@ -116,7 +118,7 @@ export class Game {
      *
      * Every class involved in multiplayer should be registered.
      */
-    public registerClass<T>(Class: new () => T, options?: PrototypeRegistrationOptions<T>) {
+    public registerClass<T>(Class: Class<T>, options?: PrototypeRegistrationOptions<T>) {
         this._serializer.registerClass(Class, options);
     }
 
@@ -130,9 +132,21 @@ export class Game {
     }
 
     /**
+     * Initializes the classes used by the engine
+     * with the game's serializer.
+     */
+    private _initializeSerializer() {
+        this.registerClass(GameObject);
+        this.registerClass(Server);
+        this.registerClass(Client);
+    }
+
+    /**
      * Begins running the game.
      */
     public start() {
+        this._initializeSerializer();
+
         if (!this._pixiSetup) {
             this._pixiSetup = new PIXISetup();
         }
