@@ -424,6 +424,34 @@ describe('Serialization', function () {
             assert.strictEqual(deserialization[key2], 'value2');
         });
 
+        it('should use superclasses\' configs', function () {
+            const serializer = new Serializer();
+
+            class A {}
+            serializer.registerClass(A, {
+                blacklistedKeys: (key) => key === 'key',
+            });
+
+            class B extends A {}
+            serializer.registerClass(B, {
+                blacklistedKeys: (key) => key === 'key2',
+            });
+
+            const original: any = new B();
+            original.key = 'value';
+            original.key2 = 'value2';
+            original.key3 = 'value3';
+            const target: any = new B();
+            target.key = 'otherValue';
+            target.key2 = 'otherValue2';
+            target.key3 = 'otherValue3';
+            const serialization = serializer.serialize(original);
+            const deserialization = serializer.deserialize(serialization, target);
+            assert.strictEqual(deserialization.key, 'otherValue');
+            assert.strictEqual(deserialization.key2, 'otherValue2');
+            assert.strictEqual(deserialization.key3, 'value3');
+        });
+
     });
 
 });
