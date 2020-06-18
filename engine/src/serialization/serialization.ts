@@ -110,13 +110,10 @@ export class Serialization {
         ) {
             this._result.items[id] = this._serializeItemObjectOrArray(item);
         } else {
-            const name = this._configuration.prototypeToName.get(prototype);
-            if (!name) {
-                throw new Error(`Bad serialization: Unrecognized prototype ${prototype.constructor.name}`);
-            }
-            const configuration = this._configuration.prototypeNameToConfiguration.get(name)!;
+            const name = this._getNameOfPrototype(prototype);
+            const configurations = this._getConfigurationsForPrototype(prototype);
 
-            this._result.items[id] = this._serializeItemPrototyped(item, name, configuration);
+            this._result.items[id] = this._serializeItemPrototyped(item, name, configurations);
         }
 
         return id;
@@ -129,10 +126,10 @@ export class Serialization {
     private _serializeItemPrototyped(
         item: SerializableItem,
         name: string,
-        configuration: PrototypeConfiguration,
+        configurations: PrototypeConfiguration[],
     ): SerializedItem {
         return {
-            ...this._getProperties(item, configuration),
+            ...this._getProperties(item, configurations),
             type: SerializedItemType.Prototyped,
             prototype: name,
         };
@@ -152,12 +149,12 @@ export class Serialization {
     /**
      * Returns the properties on the specified item.
      */
-    private _getProperties(item: SerializableItem, configuration?: PrototypeConfiguration) {
+    private _getProperties(item: SerializableItem, configurations?: PrototypeConfiguration[]) {
         const stringKeyedProperties: SerializedItemObject['stringKeyedProperties'] = {};
         const symbolKeyedProperties: SerializedItemObject['symbolKeyedProperties'] = {};
 
         Object.keys(item).forEach((key) => {
-            if (this._isKeyBlacklisted(key, item, configuration)) {
+            if (this._isKeyBlacklisted(key, item, configurations)) {
                 stringKeyedProperties[key] = this._serializePropertyNoUpdate();
             } else {
                 stringKeyedProperties[key] = this._serializeProperty(item[key]);
@@ -171,7 +168,7 @@ export class Serialization {
                 return;
             }
 
-            if (this._isKeyBlacklisted(symbol, item, configuration)) {
+            if (this._isKeyBlacklisted(symbol, item, configurations)) {
                 symbolKeyedProperties[name] = this._serializePropertyNoUpdate();
             } else {
                 // TypeScript doesn't support symbol indexers yet
@@ -194,15 +191,25 @@ export class Serialization {
     private _isKeyBlacklisted(
         key: string | symbol,
         item: SerializableItem,
-        configuration?: PrototypeConfiguration,
+        configurations: PrototypeConfiguration[] = [],
     ): boolean {
-        if (!(configuration?.blacklistedKeys)) { return false; }
+        for (const configuration of configurations) {
+            if (
+                typeof configuration.blacklistedKeys === 'function'
+                && configuration.blacklistedKeys(key, item)
+            ) {
+                return true;
+            }
 
-        if (typeof configuration.blacklistedKeys === 'function') {
-            return configuration.blacklistedKeys(key, item);
+            if (
+                configuration.blacklistedKeys instanceof Set
+                && configuration.blacklistedKeys.has(key)
+            ) {
+                return true;
+            }
         }
 
-        return configuration.blacklistedKeys.has(key);
+        return false;
     }
 
     /**
@@ -330,6 +337,37 @@ export class Serialization {
         // Functions cannot (safely) be serialized.
         // Later, if we wish, we can register functions
         return undefined;
+    }
+
+    /**
+     * Returns the configuration for all the prototypes
+     * from which the specified object inherits.
+     */
+    private _getConfigurationsForPrototype(prototype: any): PrototypeConfiguration[] {
+        // This will break if anyone ever extends Maps, Sets, or Errors,
+        // but none of those should really be getting serialized.
+        if (prototype === Object.getPrototypeOf({}) || prototype === null) {
+            return [];
+        }
+
+        const name = this._configuration.prototypeToName.get(prototype);
+        if (!name) {
+            throw new Error(`Bad serialization: Unrecognized prototype ${prototype.constructor.name}`);
+        }
+        const configuration = this._configuration.prototypeNameToConfiguration.get(name)!;
+
+        return [...this._getConfigurationsForPrototype(Object.getPrototypeOf(prototype)), configuration];
+    }
+
+    /**
+     * Returns the name of the specified prototype.
+     */
+    private _getNameOfPrototype(prototype: any): string {
+        const name = this._configuration.prototypeToName.get(prototype);
+        if (!name) {
+            throw new Error(`Bad serialization: Unrecognized prototype ${prototype.constructor.name}`);
+        }
+        return name;
     }
 
 }
