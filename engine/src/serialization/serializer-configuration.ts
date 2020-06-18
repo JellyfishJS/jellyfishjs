@@ -1,4 +1,15 @@
 /**
+ * The type of the class itself.
+ *
+ * Unfortunately the `new () => T`
+ * doesn't work with abstract classes.
+ */
+interface Class<T> {
+    prototype: T;
+    name: string;
+}
+
+/**
  * Represents the configuration for a serializer.
  */
 export class SerializerConfiguration {
@@ -27,7 +38,7 @@ export class SerializerConfiguration {
      * Registers a class to be serializable.
      */
     public registerClass<T>(
-        Class: new () => T,
+        Class: Class<T>,
         {
             blacklistedKeys = [],
         }: PrototypeRegistrationOptions<T> = {},
