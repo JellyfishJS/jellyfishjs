@@ -1,3 +1,4 @@
+import type { Class } from '../util/class-type';
 import { Deserialization } from './deserialization';
 import { Serialization } from './serialization';
 import type { SerializableItem, SerializedEntity } from './serialization-result';
@@ -37,7 +38,7 @@ export class Serializer {
     /**
      * Registers a class to be serializable.
      */
-    public registerClass<T>(Class: new () => T, options?: PrototypeRegistrationOptions<T>) {
+    public registerClass<T>(Class: Class<T>, options?: PrototypeRegistrationOptions<T>) {
         this._configuration.registerClass(Class, options);
     }
 

@@ -1,13 +1,4 @@
-/**
- * The type of the class itself.
- *
- * Unfortunately the `new () => T`
- * doesn't work with abstract classes.
- */
-interface Class<T> {
-    prototype: T;
-    name: string;
-}
+import type { Class } from '../util/class-type';
 
 /**
  * Represents the configuration for a serializer.
