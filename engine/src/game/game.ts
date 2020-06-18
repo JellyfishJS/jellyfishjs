@@ -4,6 +4,8 @@ import { gameKey, GameObject, idKey } from '../game-object/game-object';
 import { Keyboard } from '../keyboard/keyboard';
 import { Matter } from '../matter-setup/matter-setup';
 import { PIXISetup } from '../pixi-setup/pixi-setup';
+import { Serializer } from '../serialization';
+import type { PrototypeRegistrationOptions } from '../serialization/serializer-configuration';
 import { Vector } from '../util/geometry';
 
 /**
@@ -29,6 +31,8 @@ export class Game {
     private _pixiSetup: PIXISetup | undefined;
 
     private _physicsEngine: Matter.Engine | undefined = Matter?.Engine.create();
+
+    private _serializer: Serializer = new Serializer();
 
     /**
      * Creates an instance of a specified subclass of GameObject,
@@ -105,6 +109,24 @@ export class Game {
     public getSize() {
         const canvas = this.getCanvas();
         return canvas && Vector.xy(canvas.width, canvas.height);
+    }
+
+    /**
+     * Registers the specified class with the serializer.
+     *
+     * Every class involved in multiplayer should be registered.
+     */
+    public registerClass<T>(Class: new () => T, options?: PrototypeRegistrationOptions<T>) {
+        this._serializer.registerClass(Class, options);
+    }
+
+    /**
+     * Registers the specific symbol with the serializer.
+     *
+     * Every symbol involved in serialization should be registered.
+     */
+    public registerSymbol(symbol: symbol) {
+        this._serializer.registerSymbol(symbol);
     }
 
     /**
