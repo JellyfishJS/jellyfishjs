@@ -126,7 +126,7 @@ export class Serialization {
     private _serializeItemPrototyped(
         item: SerializableItem,
         name: string,
-        configurations: PrototypeConfiguration[],
+        configurations: PrototypeConfiguration<unknown>[],
     ): SerializedItem {
         return {
             ...this._getProperties(item, configurations),
@@ -149,7 +149,7 @@ export class Serialization {
     /**
      * Returns the properties on the specified item.
      */
-    private _getProperties(item: SerializableItem, configurations?: PrototypeConfiguration[]) {
+    private _getProperties(item: SerializableItem, configurations?: PrototypeConfiguration<unknown>[]) {
         const stringKeyedProperties: SerializedItemObject['stringKeyedProperties'] = {};
         const symbolKeyedProperties: SerializedItemObject['symbolKeyedProperties'] = {};
 
@@ -191,7 +191,7 @@ export class Serialization {
     private _isKeyBlacklisted(
         key: string | symbol,
         item: SerializableItem,
-        configurations: PrototypeConfiguration[] = [],
+        configurations: PrototypeConfiguration<unknown>[] = [],
     ): boolean {
         for (const configuration of configurations) {
             if (
@@ -343,7 +343,7 @@ export class Serialization {
      * Returns the configuration for all the prototypes
      * from which the specified object inherits.
      */
-    private _getConfigurationsForPrototype(prototype: any): PrototypeConfiguration[] {
+    private _getConfigurationsForPrototype(prototype: any): PrototypeConfiguration<unknown>[] {
         // This will break if anyone ever extends Maps, Sets, or Errors,
         // but none of those should really be getting serialized.
         if (prototype === Object.getPrototypeOf({}) || prototype === null) {
