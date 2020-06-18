@@ -352,4 +352,15 @@ export class Serialization {
         return [...this._getConfigurationsForPrototype(Object.getPrototypeOf(prototype)), configuration];
     }
 
+    /**
+     * Returns the name of the specified prototype.
+     */
+    private _getNameOfPrototype(prototype: any): string {
+        const name = this._configuration.prototypeToName.get(prototype);
+        if (!name) {
+            throw new Error(`Bad serialization: Unrecognized prototype ${prototype.constructor.name}`);
+        }
+        return name;
+    }
+
 }
