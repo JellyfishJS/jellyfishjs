@@ -1,5 +1,5 @@
 import type * as SocketIOForType from 'socket.io';
-import { beforeStepKey, GameObject } from '../game-object/game-object';
+import { afterStepKey, beforeStepKey, childrenKey, GameObject } from '../game-object/game-object';
 import { MessageType, ServerEvent, ServerEventType } from './event';
 import { getSocketIO } from './socket';
 import { User } from './user';
@@ -65,6 +65,16 @@ export class Server extends GameObject {
                     break;
             }
         });
+    }
+
+    /**
+     * Sends a serialization of the children of the server.
+     */
+    private _sendSerialization() {
+        const serialization = this.game().getSerializer().serialize(this[childrenKey]);
+        const json = JSON.stringify(serialization);
+
+        this._broadcast(json, MessageType.Update);
     }
 
     /**
@@ -182,6 +192,15 @@ export class Server extends GameObject {
         super[beforeStepKey] && super[beforeStepKey]!();
 
         this._handleEvents();
+    }
+
+    /**
+     * Before every step, handles all the events and calls the appropriate callbacks.
+     */
+    public [afterStepKey]() {
+        super[afterStepKey] && super[afterStepKey]!();
+
+        this._sendSerialization();
     }
 
     /**
