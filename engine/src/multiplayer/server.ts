@@ -127,7 +127,7 @@ export class Server extends GameObject {
             this._userToSocket.set(user.id(), socket);
             this._eventQueue.push({ type: ServerEventType.Connect, user });
 
-            socket.send(MessageType.User, user.id());
+            this._send(user, user.id(), MessageType.User);
 
             socket.on('message', (type: unknown, contents: unknown) => {
                 this._eventQueue.push({ type: ServerEventType.Message, user, message: { type, contents } });
@@ -141,23 +141,38 @@ export class Server extends GameObject {
     }
 
     /**
-     * Sends the specified string message to the specified user.
+     * Sends the specified message to the specified user,
+     * with the specified type.
      */
-    public sendMessage(user: User, message: string) {
+    private _send(user: User, message: string, type: MessageType) {
         const socket = this._userToSocket.get(user.id());
         if (!socket) { return; }
 
-        socket.send(MessageType.String, message);
+        socket.send(type, message);
+    }
+
+    /**
+     * Sends the specified string message to the specified user.
+     */
+    public sendMessage(user: User, message: string) {
+        this._send(user, message, MessageType.String);
+    }
+
+    /**
+     * Sends the specified message to every Client.
+     */
+    private _broadcast(message: string, type: MessageType) {
+        const { value: socket } = this._userToSocket.values().next() as { value: SocketIO.Socket | undefined };
+        if (!socket) { return; }
+
+        socket.broadcast.send(type, message);
     }
 
     /**
      * Sends the specified string message to all users.
      */
-    public broadcast(message: string) {
-        const { value: socket } = this._userToSocket.values().next() as { value: SocketIO.Socket | undefined };
-        if (!socket) { return; }
-
-        socket.broadcast.send(MessageType.String, message);
+    public broadcastMessage(message: string) {
+        this._broadcast(message, MessageType.String);
     }
 
     /**
