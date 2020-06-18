@@ -37,7 +37,7 @@ export class Serializer {
     /**
      * Registers a class to be serializable.
      */
-    public registerClass(Class: new () => unknown, options?: PrototypeRegistrationOptions) {
+    public registerClass<T>(Class: new () => T, options?: PrototypeRegistrationOptions<T>) {
         this._configuration.registerClass(Class, options);
     }
 
