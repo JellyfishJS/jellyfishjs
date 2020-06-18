@@ -172,10 +172,9 @@ export class Server extends GameObject {
      * Sends the specified message to every Client.
      */
     private _broadcast(message: string, type: MessageType) {
-        const { value: socket } = this._userToSocket.values().next() as { value: SocketIO.Socket | undefined };
-        if (!socket) { return; }
-
-        socket.broadcast.send(type, message);
+        for (const socket of this._userToSocket.values()) {
+            socket.send(type, message);
+        }
     }
 
     /**
