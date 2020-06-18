@@ -332,4 +332,24 @@ export class Serialization {
         return undefined;
     }
 
+    /**
+     * Returns the configuration for all the prototypes
+     * from which the specified object inherits.
+     */
+    private _getConfigurationsForPrototype(prototype: any): PrototypeConfiguration[] {
+        // This will break if anyone ever extends Maps, Sets, or Errors,
+        // but none of those should really be getting serialized.
+        if (prototype === Object.getPrototypeOf({}) || prototype === null) {
+            return [];
+        }
+
+        const name = this._configuration.prototypeToName.get(prototype);
+        if (!name) {
+            throw new Error(`Bad serialization: Unrecognized prototype ${prototype.constructor.name}`);
+        }
+        const configuration = this._configuration.prototypeNameToConfiguration.get(name)!;
+
+        return [...this._getConfigurationsForPrototype(Object.getPrototypeOf(prototype)), configuration];
+    }
+
 }
