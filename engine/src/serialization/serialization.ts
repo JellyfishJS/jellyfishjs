@@ -129,7 +129,7 @@ export class Serialization {
     private _serializeItemPrototyped(
         item: SerializableItem,
         name: string,
-        configuration: PrototypeConfiguration,
+        configuration: PrototypeConfiguration<unknown>,
     ): SerializedItem {
         return {
             ...this._getProperties(item, configuration),
@@ -152,7 +152,7 @@ export class Serialization {
     /**
      * Returns the properties on the specified item.
      */
-    private _getProperties(item: SerializableItem, configuration?: PrototypeConfiguration) {
+    private _getProperties(item: SerializableItem, configuration?: PrototypeConfiguration<unknown>) {
         const stringKeyedProperties: SerializedItemObject['stringKeyedProperties'] = {};
         const symbolKeyedProperties: SerializedItemObject['symbolKeyedProperties'] = {};
 
@@ -194,7 +194,7 @@ export class Serialization {
     private _isKeyBlacklisted(
         key: string | symbol,
         item: SerializableItem,
-        configuration?: PrototypeConfiguration,
+        configuration?: PrototypeConfiguration<unknown>,
     ): boolean {
         if (!(configuration?.blacklistedKeys)) { return false; }
 
