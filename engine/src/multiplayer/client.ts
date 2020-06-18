@@ -121,12 +121,19 @@ export class Client extends GameObject {
     }
 
     /**
+     * Sends the specified message to the server, with the specified type.
+     */
+    private _send(message: string, type: MessageType) {
+        if (!this._socketIOClient) { return; }
+
+        this._socketIOClient.send(type, message);
+    }
+
+    /**
      * Sends the specified message to the server.
      */
     public sendMessage(message: string) {
-        if (!this._socketIOClient) { return; }
-
-        this._socketIOClient.send(MessageType.String, message);
+        this._send(message, MessageType.String);
     }
 
     /**
