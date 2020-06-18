@@ -132,6 +132,13 @@ export class Game {
     }
 
     /**
+     * Serializes the specified entity.
+     */
+    public getSerializer(): Serializer {
+        return this._serializer;
+    }
+
+    /**
      * Initializes the classes used by the engine
      * with the game's serializer.
      */
