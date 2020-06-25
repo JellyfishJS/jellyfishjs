@@ -146,6 +146,7 @@ export class Game {
         this.registerClass(GameObject);
         this.registerClass(Server);
         this.registerClass(Client);
+        this.registerClass(Vector);
     }
 
     /**
