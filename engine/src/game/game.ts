@@ -143,7 +143,9 @@ export class Game {
      * with the game's serializer.
      */
     private _initializeSerializer() {
-        this.registerClass(GameObject);
+        this.registerClass(GameObject, {
+            blacklistedKeys: (key, item) => !item.isOwnedByCurrentUser(),
+        });
         this.registerClass(Server);
         this.registerClass(Client);
         this.registerClass(Vector);
