@@ -19,3 +19,4 @@ export class Circle extends Jellyfish.GameObject {
         sprite.drawCircle(this.position.x(), this.position.y(), 5);
     }
 }
+Jellyfish.game.registerClass(Circle);
