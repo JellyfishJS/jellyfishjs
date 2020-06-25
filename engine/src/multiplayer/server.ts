@@ -70,11 +70,30 @@ export class Server extends GameObject {
     /**
      * Sends a serialization of the children of the server.
      */
-    private _sendSerialization() {
+    private _sendUpdate() {
         const serialization = this.game().getSerializer().serialize(this[childrenKey]);
         const json = JSON.stringify(serialization);
 
         this._broadcast(json, MessageType.Update);
+    }
+
+    /**
+     * Handles an update with the specified JSON string.
+     */
+    private _handleUpdate(update: string) {
+        let updateObject;
+        try {
+            updateObject = JSON.parse(update);
+        } catch (error) {
+            console.error(`Failed to parse update JSON with error: ${error}`);
+            return;
+        }
+
+        try {
+            this.game().getSerializer().deserialize(updateObject, this[childrenKey]);
+        } catch (error) {
+            console.error(`Serialization failed with error: ${error}`);
+        }
     }
 
     /**
@@ -98,6 +117,9 @@ export class Server extends GameObject {
         switch (type) {
             case MessageType.String:
                 this.onMessage?.(user, contents);
+                break;
+            case MessageType.Update:
+                this._handleUpdate(contents);
                 break;
             default:
                 console.error(`Unexpected got message from client with type ${type}, which is not recognized.`);
@@ -194,12 +216,12 @@ export class Server extends GameObject {
     }
 
     /**
-     * Before every step, handles all the events and calls the appropriate callbacks.
+     * After every step, send the state of the server to each client.
      */
     public [afterStepKey]() {
         super[afterStepKey] && super[afterStepKey]!();
 
-        this._sendSerialization();
+        this._sendUpdate();
     }
 
     /**
