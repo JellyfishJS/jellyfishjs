@@ -59,10 +59,10 @@ except where otherwise specified:
     - If this has iterated too many times,
         recursive object creation is noted,
         and this step is aborted until next step.
-- Keyboard events:
+- Input events:
     - In the order the keys were actually pressed and released,
         `keyPressed` and `keyReleased` hooks are called on all the `GameObject`s.
-        Keyboard state is updated to reflect only events
+        Input state is updated to reflect only events
         whose hooks have been called.
     - For any keys that are still held,
         each `GameObject` has its `keyHeld` hook called.
