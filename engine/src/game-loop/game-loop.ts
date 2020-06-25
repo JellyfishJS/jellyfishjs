@@ -354,8 +354,8 @@ export class GameLoop {
     private _endStep() {
         this._forEachObject(
             (gameObject) => {
-            gameObject[afterStepKey]?.();
-            gameObject.afterStep?.();
+                gameObject[afterStepKey]?.();
+                gameObject.afterStep?.();
             },
             false,
         );
