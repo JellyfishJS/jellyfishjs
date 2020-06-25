@@ -352,10 +352,13 @@ export class GameLoop {
      * Calls the `afterStep` hook on every initialized game object.
      */
     private _endStep() {
-        this._forEachObject((gameObject) => {
+        this._forEachObject(
+            (gameObject) => {
             gameObject[afterStepKey]?.();
             gameObject.afterStep?.();
-        },                  false);
+            },
+            false,
+        );
     }
 
     /**
