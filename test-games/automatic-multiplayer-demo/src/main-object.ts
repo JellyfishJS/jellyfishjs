@@ -1,7 +1,8 @@
 import * as Engine from 'engine';
+import { Circle } from './circle';
 
 export class MainObject extends Engine.GameObject {
-    public step() {
-        console.log('Running');
+    public onCreate() {
+        this.createObject(Circle);
     }
 }

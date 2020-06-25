@@ -1,6 +1,6 @@
-import * as Engine from 'engine';
+import * as Jellyfish from 'engine';
 import { MainObject } from './main-object';
 
-Engine.game.setCanvasByID('game');
-Engine.game.createObject(MainObject);
-Engine.game.start();
+Jellyfish.game.setCanvasByID('game');
+Jellyfish.game.createObject(MainObject);
+Jellyfish.game.start();
