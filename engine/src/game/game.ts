@@ -1,6 +1,6 @@
 import uuid = require('uuid');
 import { GameLoop } from '../game-loop/game-loop';
-import { gameKey, GameObject, idKey } from '../game-object/game-object';
+import { childrenKey, gameKey, GameObject, idKey } from '../game-object/game-object';
 import { Keyboard } from '../keyboard/keyboard';
 import { Matter } from '../matter-setup/matter-setup';
 import { Client, Server } from '../multiplayer';
@@ -147,6 +147,7 @@ export class Game {
         this.registerClass(Server);
         this.registerClass(Client);
         this.registerClass(Vector);
+        this.registerSymbol(childrenKey);
     }
 
     /**
