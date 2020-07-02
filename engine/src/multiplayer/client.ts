@@ -1,5 +1,5 @@
 import * as SocketIOClient from 'socket.io-client';
-import { beforeStepKey, GameObject } from '../game-object/game-object';
+import { afterStepKey, beforeStepKey, childrenKey, GameObject } from '../game-object/game-object';
 import { ClientEvent, ClientEventType, MessageType } from './event';
 import { isServer } from './is-server';
 import { Server } from './server';
@@ -52,6 +52,35 @@ export class Client extends GameObject {
     }
 
     /**
+     * Sends a serialization of the children of the client to the server.
+     */
+    private _sendUpdate() {
+        const serialization = this.game().getSerializer().serialize(this[childrenKey]);
+        const json = JSON.stringify(serialization);
+
+        this._send(json, MessageType.Update);
+    }
+
+    /**
+     * Handles an update with the specified JSON string.
+     */
+    private _handleUpdate(update: string) {
+        let updateObject;
+        try {
+            updateObject = JSON.parse(update);
+        } catch (error) {
+            console.error(`Failed to parse update JSON with error: ${error}`);
+            return;
+        }
+
+        try {
+            this.game().getSerializer().deserialize(updateObject, this[childrenKey]);
+        } catch (error) {
+            console.error(`Serialization failed with error: ${error}`);
+        }
+    }
+
+    /**
      * Handles a message from the server.
      *
      * If it's not formatted properly,
@@ -76,6 +105,9 @@ export class Client extends GameObject {
                 break;
             case MessageType.String:
                 this.onMessage?.(contents);
+                break;
+            case MessageType.Update:
+                this._handleUpdate(contents);
                 break;
             default:
                 console.error(`Unexpected got message from client with type ${type}, which is not recognized.`);
@@ -121,12 +153,19 @@ export class Client extends GameObject {
     }
 
     /**
+     * Sends the specified message to the server, with the specified type.
+     */
+    private _send(message: string, type: MessageType) {
+        if (!this._socketIOClient) { return; }
+
+        this._socketIOClient.send(type, message);
+    }
+
+    /**
      * Sends the specified message to the server.
      */
     public sendMessage(message: string) {
-        if (!this._socketIOClient) { return; }
-
-        this._socketIOClient.send(MessageType.String, message);
+        this._send(message, MessageType.String);
     }
 
     /**
@@ -136,6 +175,15 @@ export class Client extends GameObject {
         super[beforeStepKey] && super[beforeStepKey]!();
 
         this._handleEvents();
+    }
+
+    /**
+     * After every step, send the state of the client to the server.
+     */
+    public [afterStepKey]() {
+        super[afterStepKey] && super[afterStepKey]!();
+
+        this._sendUpdate();
     }
 
     /**
