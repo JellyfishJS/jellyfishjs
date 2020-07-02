@@ -4,6 +4,7 @@ import type { Game } from '../game/game';
 import type { Client } from '../multiplayer/client';
 import type { Server } from '../multiplayer/server';
 import type { User } from '../multiplayer/user';
+import { Sprite, spriteDrawKey } from '../sprite/sprite';
 import type { AnyAmountOf } from '../util/as-array';
 
 /**
@@ -124,7 +125,6 @@ export const afterStepKey = Symbol('after-step');
  * The superclass of any objects that appear in the game.
  */
 export abstract class GameObject<
-    Sprite extends GameObjectSprite = GameObjectSprite,
     Body extends GameObjectBody = GameObjectBody
 > {
     /**
@@ -133,14 +133,9 @@ export abstract class GameObject<
     public [idKey]: string;
 
     /**
-     * The container for this GameObject.
-     */
-    public [containerKey]: PIXI.Container | undefined;
-
-    /**
      * The sprites for this GameObject.
      */
-    public [spriteKey]: Sprite | undefined;
+    public [spriteKey]: Sprite[] = [];
 
     /**
      * The world in which any physics objects exist.
@@ -227,16 +222,6 @@ export abstract class GameObject<
      */
     public children() {
         return this[childrenKey].values();
-    }
-
-    /**
-     * Sets the container in which to draw sprites
-     * of this GameObject.
-     *
-     * Do not override.
-     */
-    public setContainer(container: PIXI.Container) {
-        this[containerKey] = container;
     }
 
     /**
@@ -340,13 +325,6 @@ export abstract class GameObject<
     public setUpPhysicsBody?(): Body;
 
     /**
-     * Sets up and returns the sprite for this GameObject.
-     *
-     * Meant to be overridden.
-     */
-    public setUpSprite?(pixi: typeof PIXI, container: PIXI.Container): Sprite;
-
-    /**
      * A private `keyPressed` hook for the system.
      */
     public [keyPressedKey]?(keyCode: number): void;
@@ -426,18 +404,11 @@ export abstract class GameObject<
     public step?(): void;
 
     /**
-     * A private `draw` hook for the system.
+     * Sends the draw event to each of the sprites.
      */
-    public [drawKey]?(pixi: typeof PIXI, sprite: Sprite, container: PIXI.Container): void;
-
-    /**
-     * Called every step, to do drawing actions.
-     *
-     * Put any code that manipulates sprites here.
-     *
-     * Meant to be overridden.
-     */
-    public draw?(pixi: typeof PIXI, sprite: Sprite, container: PIXI.Container): void;
+    public [drawKey]?(pixi: typeof PIXI, container: PIXI.Container): void {
+        this[spriteKey].forEach((sprite) => { sprite[spriteDrawKey](pixi, container); });
+    }
 
     /**
      * A private `onDestroy` hook for the system.
