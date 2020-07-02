@@ -1,5 +1,4 @@
 import uuid = require('uuid');
-import { prototype } from 'uuid';
 import {
     SerializableItem,
     SerializedEntity,
