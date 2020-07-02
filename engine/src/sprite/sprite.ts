@@ -16,5 +16,5 @@ export abstract class Sprite {
 
     public abstract initializeSprite(pixi: typeof PIXI, container: PIXI.Container): PIXI.Sprite;
 
-    public abstract draw(pixi: typeof PIXI, pixiSprite: PIXI.Sprite, container: PIXI.Container): undefined;
+    public abstract draw(pixi: typeof PIXI, pixiSprite: PIXI.Sprite, container: PIXI.Container): void;
 }
