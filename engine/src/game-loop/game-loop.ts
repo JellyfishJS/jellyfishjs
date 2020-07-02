@@ -72,16 +72,27 @@ export class GameLoop {
     private _forEachInTree(
         container: Map<string, GameObject>, gameObject: GameObject,
         callback: (gameObject: GameObject, container: Map<string, GameObject>) => void,
+        parentFirst: boolean,
     ) {
-        callback(gameObject, container);
-        gameObject[childrenKey].forEach((child) => this._forEachInTree(gameObject[childrenKey], child, callback));
+        if (parentFirst) {
+            callback(gameObject, container);
+        }
+        gameObject[childrenKey].forEach(
+            (child) => this._forEachInTree(gameObject[childrenKey], child, callback, parentFirst));
+        if (!parentFirst) {
+            callback(gameObject, container);
+        }
     }
 
     /**
      * Runs the function for each game object recursively.
      */
-    private _forEachObject(callback: (gameObject: GameObject, container: Map<string, GameObject>) => void) {
-        this._gameObjects.forEach((gameObject) => this._forEachInTree(this._gameObjects, gameObject, callback));
+    private _forEachObject(
+        callback: (gameObject: GameObject, container: Map<string, GameObject>) => void,
+        parentFirst: boolean = true,
+    ) {
+        this._gameObjects.forEach(
+            (gameObject) => this._forEachInTree(this._gameObjects, gameObject, callback, parentFirst));
     }
 
     /**
@@ -341,10 +352,13 @@ export class GameLoop {
      * Calls the `afterStep` hook on every initialized game object.
      */
     private _afterStep() {
-        this._forEachObject((gameObject) => {
-            gameObject[afterStepKey]?.();
-            gameObject.afterStep?.();
-        });
+        this._forEachObject(
+            (gameObject) => {
+                gameObject[afterStepKey]?.();
+                gameObject.afterStep?.();
+            },
+            false,
+        );
     }
 
     /**

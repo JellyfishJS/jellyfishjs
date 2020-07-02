@@ -1,4 +1,4 @@
-import type { SerializableItem } from './serialization-result';
+import type { Class } from '../util/class-type';
 
 /**
  * Represents the configuration for a serializer.
@@ -8,7 +8,7 @@ export class SerializerConfiguration {
     /**
      * Maps the name of a prototype to a configuration.
      */
-    public prototypeNameToConfiguration = new Map<string, PrototypeConfiguration>();
+    public prototypeNameToConfiguration = new Map<string, PrototypeConfiguration<any>>();
 
     /**
      * Maps prototype objects to the names of the prototypes.
@@ -28,11 +28,11 @@ export class SerializerConfiguration {
     /**
      * Registers a class to be serializable.
      */
-    public registerClass(
-        Class: new () => unknown,
+    public registerClass<T>(
+        Class: Class<T>,
         {
             blacklistedKeys = [],
-        }: PrototypeRegistrationOptions = {},
+        }: PrototypeRegistrationOptions<T> = {},
     ) {
         const { name, prototype } = Class;
 
@@ -75,20 +75,20 @@ export class SerializerConfiguration {
  * A function that returns true if the key should be blacklisted,
  * otherwise false.
  */
-type KeyBlacklistFunction = (key: string | symbol, item: SerializableItem) => boolean;
+type KeyBlacklistFunction<T> = (key: string | symbol, item: T) => boolean;
 
 /**
  * Represents settings provided by the developer on how objects
  * of a certain prototype are serialized.
  */
-export interface PrototypeRegistrationOptions {
-    blacklistedKeys?: (string | symbol)[] | KeyBlacklistFunction;
+export interface PrototypeRegistrationOptions<T> {
+    blacklistedKeys?: (string | symbol)[] | KeyBlacklistFunction<T>;
 }
 
 /**
  * Represents settings for the serialization of some prototype.
  */
-export interface PrototypeConfiguration {
+export interface PrototypeConfiguration<T> {
     prototype: {};
-    blacklistedKeys?: Set<string | symbol> | KeyBlacklistFunction;
+    blacklistedKeys?: Set<string | symbol> | KeyBlacklistFunction<T>;
 }
