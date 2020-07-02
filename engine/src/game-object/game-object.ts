@@ -6,7 +6,6 @@ import type { Server } from '../multiplayer/server';
 import type { User } from '../multiplayer/user';
 import { Sprite, spriteDrawKey } from '../sprite/sprite';
 import type { AnyAmountOf } from '../util/as-array';
-import { spriteKey } from './game-object';
 
 /**
  * Allowable types for GameObject bodies.
