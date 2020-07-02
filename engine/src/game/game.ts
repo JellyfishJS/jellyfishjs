@@ -1,12 +1,13 @@
 import uuid = require('uuid');
 import { GameLoop } from '../game-loop/game-loop';
-import { childrenKey, gameKey, GameObject, idKey } from '../game-object/game-object';
+import { childrenKey, gameKey, GameObject, idKey, spriteKey } from '../game-object/game-object';
 import { Keyboard } from '../keyboard/keyboard';
 import { Matter } from '../matter-setup/matter-setup';
 import { Client, Server } from '../multiplayer';
 import { PIXISetup } from '../pixi-setup/pixi-setup';
 import { Serializer } from '../serialization';
 import type { PrototypeRegistrationOptions } from '../serialization/serializer-configuration';
+import { Sprite } from '../sprite/sprite';
 import type { Class } from '../util/class-type';
 import { Vector } from '../util/geometry';
 
@@ -146,10 +147,13 @@ export class Game {
         this.registerClass(GameObject, {
             blacklistedKeys: (key, item) => !item.isOwnedByCurrentUser(),
         });
+        this.registerSymbol(childrenKey);
         this.registerClass(Server);
         this.registerClass(Client);
         this.registerClass(Vector);
-        this.registerSymbol(childrenKey);
+
+        this.registerClass(Sprite);
+        this.registerSymbol(spriteKey);
     }
 
     /**
