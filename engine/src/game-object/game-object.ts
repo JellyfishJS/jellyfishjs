@@ -6,6 +6,7 @@ import type { Server } from '../multiplayer/server';
 import type { User } from '../multiplayer/user';
 import { Sprite, spriteDrawKey } from '../sprite/sprite';
 import type { AnyAmountOf } from '../util/as-array';
+import { spriteKey } from './game-object';
 
 /**
  * Allowable types for GameObject bodies.
@@ -193,6 +194,21 @@ export abstract class GameObject<
         const newObject = this.game().createObject(Class, ...args);
         newObject[parentKey] = this;
         return newObject;
+    }
+
+    /**
+     * Creates a Sprite with the parameters specified
+     * as a sprite of this GameObject.
+     */
+    public createSprite<
+        Subclass extends new (...args: any[]) => Sprite,
+    >(
+        Class: Subclass,
+        ...args: ConstructorParameters<Subclass>
+    ): InstanceType<Subclass> {
+        const newSprite = new Class(...args) as InstanceType<Subclass>;
+        this[spriteKey].push(newSprite);
+        return newSprite;
     }
 
     /**
