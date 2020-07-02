@@ -3,8 +3,8 @@ import type * as PIXI from 'pixi.js';
 export const spriteDrawKey = Symbol('spriteDrawKey');
 export const pixiSpriteKey = Symbol('pixiSpriteKey');
 
-export abstract class Sprite {
-    private [pixiSpriteKey]: PIXI.Sprite | undefined;
+export abstract class Sprite<PIXISprite = PIXI.Sprite> {
+    private [pixiSpriteKey]: PIXISprite | undefined;
 
     public [spriteDrawKey](pixi: typeof PIXI, container: PIXI.Container) {
         if (!this[pixiSpriteKey]) {
@@ -14,7 +14,7 @@ export abstract class Sprite {
         this.draw(pixi, this[pixiSpriteKey]!, container);
     }
 
-    public abstract initializeSprite(pixi: typeof PIXI, container: PIXI.Container): PIXI.Sprite;
+    public abstract initializeSprite(pixi: typeof PIXI, container: PIXI.Container): PIXISprite;
 
-    public abstract draw(pixi: typeof PIXI, pixiSprite: PIXI.Sprite, container: PIXI.Container): void;
+    public abstract draw(pixi: typeof PIXI, pixiSprite: PIXISprite, container: PIXI.Container): void;
 }

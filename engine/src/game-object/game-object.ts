@@ -200,7 +200,7 @@ export abstract class GameObject<
      * as a sprite of this GameObject.
      */
     public createSprite<
-        Subclass extends new (...args: any[]) => Sprite,
+        Subclass extends new (...args: any[]) => Sprite<any>,
     >(
         Class: Subclass,
         ...args: ConstructorParameters<Subclass>
