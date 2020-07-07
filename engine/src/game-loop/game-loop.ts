@@ -21,7 +21,7 @@ import {
     toBeDestroyedKey,
     wasDestroyedKey,
 } from '../game-object/game-object';
-import { Input, ButtonEvent } from '../input/input';
+import { ButtonEvent , Input } from '../input/input';
 import { Matter } from '../matter-setup/matter-setup';
 import { PIXI, PIXISetup } from '../pixi-setup/pixi-setup';
 import { asArray } from '../util/as-array';
@@ -211,28 +211,28 @@ export class GameLoop {
     }
 
     /**
-     * Calls the appropriate hook for every game object in the games loops based on the key pressed
-     * @param keyCode the keycode of the key of the event
+     * Calls the appropriate hook for every game object in the games loops based on the input button pressed
+     * @param inputCode the code of the key or mouse button of the event
      * @param eventType the type of the input hook to call
      */
-    private _dispatchKeyEvent(keyCode: number, eventType: ButtonEvent): void {
+    private _dispatchInputEvent(inputCode: number, eventType: ButtonEvent): void {
         switch (eventType) {
             case ButtonEvent.Pressed:
                 this._forEachObject((gameObject) => {
-                    gameObject[keyPressedKey]?.(keyCode);
-                    gameObject.keyPressed?.(keyCode);
+                    gameObject[keyPressedKey]?.(inputCode);
+                    gameObject.keyPressed?.(inputCode);
                 });
                 break;
             case ButtonEvent.Released:
                 this._forEachObject((gameObject) => {
-                    gameObject[keyReleasedKey]?.(keyCode);
-                    gameObject.keyReleased?.(keyCode);
+                    gameObject[keyReleasedKey]?.(inputCode);
+                    gameObject.keyReleased?.(inputCode);
                 });
                 break;
             case ButtonEvent.HeldDown:
                 this._forEachObject((gameObject) => {
-                    gameObject[keyHeldKey]?.(keyCode);
-                    gameObject.keyHeld?.(keyCode);
+                    gameObject[keyHeldKey]?.(inputCode);
+                    gameObject.keyHeld?.(inputCode);
                 });
                 break;
         }
@@ -242,8 +242,9 @@ export class GameLoop {
      * Updates the input's state,
      * and calls all input hooks on every initialized game object.
      */
-    private _keyboardEvents(keyboard: Input) {
-        keyboard.processEvents((keyCode: number, eventType: ButtonEvent) => this._dispatchKeyEvent(keyCode, eventType));
+    private _inputEvents(input: Input) {
+        input.processEvents((inputCode: number, eventType: ButtonEvent) =>
+            this._dispatchInputEvent(inputCode, eventType));
     }
 
     /**
@@ -376,10 +377,10 @@ export class GameLoop {
      *  - Any game objects that have been destroyed are cleaned up, and have their `onDestroy` hook called.
      *  - Every `afterStep` hook is called.
      */
-    public runStep(keyboard: Input, pixiSetup: PIXISetup | undefined, engine: Matter.Engine | undefined) {
+    public runStep(input: Input, pixiSetup: PIXISetup | undefined, engine: Matter.Engine | undefined) {
         this._beforeStep();
         this._handleCreation(pixiSetup);
-        this._keyboardEvents(keyboard);
+        this._inputEvents(input);
         this._beforePhysics();
         this._physics(engine);
         this._afterPhysics();

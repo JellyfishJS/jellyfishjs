@@ -26,9 +26,9 @@ export class Game {
     private readonly _gameLoop = new GameLoop();
 
     /**
-     * Input for this game, contains the current state of the keys in the input.
+     * Input for this game, contains the current state of the keys in the keyboard and the mouse buttons.
      */
-    public readonly keyboard = new Input();
+    public readonly input = new Input();
 
     private _pixiSetup: PIXISetup | undefined;
 
@@ -159,7 +159,7 @@ export class Game {
         }
 
         this._pixiSetup.onInterval(() => {
-            this._gameLoop.runStep(this.keyboard, this._pixiSetup, this._physicsEngine);
+            this._gameLoop.runStep(this.input, this._pixiSetup, this._physicsEngine);
         });
     }
 

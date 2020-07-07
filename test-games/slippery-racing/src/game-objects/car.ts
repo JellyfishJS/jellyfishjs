@@ -84,7 +84,7 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
             Angle.radians(this.physicsBody.angle),
         );
 
-        if (game.keyboard.isDown(keycode('up'))) {
+        if (game.input.isDown(keycode('up')) || game.input.isDown(game.input.mouseCode(0))) {
             Body.applyForce(
                 this.physicsBody,
                 this.physicsBody.position,
@@ -92,7 +92,7 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
             );
         }
 
-        if (game.keyboard.isDown(keycode('down'))) {
+        if (game.input.isDown(keycode('down')) || game.input.isDown(game.input.mouseCode(2))) {
             Body.applyForce(
                 this.physicsBody,
                 this.physicsBody.position,
@@ -102,11 +102,11 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
 
         const mainTorque = this.performance.cornering * this.physicsBody.inertia;
 
-        if (game.keyboard.isDown(keycode('left'))) {
+        if (game.input.isDown(keycode('left'))) {
             this.physicsBody.torque -= mainTorque;
         }
 
-        if (game.keyboard.isDown(keycode('right'))) {
+        if (game.input.isDown(keycode('right'))) {
             this.physicsBody.torque += mainTorque;
         }
 

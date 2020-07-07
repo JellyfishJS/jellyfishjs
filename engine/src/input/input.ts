@@ -18,10 +18,6 @@ export enum ButtonEvent {
 // The maximum value of keycodes returned by KeyEvent.keyCode, appears to be less than 222 for English keyboards
 const maxKeyCode = 222;
 
-// The prefix to use when specifying buttonCodes for mouseEvents
-// For example M1 is left click, M2 is right click
-const mousePrefix = 'M';
-
 export class Input {
     /**
      * The current state of each key and mouse button, true means a key or mouse button is down
@@ -46,13 +42,18 @@ export class Input {
                 },
             );
             window.document.addEventListener(
-                'onmousedown', (event) => {
+                'mousedown', (event) => {
                     this.addEvent(event, ButtonState.Down);
                 },
             );
             window.document.addEventListener(
-                'onmouseup', (event) => {
+                'mouseup', (event) => {
                     this.addEvent(event, ButtonState.Up);
+                },
+            );
+            window.document.addEventListener(
+                'contextmenu', (event) => {
+                    event.preventDefault();
                 },
             );
         }
@@ -64,7 +65,7 @@ export class Input {
      * @param buttonState
      */
     private addEvent(event: Event, buttonState: ButtonState) {
-        if(event instanceof KeyboardEvent) {
+        if (event instanceof KeyboardEvent) {
             if (!event.repeat) {
                 this.inputEvents.push({ buttonCode: event.keyCode, buttonState });
             }
@@ -78,7 +79,7 @@ export class Input {
      * on each event and removes the event from the queue.
      * @param dispatchInputEvent: the callback to call with the processed input events
      */
-    public processEvents(dispatchInputEvent: (keyCode: number, eventType: ButtonEvent) => void): void {
+    public processEvents(dispatchInputEvent: (inputCode: number, eventType: ButtonEvent) => void): void {
         for (const inputEvent of this.inputEvents) {
             if (inputEvent.buttonState === ButtonState.Down) {
                 dispatchInputEvent(inputEvent.buttonCode, ButtonEvent.Pressed);
@@ -124,8 +125,8 @@ export class Input {
 
     /**
      * Returns the buttonCode (code used for inputEvents) based on the mouse button specified
-     * @param mouseButton The mouseButton pressed during the event for most systems 1 is left click, 2 is right click
-     * this is the value returned by MouseEvent.button
+     * @param mouseButton The mouseButton pressed during the event for most systems 0 is left click, 1 is middle click,
+     * 2 is right click, this is the value returned by MouseEvent.button
      */
     public mouseCode(mouseButton: number) {
         return maxKeyCode + mouseButton;
@@ -137,23 +138,5 @@ export class Input {
      */
     public mouseButton(mouseCode: number) {
         return mouseCode - maxKeyCode;
-    }
-
-    /**
-     * Returns the buttonCode based on the string specifying the Key or Mouse button pressed
-     * This function checks if the string starts with mousePrefix, if it does, it returns the mouseCode based on the
-     * number following mousePrefix. If the string doesn't start with mousePrefix, it returns the value based on the
-     * result from the keyCode package
-     */
-    public buttonCoe(buttonCode: string) {
-        const trimmedCode = buttonCode.trim();
-        if (trimmedCode.charAt(0) === mousePrefix){
-            const codeNumber = parseInt(trimmedCode.substring(1), 10)
-            if (!isNaN(codeNumber)) {
-                return this.mouseCode(codeNumber);
-            }
-        }
-
-        return keycode(buttonCode);
     }
 }
