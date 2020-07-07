@@ -97,6 +97,17 @@ interface Message {
  * Represents a type of message sent between the client and server.
  */
 export enum MessageType {
+    /**
+     * Messages sent to the user to inform them of their ID.
+     */
     User = 'user',
+    /**
+     * Sent by the server or client containing information
+     * about how to update the server state.
+     */
+    Update = 'update',
+    /**
+     * Custom messages sent by the developer.
+     */
     String = 'string',
 }

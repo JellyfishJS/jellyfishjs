@@ -33,7 +33,7 @@ class Server extends Jellyfish.Server {
 
         if (!(this.counter % 133)) {
             if (this.user) {
-                this.broadcast(`broadcast: ${this.counter} is the counter`);
+                this.broadcastMessage(`broadcast: ${this.counter} is the counter`);
             }
         }
     }
