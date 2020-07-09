@@ -1,12 +1,10 @@
-import { Angle, game, GameObject, Vector } from 'engine';
-import * as keycode from 'keycode';
-import { Bodies, Body } from 'matter-js';
+import { GameObject, Sprite, Vector } from 'engine';
+import { Body } from 'matter-js';
+import type * as PIXI from 'pixi.js';
 
-export class Camera extends GameObject<[], Body> {
+export class Camera extends GameObject<Body> {
 
     private followingBody: Body = undefined as any;
-
-    private position: Vector = undefined as any;
 
     private velocity: Vector = Vector.zero;
 
@@ -14,16 +12,41 @@ export class Camera extends GameObject<[], Body> {
 
     private positionFrictionFactor = 0.9;
 
+    private sprite = this.createSprite(CameraSprite, Vector.zero);
+
     public setFollowing(followingBody: Body) {
         this.followingBody = followingBody;
-        this.position = Vector.object(this.followingBody.position);
+        this.sprite.position = Vector.object(this.followingBody.position);
     }
 
-    public setUpSprite(pixi: typeof PIXI, container: PIXI.Container) {
-        return [] as [];
+    public step() {
+        const desiredPosition = Vector.object(this.followingBody.position);
+        const positionOffset = desiredPosition.minus(this.sprite.position);
+        this.velocity = this.velocity
+            .plus(
+                positionOffset
+                    .times(this.positionFollowSpeed),
+            )
+            .times(this.positionFrictionFactor);
+        this.sprite.position = this.sprite.position.plus(this.velocity);
     }
 
-    public draw(pixi: typeof PIXI, sprite: [], container: PIXI.Container) {
+}
+
+class CameraSprite extends Sprite<PIXI.Container> {
+    public constructor(position: Vector) {
+        super();
+        this.position = position;
+    }
+
+    public position: Vector;
+
+    public initializeSprite(pixi: typeof PIXI, container: PIXI.Container) {
+        return container;
+    }
+
+    public draw(pixi: typeof PIXI, container: PIXI.Container) {
+        container.scale.set(0.5);
         const realOffset = this.position
             .times(-container.scale.x)
             .plus(Vector.xy(400, 300));
@@ -31,19 +54,5 @@ export class Camera extends GameObject<[], Body> {
             realOffset.x(),
             realOffset.y(),
         );
-        container.scale.set(0.5);
     }
-
-    public step() {
-        const desiredPosition = Vector.object(this.followingBody.position);
-        const positionOffset = desiredPosition.minus(this.position);
-        this.velocity = this.velocity
-            .plus(
-                positionOffset
-                    .times(this.positionFollowSpeed),
-            )
-            .times(this.positionFrictionFactor);
-        this.position = this.position.plus(this.velocity);
-    }
-
 }

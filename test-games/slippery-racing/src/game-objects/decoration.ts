@@ -1,8 +1,7 @@
-import { Angle, game, GameObject, Vector } from 'engine';
-import * as keycode from 'keycode';
+import { GameObject, Sprite, Vector } from 'engine';
 import { Bodies, Body } from 'matter-js';
 
-export class Decoration extends GameObject<PIXI.Graphics, Body | undefined> {
+export class Decoration extends GameObject<Body | undefined> {
 
     private readonly position: Vector;
     private readonly size: number;
@@ -15,6 +14,7 @@ export class Decoration extends GameObject<PIXI.Graphics, Body | undefined> {
         this.size = size;
         this.color = color;
         this.solid = solid;
+        this.createSprite(DecorationSprite, position, color, size);
     }
 
     public setUpPhysicsBody() {
@@ -31,7 +31,21 @@ export class Decoration extends GameObject<PIXI.Graphics, Body | undefined> {
         return body;
     }
 
-    public setUpSprite(pixi: typeof PIXI, container: PIXI.Container) {
+}
+
+class DecorationSprite extends Sprite<PIXI.Graphics> {
+    public position: Vector;
+    public color: number;
+    public size: number;
+
+    public constructor(position: Vector, color: number, size: number) {
+        super();
+        this.position = position;
+        this.color = color;
+        this.size = size;
+    }
+
+    public initializeSprite(pixi: typeof PIXI, container: PIXI.Container) {
         const sprite = new pixi.Graphics();
         container.addChild(sprite);
         return sprite;
@@ -42,5 +56,4 @@ export class Decoration extends GameObject<PIXI.Graphics, Body | undefined> {
         sprite.beginFill(this.color);
         sprite.drawCircle(this.position.x(), this.position.y(), this.size);
     }
-
 }
