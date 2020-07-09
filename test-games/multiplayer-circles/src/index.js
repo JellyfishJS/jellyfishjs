@@ -77,7 +77,7 @@ class Client extends Jellyfish.Client {
     step() {
         let moved = false;
         moves.forEach(([key, delta]) => {
-            if (Jellyfish.game.keyboard.isDown(key)) {
+            if (Jellyfish.game.input.isDown(key)) {
                 this.position = this.position.plus(delta);
                 moved = true;
             }

@@ -17,7 +17,7 @@ class Player extends Jellyfish.GameObject {
     }
 
     step() {
-        if (!Jellyfish.game.keyboard.isDown(65)) {
+        if (!Jellyfish.game.input.isDown(65)) {
             Matter.Body.applyForce(this.physicsBody, { x: 0, y: 0 }, this.force);
         }
     }
