@@ -1,4 +1,4 @@
-import { Angle, game, GameObject, Vector } from 'engine';
+import { Angle, game, GameObject, Sprite, Vector } from 'engine';
 import * as keycode from 'keycode';
 import { Bodies, Body } from 'matter-js';
 import { Camera } from './camera';
@@ -26,7 +26,7 @@ interface Performance {
     handling: number;
 }
 
-export class Car extends GameObject<PIXI.Sprite, Body> {
+export class Car extends GameObject<Body> {
 
     private readonly initialPosition: Vector;
     private readonly performance: Performance;
@@ -54,26 +54,10 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
             },
         );
         this.camera.setFollowing(body);
+
+        this.createSprite(CarSprite, body);
+
         return body;
-    }
-
-    public setUpSprite(pixi: typeof PIXI, container: PIXI.Container) {
-        const sprite = pixi.Sprite.from('./assets/car.png');
-        sprite.anchor.set(0.5);
-        container.addChild(sprite);
-        const application = game.getPIXIApplication();
-        if (application) {
-            application.renderer.backgroundColor = 0x4b4e4c;
-        }
-        return sprite;
-    }
-
-    public draw(pixi: typeof PIXI, sprite: PIXI.Sprite, container: PIXI.Container) {
-        if (!this.physicsBody) { return; }
-
-        container.scale.set(0.5);
-        [sprite.x, sprite.y] = [this.physicsBody.position.x, this.physicsBody.position.y];
-        sprite.angle = Angle.radians(this.physicsBody.angle).plus(Angle.degrees(90)).degrees();
     }
 
     public beforePhysics() {
@@ -144,4 +128,32 @@ export class Car extends GameObject<PIXI.Sprite, Body> {
         );
     }
 
+}
+
+class CarSprite extends Sprite {
+    private physicsBody: Body;
+
+    public constructor(physicsBody: Body) {
+        super();
+        this.physicsBody = physicsBody;
+    }
+
+    public initializeSprite(pixi: typeof PIXI, container: PIXI.Container) {
+        const sprite = pixi.Sprite.from('./assets/car.png');
+        sprite.anchor.set(0.5);
+        container.addChild(sprite);
+        const application = game.getPIXIApplication();
+        if (application) {
+            application.renderer.backgroundColor = 0x4b4e4c;
+        }
+        return sprite;
+    }
+
+    public draw(pixi: typeof PIXI, sprite: PIXI.Sprite, container: PIXI.Container) {
+        if (!this.physicsBody) { return; }
+
+        container.scale.set(0.5);
+        [sprite.x, sprite.y] = [this.physicsBody.position.x, this.physicsBody.position.y];
+        sprite.angle = Angle.radians(this.physicsBody.angle).plus(Angle.degrees(90)).degrees();
+    }
 }

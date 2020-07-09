@@ -57,7 +57,7 @@ export class GameLoop {
     /**
      * A mapping from bodies to GameObjects that exist in this game loop.
      */
-    private _bodiesToGameObjects: WeakMap<Matter.Body, GameObject<GameObjectSprite, GameObjectBody>> = new WeakMap();
+    private _bodiesToGameObjects: WeakMap<Matter.Body, GameObject<GameObjectBody>> = new WeakMap();
 
     /**
      * Adds the specified GameObject to this GameLoop.
@@ -118,12 +118,10 @@ export class GameLoop {
      * on a new GameObject that is to be added to the game loop.
      */
     private _initializeGameObject<
-        Sprite extends GameObjectSprite,
         Body extends GameObjectBody,
-        Subclass extends GameObject<Sprite, Body>,
+        Subclass extends GameObject<Body>,
     >(
         gameObject: Subclass,
-        pixiSetup: PIXISetup | undefined,
     ) {
         gameObject[onCreateKey]?.();
         gameObject.onCreate?.();
@@ -133,19 +131,14 @@ export class GameLoop {
         if (matter) {
             this._initializeGameObjectPhysics(gameObject, matter);
         }
-
-        if (pixiSetup) {
-            this._initializeGameObjectPIXI(gameObject, pixiSetup);
-        }
     }
 
     /**
      * Sets up the parts of the passed GameObject related to physics.
      */
     private _initializeGameObjectPhysics<
-        Sprite extends GameObjectSprite,
         Body extends GameObjectBody,
-        Subclass extends GameObject<Sprite, Body>,
+        Subclass extends GameObject<Body>,
     >(
         gameObject: Subclass,
         matter: typeof MatterType,
@@ -162,35 +155,10 @@ export class GameLoop {
     }
 
     /**
-     * Sets up the PIXI related aspects of the passed game object.
-     */
-    private _initializeGameObjectPIXI<
-        Sprite extends GameObjectSprite,
-        Body extends GameObjectBody,
-        Subclass extends GameObject<Sprite, Body>,
-    >(
-        gameObject: Subclass,
-        pixiSetup: PIXISetup,
-    ) {
-        const mainContainer = pixiSetup.getContainer();
-
-        if (!mainContainer || !PIXI) { return; }
-
-        if (!gameObject[containerKey]) {
-            gameObject.setContainer(mainContainer);
-        }
-
-        const container = gameObject[containerKey];
-        if (gameObject.setUpSprite && container) {
-            gameObject[spriteKey] = gameObject.setUpSprite(PIXI, container);
-        }
-    }
-
-    /**
      * Adds all the game objects that have been created the previous loop
      * to the game objects to be handled this loop.
      */
-    private _handleCreation(pixiSetup: PIXISetup | undefined) {
+    private _handleCreation() {
         let iterations = 0;
 
         while (this._gameObjectsToBeCreated.length !== 0 && ++iterations < maxCreationDepth) {
@@ -202,7 +170,7 @@ export class GameLoop {
             this._gameObjectsToBeCreated = [];
 
             gameObjectsCreatedThisIteration
-                .forEach((gameObject) => this._initializeGameObject(gameObject, pixiSetup));
+                .forEach((gameObject) => this._initializeGameObject(gameObject));
         }
 
         if (iterations === maxCreationDepth) {
@@ -310,7 +278,9 @@ export class GameLoop {
      * Calls the `draw` hook on every initialized game object that has a sprite and container
      * if this is running client-side.
      */
-    private _draw() {
+    private _draw(pixiSetup: PIXISetup | undefined) {
+        if (!pixiSetup) { return; }
+
         // For some reason Typescript doesn't handle type narrowing on imported constants,
         // so it needs to be reassigned.
         const pixi = PIXI;
@@ -318,11 +288,10 @@ export class GameLoop {
 
         this._forEachObject((gameObject) => {
             const sprite = gameObject[spriteKey];
-            const container = gameObject[containerKey];
+            const container = pixiSetup.getContainer();
             if (!sprite || !container) { return; }
 
-            gameObject[drawKey]?.(pixi, sprite, container);
-            gameObject.draw?.(pixi, sprite, container);
+            gameObject[drawKey]?.(pixi, container);
         });
     }
 
@@ -378,13 +347,13 @@ export class GameLoop {
      */
     public runStep(keyboard: Keyboard, pixiSetup: PIXISetup | undefined, engine: Matter.Engine | undefined) {
         this._beforeStep();
-        this._handleCreation(pixiSetup);
+        this._handleCreation();
         this._keyboardEvents(keyboard);
         this._beforePhysics();
         this._physics(engine);
         this._afterPhysics();
         this._step();
-        this._draw();
+        this._draw(pixiSetup);
         this._handleDestruction();
         this._afterStep();
     }

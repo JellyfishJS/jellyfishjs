@@ -51,6 +51,9 @@ class Client extends Jellyfish.Client {
         this.position = Vector.xy(Math.floor(Math.random() * 400), Math.floor(Math.random() * 300));
         this.others = [];
         this.connect(process.env.MULTIPLAYER_CIRCLES_SERVER);
+        this.sprite = this.createSprite(ClientSprite);
+        this.sprite.others = this.others;
+        this.sprite.position = this.position;
     }
 
     onConnect() {
@@ -82,9 +85,14 @@ class Client extends Jellyfish.Client {
         if (moved) {
             this.sendMessage(JSON.stringify(this.position.object()));
         }
+        this.sprite.position = this.position;
+        this.sprite.others = this.others;
     }
 
-    setUpSprite(pixi, container) {
+}
+
+class ClientSprite extends Jellyfish.Sprite {
+    initializeSprite(pixi, container) {
         const sprite = new pixi.Graphics();
         container.addChild(sprite);
         return sprite;
@@ -97,7 +105,6 @@ class Client extends Jellyfish.Client {
         sprite.beginFill(0xFF00);
         sprite.drawCircle(this.position.x(), this.position.y(), 5);
     }
-
 }
 
 if (Jellyfish.isServer) {
