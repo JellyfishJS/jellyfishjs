@@ -1,4 +1,4 @@
-import { Angle, GameObject, ImageSprite, Sprite, Vector } from 'engine';
+import { GameObject, ImageSprite, Vector } from 'engine';
 import { Bodies, Body } from 'matter-js';
 
 export class LooseTire extends GameObject<Body> {
