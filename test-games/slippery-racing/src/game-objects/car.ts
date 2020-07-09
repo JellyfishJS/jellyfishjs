@@ -39,6 +39,7 @@ export class Car extends GameObject<Body> {
         this.performance = performance;
         this.camera = camera;
         this.sprite = this.createSprite(ImageSprite, '/assets/car.png');
+        this.createSprite(SetupSprite);
     }
 
     public setUpPhysicsBody() {
@@ -58,7 +59,6 @@ export class Car extends GameObject<Body> {
         this.camera.setFollowing(body);
 
         this.sprite.body = body;
-        this.createSprite(SetupSprite);
 
         return body;
     }
@@ -143,5 +143,7 @@ class SetupSprite extends Sprite<boolean> {
         return true;
     }
 
-    public draw() {}
+    public draw(pixi: typeof PIXI, sprite: boolean, container: PIXI.Container) {
+        container.scale.set(0.5);
+    }
 }
