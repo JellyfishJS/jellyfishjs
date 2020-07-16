@@ -131,6 +131,10 @@ describe('Serialization', function () {
             assertSerializesCorrectly({ a: new Date(2520101649755) });
         });
 
+        it('should serialize regular expressions', function () {
+            assertSerializesCorrectly({ regex: /a+b/gmi });
+        });
+
         it('should serialize strings', function () {
             assertSerializesCorrectly({ a: 'string' });
         });
@@ -311,20 +315,6 @@ describe('Serialization', function () {
             const deserialization = serializer.deserialize(serialization);
             assert.deepEqual(deserialization, original);
             assert.deepEqual(deserialization[b as any], original[b]);
-        });
-
-    });
-
-    describe('RegExp serialization', function () {
-
-        it('should serialize regular expressions', function () {
-            const serializer = new Serializer();
-
-            const original: any = { regex: /a+b/gmi };
-            const serialization = serializer.serialize(original);
-            console.log(serialization);
-            const deserialization = serializer.deserialize(serialization);
-            assert.deepEqual(deserialization, original);
         });
 
     });
