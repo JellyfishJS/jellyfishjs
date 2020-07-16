@@ -333,7 +333,6 @@ export class Serialization {
         };
     }
 
-
     /**
      * Serializes the specified item,
      * assuming it is an no update item.

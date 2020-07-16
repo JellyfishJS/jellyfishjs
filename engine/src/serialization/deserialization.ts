@@ -10,8 +10,8 @@ import {
     SerializedPropertyBigInt,
     SerializedPropertyDate,
     SerializedPropertyItemReference,
-    SerializedPropertySymbol,
     SerializedPropertyRegExp,
+    SerializedPropertySymbol,
     SerializedPropertyType,
 } from './serialization-result';
 import type { SerializerConfiguration } from './serializer-configuration';
