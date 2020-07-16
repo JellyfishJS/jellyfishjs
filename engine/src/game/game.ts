@@ -11,7 +11,7 @@ import {
 } from '../game-object/game-object';
 import { Input } from '../input/input';
 import { Matter } from '../matter-setup/matter-setup';
-import { Client, Server, User } from '../multiplayer';
+import { Client, isServer, Server, User } from '../multiplayer';
 import { PIXISetup } from '../pixi-setup/pixi-setup';
 import { Serializer } from '../serialization';
 import type { PrototypeRegistrationOptions } from '../serialization/serializer-configuration';
@@ -156,6 +156,10 @@ export class Game {
             blacklistedKeys: (key, item) => {
                 if (key === parentKey && (item.parent() instanceof Server || item.parent() instanceof Client)) {
                     return true;
+                }
+
+                if (isServer) {
+                    return false;
                 }
 
                 return !item.isOwnedByCurrentUser() && key !== childrenKey;
