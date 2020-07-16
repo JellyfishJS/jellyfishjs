@@ -26,7 +26,7 @@ export class SoccerBall extends GameObject<Body> {
             },
         );
 
-        this.sprite.body = body;
+        this.sprite.following = body;
 
         return body;
     }

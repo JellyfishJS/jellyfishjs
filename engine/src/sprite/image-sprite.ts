@@ -48,7 +48,7 @@ export class ImageSprite extends Sprite {
     /**
      * If set, this sprite follows the specified body.
      */
-    public body: Body | undefined;
+    public following: Body | undefined;
 
     public constructor(imageName: string) {
         super();
@@ -63,9 +63,9 @@ export class ImageSprite extends Sprite {
     }
 
     public draw(pixi: typeof PIXI, sprite: PIXI.Sprite) {
-        if (this.body) {
-            this.position = Vector.object(this.body.position);
-            this.angle = Angle.radians(this.body.angle);
+        if (this.following) {
+            this.position = Vector.object(this.following.position);
+            this.angle = Angle.radians(this.following.angle);
         }
 
         [sprite.x, sprite.y] = [this.position.x(), this.position.y()];

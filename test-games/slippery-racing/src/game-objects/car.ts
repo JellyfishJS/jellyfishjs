@@ -58,7 +58,7 @@ export class Car extends GameObject<Body> {
         );
         this.camera.setFollowing(body);
 
-        this.sprite.body = body;
+        this.sprite.following = body;
 
         return body;
     }
