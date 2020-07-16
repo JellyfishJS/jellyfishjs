@@ -51,43 +51,40 @@ export enum SerializedItemType {
 }
 
 /**
- * A serialized item that is an object.
+ * One of the interfaces many of the serializations share.
+ *
+ * These items have properties,
+ * both string and symbol keyed.
  */
-export interface SerializedItemObject {
-    type: SerializedItemType.Object;
+interface HasProperties {
     stringKeyedProperties: {
         [key: string]: SerializedProperty;
     };
     symbolKeyedProperties: {
         [key: string]: SerializedProperty;
     };
+}
+
+/**
+ * A serialized item that is an object.
+ */
+export interface SerializedItemObject extends HasProperties {
+    type: SerializedItemType.Object;
 }
 
 /**
  * A serialized item that is an array.
  */
-export interface SerializedItemArray {
+export interface SerializedItemArray extends HasProperties {
     type: SerializedItemType.Array;
-    stringKeyedProperties: {
-        [key: string]: SerializedProperty;
-    };
-    symbolKeyedProperties: {
-        [key: string]: SerializedProperty;
-    };
 }
 
 /**
  * A serialized item that has a prototype.
  */
-export interface SerializedItemPrototyped {
+export interface SerializedItemPrototyped extends HasProperties {
     type: SerializedItemType.Prototyped;
     prototype: string;
-    stringKeyedProperties: {
-        [key: string]: SerializedProperty;
-    };
-    symbolKeyedProperties: {
-        [key: string]: SerializedProperty;
-    };
 }
 
 /**
