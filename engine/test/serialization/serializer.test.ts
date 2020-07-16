@@ -315,6 +315,20 @@ describe('Serialization', function () {
 
     });
 
+    describe('RegExp serialization', function () {
+
+        it('should serialize regular expressions', function () {
+            const serializer = new Serializer();
+
+            const original: any = { regex: /a+b/gmi };
+            const serialization = serializer.serialize(original);
+            console.log(serialization);
+            const deserialization = serializer.deserialize(serialization);
+            assert.deepEqual(deserialization, original);
+        });
+
+    });
+
     describe('Key blacklisting', function () {
 
         it('should omit blacklisted keys', function () {
