@@ -5,6 +5,7 @@ import {
     SerializedItemMap,
     SerializedItemObject,
     SerializedItemPrototyped,
+    SerializedItemSet,
     SerializedItemType,
     SerializedProperty,
     SerializedPropertyBigInt,
@@ -132,6 +133,8 @@ export class Deserialization {
                 return originalItem;
             case SerializedItemType.Map:
                 return this._deserializeItemMap(id, serializedItem, originalItem);
+            case SerializedItemType.Set:
+                return this._deserializeItemSet(id, serializedItem, originalItem);
             default:
                 throw new Error(`Bad deserialization: Unknown type "${(serializedItem as any).type}" in ${this._originalEntity.items}.`);
         }
@@ -251,6 +254,41 @@ export class Deserialization {
                 deserializedKey,
                 this._deserializePropertyValue(value, result.get(deserializedKey)),
             );
+        });
+
+        Array.from(result.keys()).filter((key) => !addedKeys.has(key)).forEach((key) => {
+            result.delete(key);
+        });
+
+        return result as unknown as SerializableItem;
+    }
+
+    /**
+     * Deserializes the specified Set.
+     */
+    private _deserializeItemSet(
+        id: string,
+        serializedItem: SerializedItemSet,
+        originalItem: SerializableItem | undefined,
+    ): SerializableItem {
+        const canUseOriginal =
+            typeof originalItem === 'object'
+            && originalItem instanceof Set;
+        const result: Set<any> = canUseOriginal ? originalItem as unknown as Set<any> : new Set();
+
+        this._uuidToItems.set(id, result as unknown as SerializableItem);
+
+        const entries = serializedItem.entries;
+        if (!Array.isArray(entries)) {
+            throw new Error(`Bad deserialization: Set entries is not list: ${entries}.`);
+        }
+
+        const addedKeys = new Set<unknown>();
+
+        entries.forEach((entry) => {
+            const deserialized = this._deserializePropertyValue(entry, undefined);
+            addedKeys.add(deserialized);
+            result.add(deserialized);
         });
 
         Array.from(result.keys()).filter((key) => !addedKeys.has(key)).forEach((key) => {
