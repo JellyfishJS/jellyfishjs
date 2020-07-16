@@ -30,7 +30,7 @@ export class ImageSprite extends Sprite {
      *
      * Defaults to `Vector.zero`.
      *
-     * Automatically updates if `body` is set.
+     * Automatically updates if `following` is set.
      */
     public position: Vector = Vector.zero;
 
@@ -41,7 +41,7 @@ export class ImageSprite extends Sprite {
      *
      * Defaults to `Angle.right`.
      *
-     * Automatically updates if `body` is set.
+     * Automatically updates if `following` is set.
      */
     public angle: Angle = Angle.right;
 
