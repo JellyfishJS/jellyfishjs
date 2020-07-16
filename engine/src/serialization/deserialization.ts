@@ -253,9 +253,13 @@ export class Deserialization {
             );
         });
 
-        Array.from(result.keys()).filter((key) => !addedKeys.has(key)).forEach((key) => {
-            result.delete(key);
-        });
+        // TODO: At some point we'll want to make this configurable.
+        // See https://github.com/NicholasThrom/jellyfishjs/issues/174
+        if (false) {
+            Array.from(result.keys()).filter((key) => !addedKeys.has(key)).forEach((key) => {
+                result.delete(key);
+            });
+        }
 
         return result as unknown as SerializableItem;
     }
