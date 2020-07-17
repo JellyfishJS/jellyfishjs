@@ -1,14 +1,16 @@
-import { Angle, GameObject, Sprite, Vector } from 'engine';
+import { Angle, GameObject, ImageSprite, Vector } from 'engine';
 import { Bodies, Body } from 'matter-js';
 
 export class SoccerBall extends GameObject<Body> {
 
     private readonly initialPosition: Vector;
     private readonly radius = 40;
+    private readonly sprite: ImageSprite;
 
     public constructor(position: Vector) {
         super();
         this.initialPosition = position;
+        this.sprite = this.createSprite(ImageSprite, '/assets/ball.png');
     }
 
     public setUpPhysicsBody() {
@@ -23,29 +25,10 @@ export class SoccerBall extends GameObject<Body> {
                 inertia: 100,
             },
         );
+
+        this.sprite.following = body;
+
         return body;
-    }
-
-}
-
-class SoccerBallSprite extends Sprite {
-    public physicsBody: Body;
-
-    public constructor(physicsBody: Body) {
-        super();
-        this.physicsBody = physicsBody;
-    }
-
-    public initializeSprite(pixi: typeof PIXI, container: PIXI.Container) {
-        const sprite = pixi.Sprite.from('./assets/ball.png');
-        sprite.anchor.set(0.5);
-        container.addChild(sprite);
-        return sprite;
-    }
-
-    public draw(pixi: typeof PIXI, sprite: PIXI.Sprite) {
-        [sprite.x, sprite.y] = [this.physicsBody.position.x, this.physicsBody.position.y];
-        sprite.angle = Angle.radians(this.physicsBody.angle).degrees();
     }
 
 }

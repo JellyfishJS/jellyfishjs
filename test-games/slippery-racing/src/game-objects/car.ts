@@ -1,4 +1,4 @@
-import { Angle, game, GameObject, Sprite, Vector } from 'engine';
+import { Angle, game, GameObject, ImageSprite, Sprite, Vector } from 'engine';
 import * as keycode from 'keycode';
 import { Bodies, Body } from 'matter-js';
 import { Camera } from './camera';
@@ -31,12 +31,15 @@ export class Car extends GameObject<Body> {
     private readonly initialPosition: Vector;
     private readonly performance: Performance;
     private readonly camera: Camera;
+    private readonly sprite: ImageSprite;
 
     public constructor(position: Vector, performance: Performance, camera: Camera) {
         super();
         this.initialPosition = position;
         this.performance = performance;
         this.camera = camera;
+        this.sprite = this.createSprite(ImageSprite, '/assets/car.png');
+        this.createSprite(SetupSprite);
     }
 
     public setUpPhysicsBody() {
@@ -55,7 +58,7 @@ export class Car extends GameObject<Body> {
         );
         this.camera.setFollowing(body);
 
-        this.createSprite(CarSprite, body);
+        this.sprite.following = body;
 
         return body;
     }
@@ -130,30 +133,17 @@ export class Car extends GameObject<Body> {
 
 }
 
-class CarSprite extends Sprite {
-    private physicsBody: Body;
-
-    public constructor(physicsBody: Body) {
-        super();
-        this.physicsBody = physicsBody;
-    }
-
+class SetupSprite extends Sprite<boolean> {
     public initializeSprite(pixi: typeof PIXI, container: PIXI.Container) {
-        const sprite = pixi.Sprite.from('./assets/car.png');
-        sprite.anchor.set(0.5);
-        container.addChild(sprite);
         const application = game.getPIXIApplication();
         if (application) {
             application.renderer.backgroundColor = 0x4b4e4c;
         }
-        return sprite;
+        container.scale.set(0.5);
+        return true;
     }
 
-    public draw(pixi: typeof PIXI, sprite: PIXI.Sprite, container: PIXI.Container) {
-        if (!this.physicsBody) { return; }
-
+    public draw(pixi: typeof PIXI, sprite: boolean, container: PIXI.Container) {
         container.scale.set(0.5);
-        [sprite.x, sprite.y] = [this.physicsBody.position.x, this.physicsBody.position.y];
-        sprite.angle = Angle.radians(this.physicsBody.angle).plus(Angle.degrees(90)).degrees();
     }
 }
