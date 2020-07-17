@@ -131,6 +131,10 @@ describe('Serialization', function () {
             assertSerializesCorrectly({ a: new Date(2520101649755) });
         });
 
+        it('should serialize regular expressions', function () {
+            assertSerializesCorrectly({ regex: /a+b/gmi });
+        });
+
         it('should serialize strings', function () {
             assertSerializesCorrectly({ a: 'string' });
         });

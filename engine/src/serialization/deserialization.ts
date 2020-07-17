@@ -10,6 +10,7 @@ import {
     SerializedPropertyBigInt,
     SerializedPropertyDate,
     SerializedPropertyItemReference,
+    SerializedPropertyRegExp,
     SerializedPropertySymbol,
     SerializedPropertyType,
 } from './serialization-result';
@@ -330,6 +331,7 @@ export class Deserialization {
             case SerializedPropertyType.BigInt: return this._deserializePropertyBigInt(property);
             case SerializedPropertyType.Date: return this._deserializePropertyDate(property);
             case SerializedPropertyType.Symbol: return this._deserializePropertySymbol(property);
+            case SerializedPropertyType.RegExp: return this._deserializePropertyRegExp(property);
             case SerializedPropertyType.NoUpdate: return originalValue;
             default: throw new Error(`Bad deserialization: Unknown value type ${(property as any).type}.`);
         }
@@ -397,6 +399,23 @@ export class Deserialization {
             throw new Error(`Bad deserialization: Unrecognized symbol name ${property.name}.`);
         }
         return symbol;
+    }
+
+    /**
+     * Deserializes the specified property, assuming it's a regular expression.
+     */
+    private _deserializePropertyRegExp(property: SerializedPropertyRegExp): unknown {
+        if (typeof property.source as any !== 'string') {
+            throw new Error(`Bad deserialization: Invalid regex source "${property.source}".`);
+        }
+        if (typeof property.flags as any !== 'string') {
+            throw new Error(`Bad deserialization: Invalid regex flags "${property.flags}".`);
+        }
+        try {
+            return new RegExp(property.source, property.flags);
+        } catch (e) {
+            throw new Error(`Bad deserialization: Invalild regex "${property.source}" with flags "${property.flags}": ${e.message}.`);
+        }
     }
 
 }

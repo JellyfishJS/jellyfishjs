@@ -251,6 +251,8 @@ export class Serialization {
 
         if (property instanceof Date) { return this._serializePropertyDate(property); }
 
+        if (property instanceof RegExp) { return this._serializePropertyRegExp(property); }
+
         if (typeof property === 'symbol') { return this._serializePropertySymbol(property); }
 
         if (typeof property === 'object') { return this._serializePropertyReference(property as SerializableItem); }
@@ -316,6 +318,18 @@ export class Serialization {
         return {
             type: SerializedPropertyType.Reference,
             uuid: this._serializeItem(property as SerializableItem),
+        };
+    }
+
+    /**
+     * Returns the specified property,
+     * assuming it is a regular expression.
+     */
+    private _serializePropertyRegExp(property: RegExp): SerializedProperty {
+        return {
+            type: SerializedPropertyType.RegExp,
+            source: property.source,
+            flags: property.flags,
         };
     }
 

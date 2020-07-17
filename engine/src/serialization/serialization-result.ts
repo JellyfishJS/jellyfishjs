@@ -141,6 +141,11 @@ export enum SerializedPropertyType {
     Symbol = 'symbol',
 
     /**
+     * Indicates this property is a regex.
+     */
+    RegExp = 'regex',
+
+    /**
      * Indicates this property should not be updated.
      */
     NoUpdate = 'noupdate',
@@ -180,6 +185,15 @@ export interface SerializedPropertySymbol {
 }
 
 /**
+ * Represents a property that is a regular expression.
+ */
+export interface SerializedPropertyRegExp {
+    type: SerializedPropertyType.RegExp;
+    source: string;
+    flags: string;
+}
+
+/**
  * Represents a property that should not be updated.
  */
 export interface SerializedPropertyNoUpdate {
@@ -199,5 +213,5 @@ export type SerializedProperty =
     | SerializedPropertyBigInt
     | SerializedPropertyDate
     | SerializedPropertySymbol
-    | SerializedPropertyDate
+    | SerializedPropertyRegExp
     | SerializedPropertyNoUpdate;
