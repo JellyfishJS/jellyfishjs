@@ -152,6 +152,11 @@ describe('Serialization', function () {
             assertSerializesCorrectly({ a: new Map([[{ a: {} }, []], [[1], { b: { c: {} } }]]) });
         });
 
+        it('should serialize Sets', function () {
+            assertSerializesCorrectly({ a: new Set([1, 2, 3, 4, 5, 6]) });
+            assertSerializesCorrectly({ a: new Set([{}, [], [1], { b: { c: {} } }]) });
+        });
+
         it('should serialize objects with reference cycles', function () {
             const original: any = { a: { b: { c: 'string' } } };
             original.a.b.cycle = original.a;

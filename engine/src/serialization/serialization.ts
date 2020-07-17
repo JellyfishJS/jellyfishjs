@@ -103,6 +103,8 @@ export class Serialization {
         const prototype = Object.getPrototypeOf(item);
         if (prototype === Map.prototype) {
             this._result.items[id] = this._serializeItemMap(item as unknown as Map<any, any>);
+        } else if (prototype === Set.prototype) {
+            this._result.items[id] = this._serializeItemSet(item as unknown as Set<any>);
         } else if (
             prototype === Object.getPrototypeOf({})
             || prototype === Object.getPrototypeOf([])
@@ -232,6 +234,18 @@ export class Serialization {
             entries: Array.from(property.entries())
                 .map(([key, value]) => [this._serializeProperty(key), this._serializeProperty(value)]),
 
+        };
+    }
+
+    /**
+     * Returns the specified item,
+     * assuming it is a Set.
+     */
+    private _serializeItemSet(property: Set<unknown>): SerializedItem {
+        return {
+            type: SerializedItemType.Set,
+            entries: Array.from(property.keys())
+                .map((entry) => this._serializeProperty(entry)),
         };
     }
 

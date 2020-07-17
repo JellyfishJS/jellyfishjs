@@ -45,6 +45,11 @@ export enum SerializedItemType {
     Map = 'map',
 
     /**
+    * Indicates this serialized item is a Set.
+    */
+    Set = 'set',
+
+    /**
      * Indicates this serialized item should not be updated.
      */
     NoUpdate = 'noupdate',
@@ -103,6 +108,14 @@ export interface SerializedItemMap {
 }
 
 /**
+ * Represent an item that is a Set.
+ */
+export interface SerializedItemSet {
+    type: SerializedItemType.Set;
+    entries: SerializedProperty[];
+}
+
+/**
  * The serialization of a single item.
  *
  * Different kinds of items need to be deserialized differently.
@@ -112,7 +125,8 @@ export type SerializedItem =
     | SerializedItemArray
     | SerializedItemPrototyped
     | SerializedItemNoUpdate
-    | SerializedItemMap;
+    | SerializedItemMap
+    | SerializedItemSet;
 
 /**
  * Represents the type of the property,
