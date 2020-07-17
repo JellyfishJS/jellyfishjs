@@ -15,9 +15,10 @@ import { Client, isServer, Server, User } from '../multiplayer';
 import { PIXISetup } from '../pixi-setup/pixi-setup';
 import { Serializer } from '../serialization';
 import type { PrototypeRegistrationOptions } from '../serialization/serializer-configuration';
+import { imageNameKey, ImageSprite } from '../sprite/image-sprite';
 import { Sprite } from '../sprite/sprite';
 import type { Class } from '../util/class-type';
-import { Vector } from '../util/geometry';
+import { Angle, Vector } from '../util/geometry';
 
 /**
  * Represents separate games.
@@ -171,9 +172,12 @@ export class Game {
         this.registerSymbol(parentKey);
 
         this.registerClass(Vector);
+        this.registerClass(Angle);
 
         this.registerClass(Sprite);
         this.registerSymbol(spriteKey);
+        this.registerClass(ImageSprite);
+        this.registerSymbol(imageNameKey);
 
         this.registerClass(User);
     }

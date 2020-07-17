@@ -5,7 +5,7 @@ import { Sprite } from './sprite';
 /**
  * The key used to access the private image name.
  */
-const imageNameKey = Symbol('imageNameKey');
+export const imageNameKey = Symbol('imageNameKey');
 
 /**
  * A sprite used to draw a single image on the screen.
