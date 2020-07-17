@@ -1,13 +1,29 @@
 import { game, GameObject, Sprite, Vector } from 'engine';
 
+const speed = 2;
+
 export class Circle extends GameObject {
 
     private sprite: CircleSprite = this.createSprite(CircleSprite, Vector.zero);
 
-    public step() {
-        this.sprite.position = this.sprite.position.plus(Vector.xy(0.15, 0.1));
-        console.log(this.sprite.position);
+    public keyHeld(key: number) {
+        if (!this.isOwnedByCurrentUser()) { return; }
+        switch (key) {
+            case 39:
+                this.sprite.position = this.sprite.position.plus(Vector.xy(speed, 0));
+                break;
+            case 37:
+                this.sprite.position = this.sprite.position.plus(Vector.xy(-speed, 0));
+                break;
+            case 40:
+                this.sprite.position = this.sprite.position.plus(Vector.xy(0, speed));
+                break;
+            case 38:
+                this.sprite.position = this.sprite.position.plus(Vector.xy(0, -speed));
+                break;
+        }
     }
+
 }
 game.registerClass(Circle);
 

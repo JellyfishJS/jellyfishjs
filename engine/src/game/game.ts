@@ -1,9 +1,17 @@
 import uuid = require('uuid');
 import { GameLoop } from '../game-loop/game-loop';
-import { childrenKey, gameKey, GameObject, idKey, spriteKey } from '../game-object/game-object';
+import {
+    childrenKey,
+    gameKey,
+    GameObject,
+    idKey,
+    ownerKey,
+    parentKey,
+    spriteKey,
+} from '../game-object/game-object';
 import { Input } from '../input/input';
 import { Matter } from '../matter-setup/matter-setup';
-import { Client, Server } from '../multiplayer';
+import { Client, isServer, Server, User } from '../multiplayer';
 import { PIXISetup } from '../pixi-setup/pixi-setup';
 import { Serializer } from '../serialization';
 import type { PrototypeRegistrationOptions } from '../serialization/serializer-configuration';
@@ -145,15 +153,29 @@ export class Game {
      */
     private _initializeSerializer() {
         this.registerClass(GameObject, {
-            blacklistedKeys: (key, item) => !item.isOwnedByCurrentUser(),
+            blacklistedKeys: (key, item) => {
+                if (key === parentKey && (item.parent() instanceof Server || item.parent() instanceof Client)) {
+                    return true;
+                }
+
+                if (isServer) {
+                    return false;
+                }
+
+                return !item.isOwnedByCurrentUser() && key !== childrenKey;
+            },
         });
         this.registerSymbol(childrenKey);
-        this.registerClass(Server);
-        this.registerClass(Client);
+        this.registerSymbol(idKey);
+        this.registerSymbol(ownerKey);
+        this.registerSymbol(parentKey);
+
         this.registerClass(Vector);
 
         this.registerClass(Sprite);
         this.registerSymbol(spriteKey);
+
+        this.registerClass(User);
     }
 
     /**
