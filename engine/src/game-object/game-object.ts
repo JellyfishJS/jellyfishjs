@@ -1,5 +1,6 @@
 import type * as Matter from 'matter-js';
 import type * as PIXI from 'pixi.js';
+import { Body, updateBodyFromSelfBodyKey, updateSelfFromBodyBodyKey } from '../body/body';
 import type { Game } from '../game/game';
 import type { Client } from '../multiplayer/client';
 import type { Server } from '../multiplayer/server';
@@ -380,16 +381,20 @@ export abstract class GameObject {
     public keyHeld?(keyCode: number): void;
 
     /**
-     * A private `beforePhysics` hook for the system.
-     */
-    public [beforePhysicsKey]?(): void;
-
-    /**
      * Called before performing physics calculations.
      *
      * Meant to be overridden.
      */
     public beforePhysics?(): void;
+
+    /**
+     * A private `beforePhysics` hook for the system.
+     */
+    public [beforePhysicsKey]?(): void {
+        this[bodyKey].forEach((body) => {
+            body[updateBodyFromSelfBodyKey]();
+        });
+    }
 
     /**
      * Called when this GameObject collides with another GameObject.
@@ -401,7 +406,11 @@ export abstract class GameObject {
     /**
      * A private `afterPhysics` hook for the system.
      */
-    public [afterPhysicsKey]?(): void;
+    public [afterPhysicsKey]?(): void {
+        this[bodyKey].forEach((body) => {
+            body[updateSelfFromBodyBodyKey]();
+        });
+    }
 
     /**
      * Called after performing physics calculations.

@@ -189,8 +189,8 @@ export class GameLoop {
      */
     private _beforePhysics() {
         this._forEachObject((gameObject) => {
-            gameObject[beforePhysicsKey]?.();
             gameObject.beforePhysics?.();
+            gameObject[beforePhysicsKey]?.();
         });
     }
 
