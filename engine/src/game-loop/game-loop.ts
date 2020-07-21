@@ -5,11 +5,8 @@ import {
     beforePhysicsKey,
     beforeStepKey,
     childrenKey,
-    containerKey,
     drawKey,
     GameObject,
-    GameObjectBody,
-    GameObjectSprite,
     idKey,
     keyHeldKey,
     keyPressedKey,
@@ -57,7 +54,7 @@ export class GameLoop {
     /**
      * A mapping from bodies to GameObjects that exist in this game loop.
      */
-    private _bodiesToGameObjects: WeakMap<Matter.Body, GameObject<GameObjectBody>> = new WeakMap();
+    private _bodiesToGameObjects: WeakMap<Matter.Body, GameObject> = new WeakMap();
 
     /**
      * Adds the specified GameObject to this GameLoop.
@@ -118,40 +115,12 @@ export class GameLoop {
      * on a new GameObject that is to be added to the game loop.
      */
     private _initializeGameObject<
-        Body extends GameObjectBody,
-        Subclass extends GameObject<Body>,
+        Subclass extends GameObject,
     >(
         gameObject: Subclass,
     ) {
         gameObject[onCreateKey]?.();
         gameObject.onCreate?.();
-
-        // Apparently type narrowing doesn't work on imports.
-        const matter = Matter;
-        if (matter) {
-            this._initializeGameObjectPhysics(gameObject, matter);
-        }
-    }
-
-    /**
-     * Sets up the parts of the passed GameObject related to physics.
-     */
-    private _initializeGameObjectPhysics<
-        Body extends GameObjectBody,
-        Subclass extends GameObject<Body>,
-    >(
-        gameObject: Subclass,
-        matter: typeof MatterType,
-    ) {
-        if (!gameObject.setUpPhysicsBody) { return; }
-
-        gameObject.physicsBody = gameObject.setUpPhysicsBody();
-        const bodyOrBodies: GameObjectBody = gameObject.physicsBody;
-
-        asArray(bodyOrBodies).forEach((body) => {
-            matter.World.addBody(gameObject.physicsWorld, body);
-            this._bodiesToGameObjects.set(body, gameObject);
-        });
     }
 
     /**
@@ -232,14 +201,12 @@ export class GameLoop {
         engine && Matter?.Engine.update(engine);
 
         const collides = (gameObjectA: GameObject, gameObjectB: GameObject) => {
-            if (gameObjectB === gameObjectA) {
-                return false;
-            }
-            return asArray(gameObjectA.physicsBody).some((bodyA) => {
-                // @ts-ignore Query.collides exist, but @types/matter-js is out of date
-                const collisions = Matter && Matter.Query.collides(bodyA, asArray(gameObjectB.physicsBody));
-                return collisions.length > 0;
-            });
+            return false;
+
+            // Collision logic has been temporarily removed,
+            // due to new Body wrappers.
+            // This will probably be re-added using events
+            // as shown here: https://github.com/liabru/matter-js/issues/250
         };
 
         this._gameObjects.forEach((gameObjectA) => {

@@ -27,14 +27,14 @@ export type GameObjectSprite = AnyAmountOf<PIXI.DisplayObject>;
 export const idKey = Symbol('id');
 
 /**
- * The symbol used to access containers.
+ * The symbol used to access sprites.
  */
-export const containerKey = Symbol('container');
+export const spriteKey = Symbol('sprite');
 
 /**
  * The symbol used to access sprites.
  */
-export const spriteKey = Symbol('sprite');
+export const bodyKey = Symbol('sprite');
 
 /**
  * The symbol used to access the GameObject's to-be-destroyed status.
@@ -124,32 +124,21 @@ export const afterStepKey = Symbol('after-step');
 /**
  * The superclass of any objects that appear in the game.
  */
-export abstract class GameObject<
-    Body extends GameObjectBody = GameObjectBody
-> {
+export abstract class GameObject {
     /**
      * The ID for this GameObject.
      */
     public [idKey]: string;
 
     /**
-     * The sprites for this GameObject.
+     * The Sprites for this GameObject.
      */
     public [spriteKey]: Sprite[] = [];
 
     /**
-     * The world in which any physics objects exist.
-     *
-     * Can be `undefined` if the "matter-js" optional dependency isn't installed.
-     * If it were optional, it would be very inconvenient in projects with physics,
-     * since for them it will never be `undefined`.
+     * The Bodies for this GameObject.
      */
-    public physicsWorld: Matter.World = undefined as any;
-
-    /**
-     * The physics body this GameObject uses.
-     */
-    public physicsBody: Body | undefined;
+    public [bodyKey]: Body[] = [];
 
     /**
      * Whether this GameObject should be destroyed by the end of the current step.
@@ -208,6 +197,21 @@ export abstract class GameObject<
         const newSprite = new Class(...args) as InstanceType<Subclass>;
         this[spriteKey].push(newSprite);
         return newSprite;
+    }
+
+    /**
+     * Creates a Body with the parameters specified
+     * as a Body of this GameObject.
+     */
+    public createBody<
+        Subclass extends new (...args: any[]) => Body,
+    >(
+        Class: Subclass,
+        ...args: ConstructorParameters<Subclass>
+    ): InstanceType<Subclass> {
+        const newBody = new Class(...args) as InstanceType<Subclass>;
+        this[bodyKey].push(newBody);
+        return newBody;
     }
 
     /**
