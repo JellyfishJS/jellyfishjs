@@ -1,3 +1,4 @@
+import type * as matter from 'matter-js';
 import uuid = require('uuid');
 import { GameLoop } from '../game-loop/game-loop';
 import {
@@ -145,6 +146,10 @@ export class Game {
      */
     public getSerializer(): Serializer {
         return this._serializer;
+    }
+
+    public getWorld(): matter.World | undefined {
+        return this._physicsEngine?.world;
     }
 
     /**

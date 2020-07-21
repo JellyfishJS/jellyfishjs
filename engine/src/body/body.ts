@@ -55,7 +55,25 @@ export abstract class Body {
             return this[bodyKey]!;
         }
 
+        const matter = Matter;
+        if (!matter) {
+            throw new Error(
+                'Cannot initialize a Body without installing matter-js\n'
+                + 'If you want to use a physics engine, run `npm i matter-js`.',
+            );
+        }
+
         this[bodyKey] = this.initializeBody();
+
+        const world = this[gameObjectBodyKey].game().getWorld();
+        if (!world) {
+            throw new Error(
+                'Unexpected error: world was not defined, though matter is.\n'
+                + 'This is a bug, please report it.',
+            );
+        }
+        matter.World.addBody(world, this[bodyKey]!);
+
         return this[bodyKey]!;
     }
 
