@@ -1,4 +1,3 @@
-import type * as MatterType from 'matter-js';
 import {
     afterPhysicsKey,
     afterStepKey,
@@ -21,7 +20,6 @@ import {
 import { ButtonEvent , Input } from '../input/input';
 import { Matter } from '../matter-setup/matter-setup';
 import { PIXI, PIXISetup } from '../pixi-setup/pixi-setup';
-import { asArray } from '../util/as-array';
 import { someValue } from '../util/map';
 
 /**
