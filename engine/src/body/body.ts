@@ -1,5 +1,6 @@
 import type * as matter from 'matter-js';
 import type { GameObject } from '../game-object/game-object';
+import { Matter } from '../matter-setup/matter-setup';
 import { Angle, Vector } from '../util/geometry';
 
 /**
@@ -91,6 +92,13 @@ export abstract class Body {
     public [updateBodyFromSelfBodyKey]() {
         const body = this[initializeBodyKey]();
 
+        const matter = Matter;
+        if (!matter) { return; }
+
+        matter.Body.setPosition(body, this.position.object());
+        matter.Body.setVelocity(body, this.velocity.object());
+        matter.Body.setAngle(body, this.angle.radians());
+        matter.Body.setAngularVelocity(body, this.angularVelocity);
     }
 
     /**
@@ -99,6 +107,11 @@ export abstract class Body {
      */
     public [updateSelfFromBodyBodyKey]() {
         const body = this[initializeBodyKey]();
+
+        this.position = Vector.object(body.position);
+        this.velocity = Vector.object(body.velocity);
+        this.angle = Angle.radians(body.angle);
+        this.angularVelocity = body.angularVelocity;
     }
 
 }
