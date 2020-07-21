@@ -1,33 +1,62 @@
 import type * as Matter from 'matter-js';
 
-export const beforePhysicsBodyKey = Symbol('beforePhysicsBodyKey');
-export const afterPhysicsBodyKey = Symbol('afterPhysicsBodyKey');
+/**
+ * The key used to update the matter body from the Body.
+ */
+export const updateBodyFromSelfBodyKey = Symbol('updateBodyFromSelfBodyKey');
 
+/**
+ * The key used to update the Body from the matter body.
+ */
+export const updateSelfFromBodyBodyKey = Symbol('updateSelfFromBodyBodyKey');
+
+/**
+ * The key used to access the Body's matter.js body,
+ * if it has one.
+ */
 const bodyKey = Symbol('bodyKey');
 
+/**
+ * Represents a physical object,
+ * and allows interactions with the physics engine.
+ */
 export abstract class Body {
 
+    /**
+     * The matter-js body this Body wraps,
+     * if it has been initialized yet.
+     */
     private [bodyKey]: Matter.Body | undefined;
 
+    /**
+     * Initializes the matter-js body.
+     *
+     * This can be called multiple times
+     * — specifically, after construction
+     * or after this _Body_ is deserialized.
+     */
     public abstract initializeBody(): Matter.Body;
 
-    public [beforePhysicsBodyKey]() {
+    /**
+     * Updates the actual matter-js body
+     * from the state of this Body.
+     */
+    public [updateBodyFromSelfBodyKey]() {
         if (!this[bodyKey]) {
             this[bodyKey] = this.initializeBody();
         }
 
         // Can be !'d since we set it above.
-        this.beforePhysics(this[bodyKey]!);
+        const body = this[bodyKey];
     }
 
-    public abstract beforePhysics(body: Matter.Body): void;
-
-    public [afterPhysicsBodyKey]() {
+    /**
+     * Updates the state of this,
+     * from the actual matter-js body.
+     */
+    public [updateSelfFromBodyBodyKey]() {
         const body = this[bodyKey];
         if (!body) { return; }
-        this.afterPhysics(body);
     }
-
-    public abstract afterPhysics(body: Matter.Body): void;
 
 }
