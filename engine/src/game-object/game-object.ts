@@ -1,6 +1,6 @@
 import type * as Matter from 'matter-js';
 import type * as PIXI from 'pixi.js';
-import { Body, updateBodyFromSelfBodyKey, updateSelfFromBodyBodyKey } from '../body/body';
+import { Body, gameObjectBodyKey, updateBodyFromSelfBodyKey, updateSelfFromBodyBodyKey } from '../body/body';
 import type { Game } from '../game/game';
 import type { Client } from '../multiplayer/client';
 import type { Server } from '../multiplayer/server';
@@ -212,6 +212,8 @@ export abstract class GameObject {
     ): InstanceType<Subclass> {
         const newBody = new Class(...args) as InstanceType<Subclass>;
         this[bodyKey].push(newBody);
+        newBody[gameObjectBodyKey] = this;
+        newBody[updateSelfFromBodyBodyKey]();
         return newBody;
     }
 

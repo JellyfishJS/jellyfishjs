@@ -1,4 +1,5 @@
-import type * as Matter from 'matter-js';
+import type * as matter from 'matter-js';
+import type { GameObject } from '../game-object/game-object';
 import { Angle, Vector } from '../util/geometry';
 
 /**
@@ -12,6 +13,16 @@ export const updateBodyFromSelfBodyKey = Symbol('updateBodyFromSelfBodyKey');
 export const updateSelfFromBodyBodyKey = Symbol('updateSelfFromBodyBodyKey');
 
 /**
+ * The key used to call the body initializer.
+ */
+export const initializeBodyKey = Symbol('initializeBodyKey');
+
+/**
+ * The key used to store the GameObject that owns this Body.
+ */
+export const gameObjectBodyKey = Symbol('gameObjectBodyKey');
+
+/**
  * The key used to access the Body's matter.js body,
  * if it has one.
  */
@@ -22,6 +33,8 @@ const bodyKey = Symbol('bodyKey');
  * and allows interactions with the physics engine.
  */
 export abstract class Body {
+
+    private [gameObjectBodyKey]: GameObject = undefined as any;
 
     /**
      * The position of this Body.
@@ -47,7 +60,20 @@ export abstract class Body {
      * The matter-js body this Body wraps,
      * if it has been initialized yet.
      */
-    private [bodyKey]: Matter.Body | undefined;
+    private [bodyKey]: matter.Body | undefined;
+
+    /**
+     * Initializes the matter body in this body,
+     * and returns it for convenience.
+     */
+    private [initializeBodyKey](): matter.Body {
+        if (this[bodyKey]) {
+            return this[bodyKey]!;
+        }
+
+        this[bodyKey] = this.initializeBody();
+        return this[bodyKey]!;
+    }
 
     /**
      * Initializes the matter-js body.
@@ -56,19 +82,15 @@ export abstract class Body {
      * — specifically, after construction
      * or after this _Body_ is deserialized.
      */
-    public abstract initializeBody(): Matter.Body;
+    protected abstract initializeBody(): matter.Body;
 
     /**
      * Updates the actual matter-js body
      * from the state of this Body.
      */
     public [updateBodyFromSelfBodyKey]() {
-        if (!this[bodyKey]) {
-            this[bodyKey] = this.initializeBody();
-        }
+        const body = this[initializeBodyKey]();
 
-        // Can be !'d since we set it above.
-        const body = this[bodyKey];
     }
 
     /**
@@ -76,8 +98,7 @@ export abstract class Body {
      * from the actual matter-js body.
      */
     public [updateSelfFromBodyBodyKey]() {
-        const body = this[bodyKey];
-        if (!body) { return; }
+        const body = this[initializeBodyKey]();
     }
 
 }
