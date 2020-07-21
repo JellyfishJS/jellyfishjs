@@ -35,27 +35,10 @@ const bodyKey = Symbol('bodyKey');
  */
 export abstract class Body {
 
+    /**
+     * The GameObject that owns this Body.
+     */
     private [gameObjectBodyKey]: GameObject = undefined as any;
-
-    /**
-     * The position of this Body.
-     */
-    public position: Vector = Vector.zero;
-
-    /**
-     * The angle of this Body.
-     */
-    public angle: Angle = Angle.zero;
-
-    /**
-     * The velocity with which this Body is moving.
-     */
-    public velocity: Vector = Vector.zero;
-
-    /**
-     * The angular velocity with which this Body is rotating.
-     */
-    public angularVelocity = 0;
 
     /**
      * The matter-js body this Body wraps,
@@ -75,15 +58,6 @@ export abstract class Body {
         this[bodyKey] = this.initializeBody();
         return this[bodyKey]!;
     }
-
-    /**
-     * Initializes the matter-js body.
-     *
-     * This can be called multiple times
-     * — specifically, after construction
-     * or after this _Body_ is deserialized.
-     */
-    protected abstract initializeBody(): matter.Body;
 
     /**
      * Updates the actual matter-js body
@@ -112,6 +86,73 @@ export abstract class Body {
         this.velocity = Vector.object(body.velocity);
         this.angle = Angle.radians(body.angle);
         this.angularVelocity = body.angularVelocity;
+    }
+
+    /**
+     * Allows subclasses to interact with the body directly.
+     */
+    protected withBody(handler: (body: matter.Body) => void) {
+        this[updateBodyFromSelfBodyKey]();
+        // Can force unwrap this, since the previous method always sets it.
+        handler(this[bodyKey]!);
+        this[updateSelfFromBodyBodyKey]();
+    }
+
+    /**
+     * Initializes the matter-js body.
+     *
+     * This can be called multiple times
+     * — specifically, after construction
+     * or after this _Body_ is deserialized.
+     */
+    protected abstract initializeBody(): matter.Body;
+
+    /**
+     * The position of this Body.
+     */
+    public position: Vector = Vector.zero;
+
+    /**
+     * The angle of this Body.
+     */
+    public angle: Angle = Angle.zero;
+
+    /**
+     * The velocity with which this Body is moving.
+     */
+    public velocity: Vector = Vector.zero;
+
+    /**
+     * The angular velocity with which this Body is rotating.
+     */
+    public angularVelocity = 0;
+
+    /**
+     * Applies the specified force to this Body.
+     *
+     * If an origin is specified,
+     * also applies a torque to the body
+     * depending on its position and the position of the origin.
+     */
+    public applyForce(force: Vector, origin?: Vector) {
+        const matter = Matter;
+        if (!matter) { return; }
+
+        this.withBody((body) => {
+            matter.Body.applyForce(body, origin?.object() ?? this.position.object(), force.object());
+        });
+    }
+
+    /**
+     * Applies the specified torque to this Body.
+     */
+    public applyTorque(torque: number) {
+        const matter = Matter;
+        if (!matter) { return; }
+
+        this.withBody((body) => {
+            body.torque += torque;
+        });
     }
 
 }
