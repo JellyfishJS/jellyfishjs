@@ -1,5 +1,6 @@
 import * as SocketIOClient from 'socket.io-client';
-import { afterStepKey, beforeStepKey, childrenKey, GameObject, parentKey } from '../game-object/game-object';
+import { gameObjectBodyKey } from '../body/body';
+import { afterStepKey, beforeStepKey, bodyKey, childrenKey, GameObject, parentKey, parentKey } from '../game-object/game-object';
 import { ClientEvent, ClientEventType, MessageType } from './event';
 import { isServer } from './is-server';
 import { Server } from './server';
@@ -75,12 +76,22 @@ export class Client extends GameObject {
 
         try {
             this.game().getSerializer().deserialize(updateObject, this[childrenKey]);
-            for (const child of this.children()) {
-                child[parentKey] = this;
-            }
         } catch (error) {
             console.error(`Serialization failed with error: ${error}`);
         }
+
+        const updateGameObject = (gameObject: GameObject) => {
+            for (const body of gameObject[bodyKey]) {
+                body[gameObjectBodyKey] = gameObject;
+            }
+
+            for (const child of gameObject.children()) {
+                child[parentKey] = gameObject;
+                updateGameObject(child);
+            }
+        };
+
+        updateGameObject(this);
     }
 
     /**
