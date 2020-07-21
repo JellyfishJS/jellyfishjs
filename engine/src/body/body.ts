@@ -92,6 +92,7 @@ export abstract class Body {
         matter.Body.setAngle(body, this.angle.radians());
         matter.Body.setAngularVelocity(body, this.angularVelocity);
         matter.Body.setMass(body, this.mass);
+        matter.Body.setInertia(body, this.inertia);
     }
 
     /**
@@ -106,6 +107,7 @@ export abstract class Body {
         this.angle = Angle.radians(body.angle);
         this.angularVelocity = body.angularVelocity;
         this.mass = body.mass;
+        this.inertia = body.inertia;
     }
 
     /**
@@ -151,6 +153,11 @@ export abstract class Body {
      * The mass of this Body.
      */
     public mass = 0;
+
+    /**
+     * The moment of intertia of this Body.
+     */
+    public inertia = 0;
 
     /**
      * Applies the specified force to this Body.
