@@ -91,6 +91,7 @@ export abstract class Body {
         matter.Body.setVelocity(body, this.velocity.object());
         matter.Body.setAngle(body, this.angle.radians());
         matter.Body.setAngularVelocity(body, this.angularVelocity);
+        matter.Body.setMass(body, this.mass);
     }
 
     /**
@@ -104,6 +105,7 @@ export abstract class Body {
         this.velocity = Vector.object(body.velocity);
         this.angle = Angle.radians(body.angle);
         this.angularVelocity = body.angularVelocity;
+        this.mass = body.mass;
     }
 
     /**
@@ -144,6 +146,11 @@ export abstract class Body {
      * The angular velocity with which this Body is rotating.
      */
     public angularVelocity = 0;
+
+    /**
+     * The mass of this Body.
+     */
+    public mass = 0;
 
     /**
      * Applies the specified force to this Body.
