@@ -62,10 +62,6 @@ export class Game {
         newObject[idKey] = uuid();
         newObject[gameKey] = this;
 
-        if (this._physicsEngine) {
-            newObject.physicsWorld = this._physicsEngine.world;
-        }
-
         this._gameLoop.addGameObject(newObject);
         return newObject;
     }
