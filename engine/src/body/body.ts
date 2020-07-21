@@ -1,4 +1,5 @@
 import type * as Matter from 'matter-js';
+import { Angle, Vector } from '../util/geometry';
 
 /**
  * The key used to update the matter body from the Body.
@@ -21,6 +22,26 @@ const bodyKey = Symbol('bodyKey');
  * and allows interactions with the physics engine.
  */
 export abstract class Body {
+
+    /**
+     * The position of this Body.
+     */
+    public position: Vector = Vector.zero;
+
+    /**
+     * The angle of this Body.
+     */
+    public angle: Angle = Angle.zero;
+
+    /**
+     * The velocity with which this Body is moving.
+     */
+    public velocity: Vector = Vector.zero;
+
+    /**
+     * The angular velocity with which this Body is rotating.
+     */
+    public angularVelocity = 0;
 
     /**
      * The matter-js body this Body wraps,

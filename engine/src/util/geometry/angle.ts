@@ -40,6 +40,10 @@ export class Angle {
     public static degrees(degrees: number): Angle {
         return Angle.radians(degrees / 180 * Math.PI);
     }
+    /**
+     * An angle of 0.
+     */
+    public static readonly zero = Angle.radians(0);
 
     /**
      * An angle pointing right.
