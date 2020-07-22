@@ -39,18 +39,6 @@ export class SlipperServer extends Server {
         this.generateCircle(Vector.xy(1900, -2700), 150);
         this.generateCircle(Vector.xy(2900, -2400), 250);
 
-        this.createObject(
-            Car,
-            Vector.xy(-300, 0),
-            {
-                topSpeed: 0.02,
-                acceleration: 0.001,
-                spinning: 0.0006,
-                cornering: 0.000015,
-                handling: 0.3,
-            },
-        );
-
         this.generateTireCircle(Vector.zero, 800, 24);
         this.generateTireCircle(Vector.xy(-2900, -2700), 300, 48);
 
