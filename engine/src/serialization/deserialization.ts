@@ -15,7 +15,8 @@ import {
     SerializedPropertySymbol,
     SerializedPropertyType,
 } from './serialization-result';
-import type { SerializerConfiguration } from './serializer-configuration';
+import type { PrototypeConfiguration, SerializerConfiguration } from './serializer-configuration';
+import { isKeyBlacklisted } from './utils';
 
 /**
  * A class used to deserialize a single entity.
@@ -198,10 +199,8 @@ export class Deserialization {
         serializedItem: SerializedItemPrototyped,
         originalItem: SerializableItem | undefined,
     ): SerializableItem {
-        const configuration = this._configuration.prototypeNameToConfiguration.get(serializedItem.prototype);
-        if (!configuration) {
-            throw new Error(`Bad deserialization: Unrecognized prototype name: ${serializedItem.prototype}`);
-        }
+        const configurations = this._getConfigurationsForPrototype(serializedItem.prototype);
+        const configuration = configurations[configurations.length - 1];
 
         const canUseOriginal = originalItem
             && typeof originalItem === 'object'
@@ -215,8 +214,8 @@ export class Deserialization {
         if (typeof serializedItem.stringKeyedProperties !== 'object') {
             throw new Error(`Bad deserialization: Property .stringKeyedProperties is not an object in ${serializedItem}.`);
         }
-        this._addPropertiesToItem(result, serializedItem.stringKeyedProperties);
-        this._addSymbolPropertiesToItem(result, serializedItem.symbolKeyedProperties);
+        this._addPropertiesToItem(result, serializedItem.stringKeyedProperties, configurations);
+        this._addSymbolPropertiesToItem(result, serializedItem.symbolKeyedProperties, configurations);
         return result;
     }
 
@@ -309,6 +308,7 @@ export class Deserialization {
     private _addPropertiesToItem(
         item: SerializableItem,
         properties: { [key: string]: SerializedProperty },
+        configurations: PrototypeConfiguration<unknown>[] = [],
     ) {
         const existingKeys = Object.keys(item);
         const newKeys = Object.keys(properties);
@@ -319,7 +319,9 @@ export class Deserialization {
 
         Object.keys(properties).forEach((key) => {
             const value = properties[key];
-            item[key] = this._deserializePropertyValue(value, item[key]);
+            if (!isKeyBlacklisted(key, item, configurations)) {
+                item[key] = this._deserializePropertyValue(value, item[key]);
+            }
         });
     }
 
@@ -329,6 +331,7 @@ export class Deserialization {
     private _addSymbolPropertiesToItem(
         item: SerializableItem,
         properties: { [key: string]: SerializedProperty },
+        configurations: PrototypeConfiguration<unknown>[] = [],
     ) {
         Object.keys(properties).forEach((key) => {
             const symbol = this._configuration.symbolNameToSymbol.get(key);
@@ -336,8 +339,23 @@ export class Deserialization {
                 throw new Error(`Bad deserialization: Unrecognized symbol name ${key}.`);
             }
 
-            item[symbol as any] = this._deserializePropertyValue(properties[key], item[symbol as any]);
+            if (!isKeyBlacklisted(symbol, item, configurations)) {
+                item[symbol as any] = this._deserializePropertyValue(properties[key], item[symbol as any]);
+            }
         });
+    }
+
+    /**
+     * Returns the configuration for all the prototypes
+     * from which the specified object inherits.
+     */
+    private _getConfigurationsForPrototype(name: string): PrototypeConfiguration<unknown>[] {
+        const configuration = this._configuration.prototypeNameToConfiguration.get(name)!;
+        const parent = this._configuration.prototypeToName.get(Object.getPrototypeOf(configuration.prototype));
+        if (!parent) {
+            return [configuration];
+        }
+        return [...this._getConfigurationsForPrototype(parent), configuration];
     }
 
     /**

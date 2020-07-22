@@ -9,6 +9,7 @@ import {
     SerializedPropertyType,
 } from './serialization-result';
 import type { PrototypeConfiguration, SerializerConfiguration } from './serializer-configuration';
+import { isKeyBlacklisted } from './utils';
 
 /**
  * A class used to serialize a single entity.
@@ -156,7 +157,7 @@ export class Serialization {
         const symbolKeyedProperties: SerializedItemObject['symbolKeyedProperties'] = {};
 
         Object.keys(item).forEach((key) => {
-            if (this._isKeyBlacklisted(key, item, configurations)) {
+            if (isKeyBlacklisted(key, item, configurations)) {
                 stringKeyedProperties[key] = this._serializePropertyNoUpdate();
             } else {
                 stringKeyedProperties[key] = this._serializeProperty(item[key]);
@@ -170,7 +171,7 @@ export class Serialization {
                 return;
             }
 
-            if (this._isKeyBlacklisted(symbol, item, configurations)) {
+            if (isKeyBlacklisted(symbol, item, configurations)) {
                 symbolKeyedProperties[name] = this._serializePropertyNoUpdate();
             } else {
                 // TypeScript doesn't support symbol indexers yet
@@ -184,34 +185,6 @@ export class Serialization {
             stringKeyedProperties,
             symbolKeyedProperties,
         };
-    }
-
-    /**
-     * Returns `true` if the specified key of the specified item
-     * is blacklisted.
-     */
-    private _isKeyBlacklisted(
-        key: string | symbol,
-        item: SerializableItem,
-        configurations: PrototypeConfiguration<unknown>[] = [],
-    ): boolean {
-        for (const configuration of configurations) {
-            if (
-                typeof configuration.blacklistedKeys === 'function'
-                && configuration.blacklistedKeys(key, item)
-            ) {
-                return true;
-            }
-
-            if (
-                configuration.blacklistedKeys instanceof Set
-                && configuration.blacklistedKeys.has(key)
-            ) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
