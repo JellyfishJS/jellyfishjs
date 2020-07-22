@@ -31,6 +31,8 @@ export class SlipperyClient extends Client {
             },
         );
 
+        this.car.setOwner(this.user());
+
         this.camera.setFollowing(this.car);
     }
 
