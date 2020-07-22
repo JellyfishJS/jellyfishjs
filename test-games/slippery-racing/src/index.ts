@@ -1,4 +1,5 @@
 import { game, isServer } from 'engine';
+import { Camera } from './game-objects/camera';
 import { SlipperyClient } from './game-objects/client';
 import { SlipperServer } from './game-objects/server';
 
@@ -11,7 +12,8 @@ game.setCanvasByID('game');
 if (isServer) {
     game.createObject(SlipperServer);
 } else {
-    game.createObject(SlipperyClient);
+    const camera = game.createObject(Camera);
+    game.createObject(SlipperyClient, camera);
 }
 
 game.start();

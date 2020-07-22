@@ -31,7 +31,7 @@ export class Car extends GameObject {
     private readonly initialPosition: Vector;
     private readonly performance: Performance;
     private sprite!: ImageSprite;
-    private body!: Body;
+    public body!: Body;
 
     public constructor(position: Vector, performance: Performance) {
         super();

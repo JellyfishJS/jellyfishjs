@@ -1,9 +1,10 @@
 import { Body, game, GameObject, Sprite, Vector } from 'engine';
 import type * as PIXI from 'pixi.js';
+import { Car } from './car';
 
 export class Camera extends GameObject {
 
-    private followingBody: Body = undefined as any;
+    private following: Car | undefined = undefined;
 
     private velocity: Vector = Vector.zero;
 
@@ -13,13 +14,13 @@ export class Camera extends GameObject {
 
     private sprite = this.createSprite(CameraSprite, Vector.zero);
 
-    public setFollowing(followingBody: Body) {
-        this.followingBody = followingBody;
-        this.sprite.position = this.followingBody.position;
+    public setFollowing(following: Car) {
+        this.following = following;
     }
 
     public step() {
-        const desiredPosition = this.followingBody.position;
+        if (!this.following?.body) { return; }
+        const desiredPosition = this.following.body.position;
         const positionOffset = desiredPosition.minus(this.sprite.position);
         this.velocity = this.velocity
             .plus(
