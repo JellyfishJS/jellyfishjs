@@ -1,8 +1,7 @@
-import { GameObject, Sprite, Vector } from 'engine';
-import { Body } from 'matter-js';
+import { Body, GameObject, Sprite, Vector } from 'engine';
 import type * as PIXI from 'pixi.js';
 
-export class Camera extends GameObject<Body> {
+export class Camera extends GameObject {
 
     private followingBody: Body = undefined as any;
 
@@ -16,11 +15,11 @@ export class Camera extends GameObject<Body> {
 
     public setFollowing(followingBody: Body) {
         this.followingBody = followingBody;
-        this.sprite.position = Vector.object(this.followingBody.position);
+        this.sprite.position = this.followingBody.position;
     }
 
     public step() {
-        const desiredPosition = Vector.object(this.followingBody.position);
+        const desiredPosition = this.followingBody.position;
         const positionOffset = desiredPosition.minus(this.sprite.position);
         this.velocity = this.velocity
             .plus(

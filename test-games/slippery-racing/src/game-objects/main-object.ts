@@ -63,7 +63,7 @@ export class MainObject extends GameObject {
             Vector.xy(0, -1400),
         );
 
-        this.physicsWorld.gravity = { x: 0, y: 0, scale: 0 };
+        this.game().getWorld()!.gravity = { x: 0, y: 0, scale: 0 };
     }
 
 }
