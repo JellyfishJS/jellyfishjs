@@ -52,7 +52,7 @@ export class SlipperServer extends Server {
 
         this.game().getWorld()!.gravity = { x: 0, y: 0, scale: 0 };
 
-        this.start();
+        this.start(+process.env.SLIPPERY_RACING_PORT!);
     }
 
 }
