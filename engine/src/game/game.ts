@@ -1,7 +1,10 @@
 import type * as matter from 'matter-js';
 import uuid = require('uuid');
+import { Body } from '../body';
+import { gameObjectBodyKey } from '../body/body';
 import { GameLoop } from '../game-loop/game-loop';
 import {
+    bodyKey,
     childrenKey,
     gameKey,
     GameObject,
@@ -175,6 +178,10 @@ export class Game {
 
         this.registerClass(Sprite);
         this.registerSymbol(spriteKey);
+
+        this.registerClass(Body);
+        this.registerSymbol(bodyKey);
+        this.registerSymbol(gameObjectBodyKey);
 
         this.registerClass(User);
     }
