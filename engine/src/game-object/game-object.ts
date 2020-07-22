@@ -33,9 +33,9 @@ export const idKey = Symbol('id');
 export const spriteKey = Symbol('sprite');
 
 /**
- * The symbol used to access sprites.
+ * The symbol used to access bodies.
  */
-export const bodyKey = Symbol('sprite');
+export const bodyKey = Symbol('body');
 
 /**
  * The symbol used to access the GameObject's to-be-destroyed status.
