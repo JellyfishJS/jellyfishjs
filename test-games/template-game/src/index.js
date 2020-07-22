@@ -5,8 +5,8 @@ class Player extends Jellyfish.GameObject {
 
     constructor(position, force) {
         super();
-        this.position = position || { x: 0, y: 0 };
-        this.force = force || { x: 0, y: 0 };
+        this.position = position || Jellyfish.Vector.xy(0, 0);
+        this.force = force || Jellyfish.Vector.xy(0, 0);
     }
 
     onCreate() {
@@ -44,6 +44,6 @@ class PlayerBody extends Jellyfish.Body {
 }
 
 Jellyfish.game.setCanvasByID("game");
-Jellyfish.game.createObject(Player, { x: 200, y: 30 }, { x: 0, y: -0.001 });
-Jellyfish.game.createObject(Player, { x: 220, y: 250 }, { x: 0, y: -0.0015 });
+Jellyfish.game.createObject(Player, Jellyfish.Vector.xy(200, 30), Jellyfish.Vector.xy(0, -0.001));
+Jellyfish.game.createObject(Player, Jellyfish.Vector.xy(220, 250), Jellyfish.Vector.xy(0, -0.0015));
 Jellyfish.game.start();
