@@ -27,7 +27,7 @@ export const gameObjectBodyKey = Symbol('gameObjectBodyKey');
  * The key used to access the Body's matter.js body,
  * if it has one.
  */
-const bodyKey = Symbol('bodyKey');
+export const bodyMatterBodyKey = Symbol('bodyMatterBodyKey');
 
 /**
  * Represents a physical object,
@@ -44,15 +44,15 @@ export abstract class Body {
      * The matter-js body this Body wraps,
      * if it has been initialized yet.
      */
-    private [bodyKey]: matter.Body | undefined;
+    public [bodyMatterBodyKey]: matter.Body | undefined;
 
     /**
      * Initializes the matter body in this body,
      * and returns it for convenience.
      */
     private [initializeBodyKey](): matter.Body {
-        if (this[bodyKey]) {
-            return this[bodyKey]!;
+        if (this[bodyMatterBodyKey]) {
+            return this[bodyMatterBodyKey]!;
         }
 
         const matter = Matter;
@@ -63,7 +63,7 @@ export abstract class Body {
             );
         }
 
-        this[bodyKey] = this.initializeBody();
+        this[bodyMatterBodyKey] = this.initializeBody();
 
         const world = this[gameObjectBodyKey].game().getWorld();
         if (!world) {
@@ -72,9 +72,9 @@ export abstract class Body {
                 + 'This is a bug, please report it.',
             );
         }
-        matter.World.addBody(world, this[bodyKey]!);
+        matter.World.addBody(world, this[bodyMatterBodyKey]!);
 
-        return this[bodyKey]!;
+        return this[bodyMatterBodyKey]!;
     }
 
     /**
@@ -116,7 +116,7 @@ export abstract class Body {
     protected withBody(handler: (body: matter.Body) => void) {
         this[updateBodyFromSelfBodyKey]();
         // Can force unwrap this, since the previous method always sets it.
-        handler(this[bodyKey]!);
+        handler(this[bodyMatterBodyKey]!);
         this[updateSelfFromBodyBodyKey]();
     }
 

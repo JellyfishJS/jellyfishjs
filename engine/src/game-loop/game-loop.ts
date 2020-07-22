@@ -1,8 +1,10 @@
+import { bodyMatterBodyKey } from '../body/body';
 import {
     afterPhysicsKey,
     afterStepKey,
     beforePhysicsKey,
     beforeStepKey,
+    bodyKey,
     childrenKey,
     drawKey,
     GameObject,
@@ -199,12 +201,19 @@ export class GameLoop {
         engine && Matter?.Engine.update(engine);
 
         const collides = (gameObjectA: GameObject, gameObjectB: GameObject) => {
-            return false;
-
-            // Collision logic has been temporarily removed,
-            // due to new Body wrappers.
-            // This will probably be re-added using events
-            // as shown here: https://github.com/liabru/matter-js/issues/250
+            if (gameObjectB === gameObjectA) {
+                return false;
+            }
+            return gameObjectA[bodyKey].some((bodyA) => {
+                const matterBody = bodyA[bodyMatterBodyKey];
+                if (!matterBody) { return false; }
+                const otherMatterBodies = gameObjectB[bodyKey]
+                    .map((bodyB) => bodyB[bodyMatterBodyKey])
+                    .filter((bodyB) => !!bodyB);
+                // @ts-ignore Query.collides exist, but @types/matter-js is out of date
+                const collisions = Matter && Matter.Query.collides(matterBody, otherMatterBodies);
+                return collisions.length > 0;
+            });
         };
 
         this._gameObjects.forEach((gameObjectA) => {
