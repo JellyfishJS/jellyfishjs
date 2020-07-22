@@ -81,18 +81,24 @@ export class SerializerConfiguration {
 }
 
 /**
- * A function that returns true if the key should be blacklisted,
+ * A function that returns true if the serialization key should be blacklisted,
  * otherwise false.
  */
-type KeyBlacklistFunction<T> = (key: string | symbol, item: T) => boolean;
+type SerializationKeyBlacklistFunction<T> = (key: string | symbol, item: T) => boolean;
+
+/**
+ * A function that returns true if the deserialization key should be blacklisted,
+ * otherwise false. The item may be undefined.
+ */
+type DeserializationKeyBlacklistFunction<T> = (key: string | symbol, item: T | undefined) => boolean;
 
 /**
  * Represents settings provided by the developer on how objects
  * of a certain prototype are serialized.
  */
 export interface PrototypeRegistrationOptions<T> {
-    serializationBlacklistedKeys?: (string | symbol)[] | KeyBlacklistFunction<T>;
-    deserializationBlacklistedKeys?: (string | symbol)[] | KeyBlacklistFunction<T>;
+    serializationBlacklistedKeys?: (string | symbol)[] | SerializationKeyBlacklistFunction<T>;
+    deserializationBlacklistedKeys?: (string | symbol)[] | DeserializationKeyBlacklistFunction<T>;
 }
 
 /**
@@ -100,6 +106,6 @@ export interface PrototypeRegistrationOptions<T> {
  */
 export interface PrototypeConfiguration<T> {
     prototype: {};
-    serializationBlacklistedKeys?: Set<string | symbol> | KeyBlacklistFunction<T>;
-    deserializationBlacklistedKeys?: Set<string | symbol> | KeyBlacklistFunction<T>;
+    serializationBlacklistedKeys?: Set<string | symbol> | SerializationKeyBlacklistFunction<T>;
+    deserializationBlacklistedKeys?: Set<string | symbol> | DeserializationKeyBlacklistFunction<T>;
 }

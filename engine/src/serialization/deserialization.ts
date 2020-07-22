@@ -213,8 +213,23 @@ export class Deserialization {
         if (typeof serializedItem.stringKeyedProperties !== 'object') {
             throw new Error(`Bad deserialization: Property .stringKeyedProperties is not an object in ${serializedItem}.`);
         }
-        this._addPropertiesToItem(result, serializedItem.stringKeyedProperties, configurations);
-        this._addSymbolPropertiesToItem(result, serializedItem.symbolKeyedProperties, configurations);
+
+        const stringKeyBlacklist = this._getBlacklistedProperties(
+            serializedItem.stringKeyedProperties,
+            (key) => key,
+            canUseOriginal ? originalItem : undefined,
+            configurations,
+        );
+
+        const symbolKeyBlacklist = this._getBlacklistedProperties(
+            serializedItem.symbolKeyedProperties,
+            (key) => this._getSymbolFromName(key),
+            canUseOriginal ? originalItem : undefined,
+            configurations,
+        );
+
+        this._addPropertiesToItem(result, serializedItem.stringKeyedProperties, stringKeyBlacklist);
+        this._addSymbolPropertiesToItem(result, serializedItem.symbolKeyedProperties, symbolKeyBlacklist);
         return result;
     }
 
@@ -307,7 +322,7 @@ export class Deserialization {
     private _addPropertiesToItem(
         item: SerializableItem,
         properties: { [key: string]: SerializedProperty },
-        configurations: PrototypeConfiguration<unknown>[] = [],
+        blacklist?: Set<string>,
     ) {
         const existingKeys = Object.keys(item);
         const newKeys = Object.keys(properties);
@@ -318,7 +333,7 @@ export class Deserialization {
 
         Object.keys(properties).forEach((key) => {
             const value = properties[key];
-            if (!this._isKeyBlacklisted(key, item, configurations)) {
+            if (!blacklist || !blacklist.has(key)) {
                 item[key] = this._deserializePropertyValue(value, item[key]);
             }
         });
@@ -330,18 +345,45 @@ export class Deserialization {
     private _addSymbolPropertiesToItem(
         item: SerializableItem,
         properties: { [key: string]: SerializedProperty },
-        configurations: PrototypeConfiguration<unknown>[] = [],
+        blacklist?: Set<symbol>,
     ) {
         Object.keys(properties).forEach((key) => {
-            const symbol = this._configuration.symbolNameToSymbol.get(key);
-            if (!symbol) {
-                throw new Error(`Bad deserialization: Unrecognized symbol name ${key}.`);
-            }
+            const symbol = this._getSymbolFromName(key);
 
-            if (!this._isKeyBlacklisted(symbol, item, configurations)) {
+            if (!blacklist || !blacklist.has(symbol)) {
                 item[symbol as any] = this._deserializePropertyValue(properties[key], item[symbol as any]);
             }
         });
+    }
+
+    /**
+     * Gets the symbol object for a given symbol name.
+     */
+    private _getSymbolFromName(name: string): symbol {
+        const symbol = this._configuration.symbolNameToSymbol.get(name);
+        if (!symbol) {
+            throw new Error(`Bad deserialization: Unrecognized symbol name ${name}.`);
+        }
+        return symbol;
+    }
+
+    /**
+     * Gets the set of properties that are blacklisted.
+     */
+    private _getBlacklistedProperties<T extends string | symbol>(
+        properties: {[key: string]: SerializedProperty},
+        keyToObj: (key: string) => T,
+        item: SerializableItem | undefined,
+        configurations: PrototypeConfiguration<unknown>[] = [],
+    ): Set<T> {
+        const result = new Set<T>();
+        Object.keys(properties).forEach((key) => {
+            const keyObj = keyToObj(key);
+            if (this._isKeyBlacklisted(keyObj, item, configurations)) {
+                result.add(keyObj);
+            }
+        });
+        return result;
     }
 
     /**
@@ -350,7 +392,7 @@ export class Deserialization {
      */
     private _isKeyBlacklisted(
         key: string | symbol,
-        item: SerializableItem,
+        item: SerializableItem | undefined,
         configurations: PrototypeConfiguration<unknown>[] = [],
     ): boolean {
         for (const configuration of configurations) {
