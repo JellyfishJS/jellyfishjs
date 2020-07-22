@@ -5,20 +5,19 @@ class Player extends Jellyfish.GameObject {
 
     constructor(position, force) {
         super();
-        this.position = position || { x: 0, y: 0 };
-        this.force = force || { x: 0, y: 0 };
-        this.sprite = this.createSprite(PlayerSprite);
+        this.position = position || Jellyfish.Vector.xy(0, 0);
+        this.force = force || Jellyfish.Vector.xy(0, 0);
     }
 
-    setUpPhysicsBody() {
-        const physicsBody = Matter.Bodies.circle(this.position.x, this.position.y, 20);
-        this.sprite.physicsBody = physicsBody;
-        return physicsBody;
+    onCreate() {
+        this.sprite = this.createSprite(PlayerSprite);
+        this.body = this.createBody(PlayerBody);
+        this.sprite.following = this.body;
     }
 
     step() {
         if (!Jellyfish.game.input.isDown(65)) {
-            Matter.Body.applyForce(this.physicsBody, { x: 0, y: 0 }, this.force);
+            this.body.applyForce(this.force);
         }
     }
 
@@ -34,11 +33,17 @@ class PlayerSprite extends Jellyfish.Sprite {
     draw(pixi, sprite, container) {
         sprite.clear();
         sprite.beginFill(0xaaaaaa);
-        sprite.drawCircle(this.physicsBody.position.x, this.physicsBody.position.y, 20);
+        sprite.drawCircle(this.following.position.x(), this.following.position.y(), 20);
+    }
+}
+
+class PlayerBody extends Jellyfish.Body {
+    initializeBody() {
+        return Matter.Bodies.circle(this.position.x, this.position.y, 20);
     }
 }
 
 Jellyfish.game.setCanvasByID("game");
-Jellyfish.game.createObject(Player, { x: 200, y: 30 }, { x: 0, y: -0.001 });
-Jellyfish.game.createObject(Player, { x: 220, y: 250 }, { x: 0, y: -0.0015 });
+Jellyfish.game.createObject(Player, Jellyfish.Vector.xy(200, 30), Jellyfish.Vector.xy(0, -0.001));
+Jellyfish.game.createObject(Player, Jellyfish.Vector.xy(220, 250), Jellyfish.Vector.xy(0, -0.0015));
 Jellyfish.game.start();

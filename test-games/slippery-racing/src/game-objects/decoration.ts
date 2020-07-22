@@ -1,7 +1,7 @@
-import { GameObject, Sprite, Vector } from 'engine';
-import { Bodies, Body } from 'matter-js';
+import { Body, GameObject, Sprite, Vector } from 'engine';
+import { Bodies } from 'matter-js';
 
-export class Decoration extends GameObject<Body | undefined> {
+export class Decoration extends GameObject {
 
     private readonly position: Vector;
     private readonly size: number;
@@ -14,13 +14,29 @@ export class Decoration extends GameObject<Body | undefined> {
         this.size = size;
         this.color = color;
         this.solid = solid;
-        this.createSprite(DecorationSprite, position, color, size);
     }
 
-    public setUpPhysicsBody() {
-        if (!this.solid) { return; }
+    public onCreate() {
+        this.createSprite(DecorationSprite, this.position, this.color, this.size);
+        if (this.solid) {
+            this.createBody(DecorationBody, this.size, this.position);
+        }
+    }
 
-        const body = Bodies.circle(
+}
+
+class DecorationBody extends Body {
+
+    private size: number;
+
+    public constructor(size: number, position: Vector) {
+        super();
+        this.size = size;
+        this.position = position;
+    }
+
+    public initializeBody() {
+        return Bodies.circle(
             this.position.x(),
             this.position.y(),
             this.size,
@@ -28,7 +44,6 @@ export class Decoration extends GameObject<Body | undefined> {
                 isStatic: true,
             },
         );
-        return body;
     }
 
 }

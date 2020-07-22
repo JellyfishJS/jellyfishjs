@@ -1,4 +1,3 @@
-import type { Body } from 'matter-js';
 import { Angle, Vector } from '../util/geometry';
 import { Sprite } from './sprite';
 
@@ -46,9 +45,12 @@ export class ImageSprite extends Sprite {
     public angle: Angle = Angle.right;
 
     /**
-     * If set, this sprite follows the specified body.
+     * If set, this sprite follows the specified object.
+     *
+     * It uses the specified object's .position,
+     * and, if available, .angle.
      */
-    public following: Body | undefined;
+    public following: { position: Vector, angle?: Angle } | undefined;
 
     public constructor(imageName: string) {
         super();
@@ -64,8 +66,10 @@ export class ImageSprite extends Sprite {
 
     public draw(pixi: typeof PIXI, sprite: PIXI.Sprite) {
         if (this.following) {
-            this.position = Vector.object(this.following.position);
-            this.angle = Angle.radians(this.following.angle);
+            this.position = this.following.position;
+            if (this.following.angle) {
+                this.angle = this.following.angle;
+            }
         }
 
         [sprite.x, sprite.y] = [this.position.x(), this.position.y()];

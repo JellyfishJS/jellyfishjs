@@ -1,6 +1,10 @@
+import type * as matter from 'matter-js';
 import uuid = require('uuid');
+import { Body } from '../body';
+import { gameObjectBodyKey } from '../body/body';
 import { GameLoop } from '../game-loop/game-loop';
 import {
+    bodyKey,
     childrenKey,
     gameKey,
     GameObject,
@@ -61,10 +65,6 @@ export class Game {
         const newObject = new Class(...args) as InstanceType<Subclass>;
         newObject[idKey] = uuid();
         newObject[gameKey] = this;
-
-        if (this._physicsEngine) {
-            newObject.physicsWorld = this._physicsEngine.world;
-        }
 
         this._gameLoop.addGameObject(newObject);
         return newObject;
@@ -148,6 +148,10 @@ export class Game {
         return this._serializer;
     }
 
+    public getWorld(): matter.World | undefined {
+        return this._physicsEngine?.world;
+    }
+
     /**
      * Initializes the classes used by the engine
      * with the game's serializer.
@@ -178,6 +182,10 @@ export class Game {
         this.registerSymbol(spriteKey);
         this.registerClass(ImageSprite);
         this.registerSymbol(imageNameKey);
+
+        this.registerClass(Body);
+        this.registerSymbol(bodyKey);
+        this.registerSymbol(gameObjectBodyKey);
 
         this.registerClass(User);
     }

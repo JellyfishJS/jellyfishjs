@@ -1,15 +1,13 @@
-import type * as MatterType from 'matter-js';
+import { bodyMatterBodyKey } from '../body/body';
 import {
     afterPhysicsKey,
     afterStepKey,
     beforePhysicsKey,
     beforeStepKey,
+    bodyKey,
     childrenKey,
-    containerKey,
     drawKey,
     GameObject,
-    GameObjectBody,
-    GameObjectSprite,
     idKey,
     keyHeldKey,
     keyPressedKey,
@@ -24,7 +22,6 @@ import {
 import { ButtonEvent , Input } from '../input/input';
 import { Matter } from '../matter-setup/matter-setup';
 import { PIXI, PIXISetup } from '../pixi-setup/pixi-setup';
-import { asArray } from '../util/as-array';
 import { someValue } from '../util/map';
 
 /**
@@ -57,7 +54,7 @@ export class GameLoop {
     /**
      * A mapping from bodies to GameObjects that exist in this game loop.
      */
-    private _bodiesToGameObjects: WeakMap<Matter.Body, GameObject<GameObjectBody>> = new WeakMap();
+    private _bodiesToGameObjects: WeakMap<Matter.Body, GameObject> = new WeakMap();
 
     /**
      * Adds the specified GameObject to this GameLoop.
@@ -118,40 +115,12 @@ export class GameLoop {
      * on a new GameObject that is to be added to the game loop.
      */
     private _initializeGameObject<
-        Body extends GameObjectBody,
-        Subclass extends GameObject<Body>,
+        Subclass extends GameObject,
     >(
         gameObject: Subclass,
     ) {
         gameObject[onCreateKey]?.();
         gameObject.onCreate?.();
-
-        // Apparently type narrowing doesn't work on imports.
-        const matter = Matter;
-        if (matter) {
-            this._initializeGameObjectPhysics(gameObject, matter);
-        }
-    }
-
-    /**
-     * Sets up the parts of the passed GameObject related to physics.
-     */
-    private _initializeGameObjectPhysics<
-        Body extends GameObjectBody,
-        Subclass extends GameObject<Body>,
-    >(
-        gameObject: Subclass,
-        matter: typeof MatterType,
-    ) {
-        if (!gameObject.setUpPhysicsBody) { return; }
-
-        gameObject.physicsBody = gameObject.setUpPhysicsBody();
-        const bodyOrBodies: GameObjectBody = gameObject.physicsBody;
-
-        asArray(bodyOrBodies).forEach((body) => {
-            matter.World.addBody(gameObject.physicsWorld, body);
-            this._bodiesToGameObjects.set(body, gameObject);
-        });
     }
 
     /**
@@ -220,8 +189,8 @@ export class GameLoop {
      */
     private _beforePhysics() {
         this._forEachObject((gameObject) => {
-            gameObject[beforePhysicsKey]?.();
             gameObject.beforePhysics?.();
+            gameObject[beforePhysicsKey]?.();
         });
     }
 
@@ -235,9 +204,14 @@ export class GameLoop {
             if (gameObjectB === gameObjectA) {
                 return false;
             }
-            return asArray(gameObjectA.physicsBody).some((bodyA) => {
+            return gameObjectA[bodyKey].some((bodyA) => {
+                const matterBody = bodyA[bodyMatterBodyKey];
+                if (!matterBody) { return false; }
+                const otherMatterBodies = gameObjectB[bodyKey]
+                    .map((bodyB) => bodyB[bodyMatterBodyKey])
+                    .filter((bodyB) => !!bodyB);
                 // @ts-ignore Query.collides exist, but @types/matter-js is out of date
-                const collisions = Matter && Matter.Query.collides(bodyA, asArray(gameObjectB.physicsBody));
+                const collisions = Matter && Matter.Query.collides(matterBody, otherMatterBodies);
                 return collisions.length > 0;
             });
         };

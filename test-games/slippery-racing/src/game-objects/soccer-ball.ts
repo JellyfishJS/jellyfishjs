@@ -1,20 +1,39 @@
-import { Angle, GameObject, ImageSprite, Vector } from 'engine';
-import { Bodies, Body } from 'matter-js';
+import { Body, GameObject, ImageSprite, Vector } from 'engine';
+import { Bodies } from 'matter-js';
 
-export class SoccerBall extends GameObject<Body> {
+export class SoccerBall extends GameObject {
 
     private readonly initialPosition: Vector;
     private readonly radius = 40;
-    private readonly sprite: ImageSprite;
+    private sprite!: ImageSprite;
+    private body!: Body;
 
     public constructor(position: Vector) {
         super();
         this.initialPosition = position;
-        this.sprite = this.createSprite(ImageSprite, '/assets/ball.png');
     }
 
-    public setUpPhysicsBody() {
-        const body = Bodies.circle(
+    public onCreate() {
+        this.sprite = this.createSprite(ImageSprite, '/assets/ball.png');
+        this.body = this.createBody(SoccerBallBody, this.initialPosition, this.radius);
+        this.sprite.following = this.body;
+    }
+
+}
+
+class SoccerBallBody extends Body {
+
+    private initialPosition: Vector;
+    private radius: number;
+
+    public constructor(initialPosition: Vector, radius: number) {
+        super();
+        this.initialPosition = initialPosition;
+        this.radius = radius;
+    }
+
+    public initializeBody() {
+        return Bodies.circle(
             this.initialPosition.x(),
             this.initialPosition.y(),
             this.radius,
@@ -25,10 +44,6 @@ export class SoccerBall extends GameObject<Body> {
                 inertia: 100,
             },
         );
-
-        this.sprite.following = body;
-
-        return body;
     }
 
 }
