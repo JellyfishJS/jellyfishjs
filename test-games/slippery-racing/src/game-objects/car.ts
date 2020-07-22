@@ -30,15 +30,13 @@ export class Car extends GameObject {
 
     private readonly initialPosition: Vector;
     private readonly performance: Performance;
-    private readonly camera: Camera;
     private sprite!: ImageSprite;
-    private body!: Body;
+    public body!: Body;
 
-    public constructor(position: Vector, performance: Performance, camera: Camera) {
+    public constructor(position: Vector, performance: Performance) {
         super();
         this.initialPosition = position;
         this.performance = performance;
-        this.camera = camera;
     }
 
     public onCreate() {
@@ -46,7 +44,6 @@ export class Car extends GameObject {
         this.createSprite(SetupSprite);
 
         this.body = this.createBody(CarBody, this.initialPosition);
-        this.camera.setFollowing(this.body);
         this.sprite.following = this.body;
     }
 
@@ -101,6 +98,7 @@ export class Car extends GameObject {
     }
 
 }
+game.registerClass(Car);
 
 class CarBody extends Body {
 
@@ -128,6 +126,7 @@ class CarBody extends Body {
     }
 
 }
+game.registerClass(CarBody);
 
 class SetupSprite extends Sprite<boolean> {
     public initializeSprite(pixi: typeof PIXI, container: PIXI.Container) {
@@ -143,3 +142,4 @@ class SetupSprite extends Sprite<boolean> {
         container.scale.set(0.5);
     }
 }
+game.registerClass(SetupSprite);

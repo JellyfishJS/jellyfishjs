@@ -1,6 +1,6 @@
 import * as SocketIOClient from 'socket.io-client';
 import { gameObjectBodyKey } from '../body/body';
-import { afterStepKey, beforeStepKey, bodyKey, childrenKey, GameObject, parentKey } from '../game-object/game-object';
+import { afterStepKey, beforeStepKey, bodyKey, childrenKey, gameKey, GameObject, parentKey } from '../game-object/game-object';
 import { ClientEvent, ClientEventType, MessageType } from './event';
 import { isServer } from './is-server';
 import { Server } from './server';
@@ -87,6 +87,7 @@ export class Client extends GameObject {
 
             for (const child of gameObject.children()) {
                 child[parentKey] = gameObject;
+                child[gameKey] = this[gameKey];
                 updateGameObject(child);
             }
         };

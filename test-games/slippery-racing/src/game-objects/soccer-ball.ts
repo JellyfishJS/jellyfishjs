@@ -1,4 +1,4 @@
-import { Body, GameObject, ImageSprite, Vector } from 'engine';
+import { Body, game, GameObject, ImageSprite, Vector } from 'engine';
 import { Bodies } from 'matter-js';
 
 export class SoccerBall extends GameObject {
@@ -20,6 +20,7 @@ export class SoccerBall extends GameObject {
     }
 
 }
+game.registerClass(SoccerBall);
 
 class SoccerBallBody extends Body {
 
@@ -47,3 +48,4 @@ class SoccerBallBody extends Body {
     }
 
 }
+game.registerClass(SoccerBallBody);

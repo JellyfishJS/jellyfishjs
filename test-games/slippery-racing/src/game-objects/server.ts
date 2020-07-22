@@ -1,11 +1,10 @@
-import { Angle, game, GameObject, Vector } from 'engine';
-import { Camera } from './camera';
+import { Angle, game, Server, Vector } from 'engine';
 import { Car } from './car';
 import { Decoration } from './decoration';
 import { LooseTire } from './loose-tire';
 import { SoccerBall } from './soccer-ball';
 
-export class MainObject extends GameObject {
+export class SlipperServer extends Server {
 
     private generateCircle(center: Vector, size: number) {
         this.createObject(Decoration, center, size + 460, 0x888888);
@@ -34,29 +33,17 @@ export class MainObject extends GameObject {
     public onCreate() {
 
         this.generateCircle(Vector.zero, 200);
-        this.generateCircle(Vector.xy(1200, 1500), 400);
-        this.generateCircle(Vector.xy(-1900, 1500), 800);
-        this.generateCircle(Vector.xy(-1900, -2200), 150);
-        this.generateCircle(Vector.xy(1900, -2700), 150);
-        this.generateCircle(Vector.xy(2900, -2400), 250);
 
-        const camera = this.createObject(Camera);
+        // Too many items cause a lot of lag,
+        // so these are commented out for now.
+        // this.generateCircle(Vector.xy(1200, 1500), 400);
+        // this.generateCircle(Vector.xy(-1900, 1500), 800);
+        // this.generateCircle(Vector.xy(-1900, -2200), 150);
+        // this.generateCircle(Vector.xy(1900, -2700), 150);
+        // this.generateCircle(Vector.xy(2900, -2400), 250);
 
-        this.createObject(
-            Car,
-            Vector.xy(-300, 0),
-            {
-                topSpeed: 0.02,
-                acceleration: 0.001,
-                spinning: 0.0006,
-                cornering: 0.000015,
-                handling: 0.3,
-            },
-            camera,
-        );
-
-        this.generateTireCircle(Vector.zero, 800, 24);
-        this.generateTireCircle(Vector.xy(-2900, -2700), 300, 48);
+        // this.generateTireCircle(Vector.zero, 800, 24);
+        // this.generateTireCircle(Vector.xy(-2900, -2700), 300, 48);
 
         this.createObject(
             SoccerBall,
@@ -64,6 +51,9 @@ export class MainObject extends GameObject {
         );
 
         this.game().getWorld()!.gravity = { x: 0, y: 0, scale: 0 };
+
+        this.start();
     }
 
 }
+game.registerClass(SlipperServer);
