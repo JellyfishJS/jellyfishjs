@@ -1,4 +1,4 @@
-import { Body, GameObject, Sprite, Vector } from 'engine';
+import { Body, game, GameObject, Sprite, Vector } from 'engine';
 import type * as PIXI from 'pixi.js';
 
 export class Camera extends GameObject {
@@ -31,6 +31,7 @@ export class Camera extends GameObject {
     }
 
 }
+game.registerClass(Camera);
 
 class CameraSprite extends Sprite<PIXI.Container> {
     public constructor(position: Vector) {
@@ -55,3 +56,4 @@ class CameraSprite extends Sprite<PIXI.Container> {
         );
     }
 }
+game.registerClass(CameraSprite);

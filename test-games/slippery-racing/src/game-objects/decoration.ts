@@ -1,4 +1,4 @@
-import { Body, GameObject, Sprite, Vector } from 'engine';
+import { Body, game, GameObject, Sprite, Vector } from 'engine';
 import { Bodies } from 'matter-js';
 
 export class Decoration extends GameObject {
@@ -24,6 +24,7 @@ export class Decoration extends GameObject {
     }
 
 }
+game.registerClass(Decoration);
 
 class DecorationBody extends Body {
 
@@ -47,6 +48,7 @@ class DecorationBody extends Body {
     }
 
 }
+game.registerClass(DecorationBody);
 
 class DecorationSprite extends Sprite<PIXI.Graphics> {
     public position: Vector;
@@ -72,3 +74,4 @@ class DecorationSprite extends Sprite<PIXI.Graphics> {
         sprite.drawCircle(this.position.x(), this.position.y(), this.size);
     }
 }
+game.registerClass(DecorationSprite);

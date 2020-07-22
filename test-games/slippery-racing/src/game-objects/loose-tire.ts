@@ -1,4 +1,4 @@
-import { Body, GameObject, ImageSprite, Vector } from 'engine';
+import { Body, game, GameObject, ImageSprite, Vector } from 'engine';
 import { Bodies } from 'matter-js';
 
 export class LooseTire extends GameObject {
@@ -20,6 +20,7 @@ export class LooseTire extends GameObject {
     }
 
 }
+game.registerClass(LooseTire);
 
 class LooseTireBody extends Body {
 
@@ -47,3 +48,4 @@ class LooseTireBody extends Body {
     }
 
 }
+game.registerClass(LooseTireBody);

@@ -67,3 +67,4 @@ export class MainObject extends GameObject {
     }
 
 }
+game.registerClass(MainObject);

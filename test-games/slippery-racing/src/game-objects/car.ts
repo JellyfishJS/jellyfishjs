@@ -101,6 +101,7 @@ export class Car extends GameObject {
     }
 
 }
+game.registerClass(Car);
 
 class CarBody extends Body {
 
@@ -128,6 +129,7 @@ class CarBody extends Body {
     }
 
 }
+game.registerClass(CarBody);
 
 class SetupSprite extends Sprite<boolean> {
     public initializeSprite(pixi: typeof PIXI, container: PIXI.Container) {
@@ -143,3 +145,4 @@ class SetupSprite extends Sprite<boolean> {
         container.scale.set(0.5);
     }
 }
+game.registerClass(SetupSprite);
