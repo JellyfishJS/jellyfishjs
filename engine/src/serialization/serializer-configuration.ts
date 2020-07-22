@@ -31,7 +31,8 @@ export class SerializerConfiguration {
     public registerClass<T>(
         Class: Class<T>,
         {
-            blacklistedKeys = [],
+            serializationBlacklistedKeys = [],
+            deserializationBlacklistedKeys = [],
         }: PrototypeRegistrationOptions<T> = {},
     ) {
         const { name, prototype } = Class;
@@ -41,16 +42,24 @@ export class SerializerConfiguration {
         }
         this.prototypeToName.set(prototype, name);
 
-        let blacklistedKeysConfigValue;
-        if (typeof blacklistedKeys === 'function') {
-            blacklistedKeysConfigValue = blacklistedKeys;
+        let serializationBlacklistedKeysConfigValue;
+        if (typeof serializationBlacklistedKeys === 'function') {
+            serializationBlacklistedKeysConfigValue = serializationBlacklistedKeys;
         } else {
-            blacklistedKeysConfigValue = new Set(blacklistedKeys);
+            serializationBlacklistedKeysConfigValue = new Set(serializationBlacklistedKeys);
+        }
+
+        let deserializationBlacklistedKeysConfigValue;
+        if (typeof deserializationBlacklistedKeys === 'function') {
+            deserializationBlacklistedKeysConfigValue = deserializationBlacklistedKeys;
+        } else {
+            deserializationBlacklistedKeysConfigValue = new Set(deserializationBlacklistedKeys);
         }
 
         const configuration = {
             prototype,
-            blacklistedKeys: blacklistedKeysConfigValue,
+            serializationBlacklistedKeys: serializationBlacklistedKeysConfigValue,
+            deserializationBlacklistedKeys: deserializationBlacklistedKeysConfigValue,
         };
 
         this.prototypeNameToConfiguration.set(name, configuration);
@@ -82,7 +91,8 @@ type KeyBlacklistFunction<T> = (key: string | symbol, item: T) => boolean;
  * of a certain prototype are serialized.
  */
 export interface PrototypeRegistrationOptions<T> {
-    blacklistedKeys?: (string | symbol)[] | KeyBlacklistFunction<T>;
+    serializationBlacklistedKeys?: (string | symbol)[] | KeyBlacklistFunction<T>;
+    deserializationBlacklistedKeys?: (string | symbol)[] | KeyBlacklistFunction<T>;
 }
 
 /**
@@ -90,5 +100,6 @@ export interface PrototypeRegistrationOptions<T> {
  */
 export interface PrototypeConfiguration<T> {
     prototype: {};
-    blacklistedKeys?: Set<string | symbol> | KeyBlacklistFunction<T>;
+    serializationBlacklistedKeys?: Set<string | symbol> | KeyBlacklistFunction<T>;
+    deserializationBlacklistedKeys?: Set<string | symbol> | KeyBlacklistFunction<T>;
 }

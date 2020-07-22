@@ -16,7 +16,6 @@ import {
     SerializedPropertyType,
 } from './serialization-result';
 import type { PrototypeConfiguration, SerializerConfiguration } from './serializer-configuration';
-import { isKeyBlacklisted } from './utils';
 
 /**
  * A class used to deserialize a single entity.
@@ -319,7 +318,7 @@ export class Deserialization {
 
         Object.keys(properties).forEach((key) => {
             const value = properties[key];
-            if (!isKeyBlacklisted(key, item, configurations)) {
+            if (!this._isKeyBlacklisted(key, item, configurations)) {
                 item[key] = this._deserializePropertyValue(value, item[key]);
             }
         });
@@ -339,10 +338,38 @@ export class Deserialization {
                 throw new Error(`Bad deserialization: Unrecognized symbol name ${key}.`);
             }
 
-            if (!isKeyBlacklisted(symbol, item, configurations)) {
+            if (!this._isKeyBlacklisted(symbol, item, configurations)) {
                 item[symbol as any] = this._deserializePropertyValue(properties[key], item[symbol as any]);
             }
         });
+    }
+
+    /**
+     * Returns `true` if the specified key of the specified item
+     * is blacklisted.
+     */
+    private _isKeyBlacklisted(
+        key: string | symbol,
+        item: SerializableItem,
+        configurations: PrototypeConfiguration<unknown>[] = [],
+    ): boolean {
+        for (const configuration of configurations) {
+            if (
+                typeof configuration.deserializationBlacklistedKeys === 'function'
+                && configuration.deserializationBlacklistedKeys(key, item)
+            ) {
+                return true;
+            }
+
+            if (
+                configuration.deserializationBlacklistedKeys instanceof Set
+                && configuration.deserializationBlacklistedKeys.has(key)
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

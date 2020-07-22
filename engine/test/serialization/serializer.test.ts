@@ -331,7 +331,7 @@ describe('Serialization', function () {
 
             class A {}
             serializer.registerClass(A, {
-                blacklistedKeys: ['key'],
+                serializationBlacklistedKeys: ['key'],
             });
 
             const original: any = new A();
@@ -350,7 +350,7 @@ describe('Serialization', function () {
 
             class A {}
             serializer.registerClass(A, {
-                blacklistedKeys: (key) => key === 'key',
+                serializationBlacklistedKeys: (key) => key === 'key',
             });
 
             const original: any = new A();
@@ -369,7 +369,7 @@ describe('Serialization', function () {
 
             class A {}
             serializer.registerClass(A, {
-                blacklistedKeys: (key, item) => (item as any)[key] === 'value',
+                serializationBlacklistedKeys: (key, item) => (item as any)[key] === 'value',
             });
 
             const original: any = new A();
@@ -394,7 +394,7 @@ describe('Serialization', function () {
 
             class A {}
             serializer.registerClass(A, {
-                blacklistedKeys: [key],
+                serializationBlacklistedKeys: [key],
             });
 
             const original: any = new A();
@@ -419,7 +419,7 @@ describe('Serialization', function () {
 
             class A {}
             serializer.registerClass(A, {
-                blacklistedKeys: (k) => k === key,
+                serializationBlacklistedKeys: (k) => k === key,
             });
 
             const original: any = new A();
@@ -438,12 +438,12 @@ describe('Serialization', function () {
 
             class A {}
             serializer.registerClass(A, {
-                blacklistedKeys: (key) => key === 'key',
+                serializationBlacklistedKeys: (key) => key === 'key',
             });
 
             class B extends A {}
             serializer.registerClass(B, {
-                blacklistedKeys: (key) => key === 'key2',
+                serializationBlacklistedKeys: (key) => key === 'key2',
             });
 
             const original: any = new B();
@@ -470,13 +470,12 @@ describe('Serialization', function () {
 
             class A {}
             serializer.registerClass(A, {
-                blacklistedKeys: (key, item) => !(item as any).original && key === 'key' || key === 'original',
+                deserializationBlacklistedKeys: (key, item) => key === 'key',
             });
 
             const original: any = new A();
             original.key = 'value';
             original.key2 = 'value2';
-            original.original = true;
             const target: any = new A();
             target.key = 'otherValue';
 
@@ -500,13 +499,12 @@ describe('Serialization', function () {
 
             class A {}
             serializer.registerClass(A, {
-                blacklistedKeys: (k, item) => !(item as any).original && k === key || k === 'original',
+                deserializationBlacklistedKeys: (k, item) => k === key,
             });
 
             const original: any = new A();
             original[key] = 'value';
             original[key2] = 'value2';
-            original.original = true;
             const target: any = new A();
             target[key] = 'otherValue';
 
@@ -527,19 +525,18 @@ describe('Serialization', function () {
 
             class A {}
             serializer.registerClass(A, {
-                blacklistedKeys: (key, item) => !(item as any).original && key === 'key' || key === 'original',
+                deserializationBlacklistedKeys: (key, item) => key === 'key',
             });
 
             class B extends A {}
             serializer.registerClass(B, {
-                blacklistedKeys: (key, item) => !(item as any).original && key === 'key2',
+                deserializationBlacklistedKeys: (key, item) => key === 'key2',
             });
 
             const original: any = new B();
             original.key = 'value';
             original.key2 = 'value2';
             original.key3 = 'value3';
-            original.original = true;
             const target: any = new B();
             target.key = 'otherValue';
             target.key2 = 'otherValue2';
