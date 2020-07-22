@@ -197,15 +197,15 @@ export class Serialization {
     ): boolean {
         for (const configuration of configurations) {
             if (
-                typeof configuration.blacklistedKeys === 'function'
-                && configuration.blacklistedKeys(key, item)
+                typeof configuration.serializationBlacklistedKeys === 'function'
+                && configuration.serializationBlacklistedKeys(key, item)
             ) {
                 return true;
             }
 
             if (
-                configuration.blacklistedKeys instanceof Set
-                && configuration.blacklistedKeys.has(key)
+                configuration.serializationBlacklistedKeys instanceof Set
+                && configuration.serializationBlacklistedKeys.has(key)
             ) {
                 return true;
             }
