@@ -158,7 +158,7 @@ export class Game {
      */
     private _initializeSerializer() {
         this.registerClass(GameObject, {
-            blacklistedKeys: (key, item) => {
+            serializationBlacklistedKeys: (key, item) => {
                 if (key === parentKey && (item.parent() instanceof Server || item.parent() instanceof Client)) {
                     return true;
                 }

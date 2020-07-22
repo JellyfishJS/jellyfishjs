@@ -324,14 +324,14 @@ describe('Serialization', function () {
 
     });
 
-    describe('Key blacklisting', function () {
+    describe('Serialization key blacklisting', function () {
 
         it('should omit blacklisted keys', function () {
             const serializer = new Serializer();
 
             class A {}
             serializer.registerClass(A, {
-                blacklistedKeys: ['key'],
+                serializationBlacklistedKeys: ['key'],
             });
 
             const original: any = new A();
@@ -350,7 +350,7 @@ describe('Serialization', function () {
 
             class A {}
             serializer.registerClass(A, {
-                blacklistedKeys: (key) => key === 'key',
+                serializationBlacklistedKeys: (key) => key === 'key',
             });
 
             const original: any = new A();
@@ -369,7 +369,7 @@ describe('Serialization', function () {
 
             class A {}
             serializer.registerClass(A, {
-                blacklistedKeys: (key, item) => (item as any)[key] === 'value',
+                serializationBlacklistedKeys: (key, item) => (item as any)[key] === 'value',
             });
 
             const original: any = new A();
@@ -394,7 +394,7 @@ describe('Serialization', function () {
 
             class A {}
             serializer.registerClass(A, {
-                blacklistedKeys: [key],
+                serializationBlacklistedKeys: [key],
             });
 
             const original: any = new A();
@@ -419,7 +419,7 @@ describe('Serialization', function () {
 
             class A {}
             serializer.registerClass(A, {
-                blacklistedKeys: (k) => k === key,
+                serializationBlacklistedKeys: (k) => k === key,
             });
 
             const original: any = new A();
@@ -438,12 +438,12 @@ describe('Serialization', function () {
 
             class A {}
             serializer.registerClass(A, {
-                blacklistedKeys: (key) => key === 'key',
+                serializationBlacklistedKeys: (key) => key === 'key',
             });
 
             class B extends A {}
             serializer.registerClass(B, {
-                blacklistedKeys: (key) => key === 'key2',
+                serializationBlacklistedKeys: (key) => key === 'key2',
             });
 
             const original: any = new B();
@@ -455,6 +455,99 @@ describe('Serialization', function () {
             target.key2 = 'otherValue2';
             target.key3 = 'otherValue3';
             const serialization = serializer.serialize(original);
+            const deserialization = serializer.deserialize(serialization, target);
+            assert.strictEqual(deserialization.key, 'otherValue');
+            assert.strictEqual(deserialization.key2, 'otherValue2');
+            assert.strictEqual(deserialization.key3, 'value3');
+        });
+
+    });
+
+    describe('Deserialization key blacklisting', function () {
+
+        it('should omit blacklisted keys', function () {
+            const serializer = new Serializer();
+
+            class A {}
+            serializer.registerClass(A, {
+                deserializationBlacklistedKeys: (key, item) => key === 'key',
+            });
+
+            const original: any = new A();
+            original.key = 'value';
+            original.key2 = 'value2';
+            const target: any = new A();
+            target.key = 'otherValue';
+
+            const serialization = serializer.serialize(original);
+            // Ensure that the value of original.key stored in our serialization.
+            assert.strictEqual((serialization.items[serialization.rootItem] as any).stringKeyedProperties.key, 'value');
+
+            const deserialization = serializer.deserialize(serialization, target);
+            assert.strictEqual(deserialization.key, 'otherValue');
+            assert.strictEqual(deserialization.key2, 'value2');
+        });
+
+        it('should omit blacklisted symbol keys', function () {
+            const serializer = new Serializer();
+
+            const key = Symbol('key');
+            serializer.registerSymbol(key);
+
+            const key2 = Symbol('key2');
+            serializer.registerSymbol(key2);
+
+            class A {}
+            serializer.registerClass(A, {
+                deserializationBlacklistedKeys: (k, item) => k === key,
+            });
+
+            const original: any = new A();
+            original[key] = 'value';
+            original[key2] = 'value2';
+            const target: any = new A();
+            target[key] = 'otherValue';
+
+            const serialization = serializer.serialize(original);
+            // Ensure that the value of original.key stored in our serialization.
+            assert.strictEqual(
+                (serialization.items[serialization.rootItem] as any).symbolKeyedProperties['Symbol(key)'],
+                'value',
+            );
+
+            const deserialization = serializer.deserialize(serialization, target) as any;
+            assert.strictEqual(deserialization[key], 'otherValue');
+            assert.strictEqual(deserialization[key2], 'value2');
+        });
+
+        it('should use superclasses\' configs', function () {
+            const serializer = new Serializer();
+
+            class A {}
+            serializer.registerClass(A, {
+                deserializationBlacklistedKeys: (key, item) => key === 'key',
+            });
+
+            class B extends A {}
+            serializer.registerClass(B, {
+                deserializationBlacklistedKeys: (key, item) => key === 'key2',
+            });
+
+            const original: any = new B();
+            original.key = 'value';
+            original.key2 = 'value2';
+            original.key3 = 'value3';
+            const target: any = new B();
+            target.key = 'otherValue';
+            target.key2 = 'otherValue2';
+            target.key3 = 'otherValue3';
+
+            const serialization = serializer.serialize(original);
+            // Ensure that the value of original.key and original.key2 stored in our serialization.
+            const serializedProperties = (serialization.items[serialization.rootItem] as any).stringKeyedProperties;
+            assert.strictEqual(serializedProperties.key, 'value');
+            assert.strictEqual(serializedProperties.key2, 'value2');
+
             const deserialization = serializer.deserialize(serialization, target);
             assert.strictEqual(deserialization.key, 'otherValue');
             assert.strictEqual(deserialization.key2, 'otherValue2');
