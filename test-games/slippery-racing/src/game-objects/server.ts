@@ -33,14 +33,17 @@ export class SlipperServer extends Server {
     public onCreate() {
 
         this.generateCircle(Vector.zero, 200);
-        this.generateCircle(Vector.xy(1200, 1500), 400);
-        this.generateCircle(Vector.xy(-1900, 1500), 800);
-        this.generateCircle(Vector.xy(-1900, -2200), 150);
-        this.generateCircle(Vector.xy(1900, -2700), 150);
-        this.generateCircle(Vector.xy(2900, -2400), 250);
 
-        this.generateTireCircle(Vector.zero, 800, 24);
-        this.generateTireCircle(Vector.xy(-2900, -2700), 300, 48);
+        // Too many items cause a lot of lag,
+        // so these are commented out for now.
+        // this.generateCircle(Vector.xy(1200, 1500), 400);
+        // this.generateCircle(Vector.xy(-1900, 1500), 800);
+        // this.generateCircle(Vector.xy(-1900, -2200), 150);
+        // this.generateCircle(Vector.xy(1900, -2700), 150);
+        // this.generateCircle(Vector.xy(2900, -2400), 250);
+
+        // this.generateTireCircle(Vector.zero, 800, 24);
+        // this.generateTireCircle(Vector.xy(-2900, -2700), 300, 48);
 
         this.createObject(
             SoccerBall,
