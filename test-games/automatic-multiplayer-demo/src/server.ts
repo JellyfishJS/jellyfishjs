@@ -1,8 +1,7 @@
-import { Server as JellyfishServer, User } from 'engine';
-import { Circle } from './circle';
+import { Server as JellyfishServer } from 'engine';
 
 export class Server extends JellyfishServer {
     public onCreate() {
-        this.start();
+        this.start(+process.env.MULTIPLAYER_CIRCLES_PORT!);
     }
 }
