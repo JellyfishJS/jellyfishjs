@@ -48,27 +48,30 @@ export class Car extends GameObject {
     }
 
     public beforePhysics() {
-        const mainForce = Vector.lengthAndDirection(
-            this.performance.acceleration * this.body.mass,
-            this.body.angle,
-        );
+        if (this.isOwnedByCurrentUser()) {
 
-        if (game.input.isDown(keycode('up')) || game.input.isDown(game.input.mouseCode(0))) {
-            this.body.applyForce(mainForce);
-        }
+            const mainForce = Vector.lengthAndDirection(
+                this.performance.acceleration * this.body.mass,
+                this.body.angle,
+            );
 
-        if (game.input.isDown(keycode('down')) || game.input.isDown(game.input.mouseCode(2))) {
-            this.body.applyForce(mainForce.negated());
-        }
+            if (game.input.isDown(keycode('up')) || game.input.isDown(game.input.mouseCode(0))) {
+                this.body.applyForce(mainForce);
+            }
 
-        const mainTorque = this.performance.cornering * this.body.inertia;
+            if (game.input.isDown(keycode('down')) || game.input.isDown(game.input.mouseCode(2))) {
+                this.body.applyForce(mainForce.negated());
+            }
 
-        if (game.input.isDown(keycode('left'))) {
-            this.body.applyTorque(-mainTorque);
-        }
+            const mainTorque = this.performance.cornering * this.body.inertia;
 
-        if (game.input.isDown(keycode('right'))) {
-            this.body.applyTorque(mainTorque);
+            if (this.isOwnedByCurrentUser() && game.input.isDown(keycode('left'))) {
+                this.body.applyTorque(-mainTorque);
+            }
+
+            if (this.isOwnedByCurrentUser() && game.input.isDown(keycode('right'))) {
+                this.body.applyTorque(mainTorque);
+            }
         }
 
         const generalFrictionCoefficient = Math.min(
