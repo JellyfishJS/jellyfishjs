@@ -1,9 +1,10 @@
 /* tslint:disable:no-bitwise */
 import { isServer } from '../multiplayer';
+import { nodeRequire } from '../util/require';
 
 const _fillRandom = isServer ?
     // @ts-ignore
-    __non_webpack_require__('crypto').randomFillSync :
+    nodeRequire('crypto').randomFillSync :
     (window.crypto && window.crypto.getRandomValues && window.crypto.getRandomValues.bind(crypto));
 
 const fillRandom = (_fillRandom as (buffer: Uint32Array) => void) || (function (buffer: Uint32Array) {
