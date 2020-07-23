@@ -1,7 +1,11 @@
 /* tslint:disable:no-bitwise */
-const _fillRandom = typeof crypto === 'object' ?
-    crypto.getRandomValues.bind(crypto) ||
-    (crypto as any).randomFillSync.bind(crypto) : undefined;
+import { isServer } from '../multiplayer';
+
+const _fillRandom = isServer ?
+    // @ts-ignore
+    __non_webpack_require__('crypto').randomFillSync :
+    (window.crypto && window.crypto.getRandomValues && window.crypto.getRandomValues.bind(crypto));
+
 const fillRandom = (_fillRandom as (buffer: Uint32Array) => void) || (function (buffer: Uint32Array) {
     for (let i = 0; i < buffer.length; ++i) {
         buffer[i] = (Math.random() * 0x1_0000_0000) | 0;
