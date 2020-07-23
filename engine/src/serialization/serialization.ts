@@ -9,6 +9,7 @@ import {
     SerializedPropertyType,
 } from './serialization-result';
 import type { PrototypeConfiguration, SerializerConfiguration } from './serializer-configuration';
+import { xorshift128_16bytes } from './utils';
 
 /**
  * A class used to serialize a single entity.
@@ -19,6 +20,7 @@ import type { PrototypeConfiguration, SerializerConfiguration } from './serializ
  * and this makes it easier.
  */
 export class Serialization {
+    private static generator = xorshift128_16bytes();
 
     /**
      * Makes a serialization for the specified entity.
@@ -97,7 +99,7 @@ export class Serialization {
         const existingUUID = this._serializableItemToUUID.get(item);
         if (existingUUID) { return existingUUID; }
 
-        const id = uuid();
+        const id = uuid({ random: Serialization.generator() });
         this._serializableItemToUUID.set(item, id);
 
         const prototype = Object.getPrototypeOf(item);
