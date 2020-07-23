@@ -31,6 +31,14 @@ export class Client extends GameObject {
     private _user: User | undefined;
 
     /**
+     * Indicates if it is the client's turn to send an update.
+     *
+     * Set to false on sending an update,
+     * then set back to true on sending an update to the server.
+     */
+    private _shouldSendUpdate = false;
+
+    /**
      * Handles the events in the event queue.
      */
     private _handleEvents() {
@@ -60,6 +68,7 @@ export class Client extends GameObject {
         const json = JSON.stringify(serialization);
 
         this._send(json, MessageType.Update);
+        this._shouldSendUpdate = false;
     }
 
     /**
@@ -93,6 +102,8 @@ export class Client extends GameObject {
         };
 
         updateGameObject(this);
+
+        this._shouldSendUpdate = true;
     }
 
     /**
@@ -198,7 +209,9 @@ export class Client extends GameObject {
     public [afterStepKey]() {
         super[afterStepKey] && super[afterStepKey]!();
 
-        this._sendUpdate();
+        if (this._shouldSendUpdate) {
+            this._sendUpdate();
+        }
     }
 
     /**

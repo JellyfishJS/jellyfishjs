@@ -39,6 +39,8 @@ export class Server extends GameObject {
      */
     private readonly _users: Set<User> = new Set();
 
+    private readonly _shouldUpdateUser: Map<string, boolean> = new Map();
+
     /**
      * An array of events yet to be processed.
      */
@@ -55,10 +57,12 @@ export class Server extends GameObject {
             switch (event.type) {
                 case ServerEventType.Connect:
                     this._users.add(event.user);
+                    this._shouldUpdateUser.set(event.user.id(), true);
                     this.onUserJoined?.(event.user);
                     break;
                 case ServerEventType.Disconnect:
                     this._users.delete(event.user);
+                    this._shouldUpdateUser.delete(event.user.id());
                     this.onUserLeft?.(event.user, event.reason);
                     break;
                 case ServerEventType.Message:
@@ -75,13 +79,18 @@ export class Server extends GameObject {
         const serialization = this.game().getSerializer().serialize(this[childrenKey]);
         const json = JSON.stringify(serialization);
 
-        this._broadcast(json, MessageType.Update);
+        for (const [user, shouldUpdate] of this._shouldUpdateUser.entries()) {
+            if (!shouldUpdate) { continue; }
+            const socket = this._userToSocket.get(user);
+            if (!socket) { continue; }
+            this._send(new User(user), json, MessageType.Update);
+        }
     }
 
     /**
      * Handles an update with the specified JSON string.
      */
-    private _handleUpdate(update: string) {
+    private _handleUpdate(update: string, user: User) {
         let updateObject;
         try {
             updateObject = JSON.parse(update);
@@ -109,6 +118,8 @@ export class Server extends GameObject {
         };
 
         updateGameObject(this);
+
+        this._shouldUpdateUser.set(user.id(), true);
     }
 
     /**
@@ -134,7 +145,7 @@ export class Server extends GameObject {
                 this.onMessage?.(user, contents);
                 break;
             case MessageType.Update:
-                this._handleUpdate(contents);
+                this._handleUpdate(contents, user);
                 break;
             default:
                 console.error(`Unexpected got message from client with type ${type}, which is not recognized.`);
