@@ -3,6 +3,7 @@ cd "$( dirname "${BASH_SOURCE[0]}" )"
 
 pushd engine > /dev/null
 NODE_ENV=development npm install
+NODE_ENV=development npm install matter-js
 npm run build
 popd > /dev/null
 
