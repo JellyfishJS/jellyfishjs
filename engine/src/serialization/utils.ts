@@ -2,10 +2,13 @@
 import { isServer } from '../multiplayer';
 import { nodeRequire } from '../util/require';
 
-const _fillRandom = isServer ?
-    // @ts-ignore
-    nodeRequire('crypto').randomFillSync :
-    (window.crypto && window.crypto.getRandomValues && window.crypto.getRandomValues.bind(crypto));
+let _fillRandom: (buffer: Uint32Array) => void;
+if (isServer) {
+    const randomFillSync = nodeRequire('crypto').randomFillSync;
+    _fillRandom = (buffer: Uint32Array) => randomFillSync(new Uint8Array(buffer.buffer));
+} else {
+    _fillRandom = window.crypto && window.crypto.getRandomValues && window.crypto.getRandomValues.bind(crypto);
+}
 
 const fillRandom = (_fillRandom as (buffer: Uint32Array) => void) || (function (buffer: Uint32Array) {
     for (let i = 0; i < buffer.length; ++i) {
