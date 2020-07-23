@@ -97,6 +97,10 @@ export class Car extends GameObject {
         this.body.applyForce(sidewaysFriction);
     }
 
+    public remove() {
+        this.body.position = this.body.position.plus(Vector.xy(0, 100000));
+    }
+
 }
 game.registerClass(Car);
 

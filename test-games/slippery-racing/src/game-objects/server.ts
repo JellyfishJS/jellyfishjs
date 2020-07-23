@@ -1,4 +1,4 @@
-import { Angle, game, Server, Vector } from 'engine';
+import { Angle, game, Server, User, Vector } from 'engine';
 import { Car } from './car';
 import { Decoration } from './decoration';
 import { LooseTire } from './loose-tire';
@@ -53,6 +53,16 @@ export class SlipperServer extends Server {
         this.game().getWorld()!.gravity = { x: 0, y: 0, scale: 0 };
 
         this.start(+process.env.SLIPPERY_RACING_PORT!);
+    }
+
+    public onUserLeft(user: User) {
+        for (const child of this.children()) {
+            if (child.getOwner()?.id() === user.id()) {
+                if (child instanceof Car) {
+                    child.remove();
+                }
+            }
+        }
     }
 
 }
