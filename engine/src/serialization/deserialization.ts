@@ -66,9 +66,9 @@ export class Deserialization {
     private readonly _originalEntity: SerializedEntity;
 
     /**
-     * A map from UUIDs to items.
+     * A map from IDs to items.
      */
-    private _uuidToItems = new Map<string, SerializableItem>();
+    private _idToItems = new Map<string, SerializableItem>();
 
     /**
      * If the entity has been serialized yet.
@@ -106,7 +106,7 @@ export class Deserialization {
      * Caches results, so can be called multiple times.
      */
     private _deserializeItem(id: string, originalItem: SerializableItem | undefined): SerializableItem | undefined {
-        const existingItem = this._uuidToItems.get(id);
+        const existingItem = this._idToItems.get(id);
         if (existingItem) { return existingItem; }
 
         if (!this._originalEntity.items) {
@@ -154,7 +154,7 @@ export class Deserialization {
         // Hence the `as unknown as SerializableItem`.
         const result: SerializableItem = Array.isArray(originalItem) ? originalItem : [] as unknown as SerializableItem;
 
-        this._uuidToItems.set(id, result);
+        this._idToItems.set(id, result);
 
         if (typeof serializedItem.stringKeyedProperties !== 'object') {
             throw new Error(`Bad deserialization: Property .stringKeyedProperties is not an object in ${serializedItem}.`);
@@ -180,7 +180,7 @@ export class Deserialization {
             && !Array.isArray(originalItem);
         const result: SerializableItem = canUseOriginal ? originalItem as SerializableItem : {};
 
-        this._uuidToItems.set(id, result);
+        this._idToItems.set(id, result);
 
         if (typeof serializedItem.stringKeyedProperties !== 'object') {
             throw new Error(`Bad deserialization: Property .stringKeyedProperties is not an object in ${serializedItem}.`);
@@ -208,7 +208,7 @@ export class Deserialization {
             ? originalItem as SerializableItem
             : Object.create(configuration.prototype);
 
-        this._uuidToItems.set(id, result);
+        this._idToItems.set(id, result);
 
         if (typeof serializedItem.stringKeyedProperties !== 'object') {
             throw new Error(`Bad deserialization: Property .stringKeyedProperties is not an object in ${serializedItem}.`);
@@ -246,7 +246,7 @@ export class Deserialization {
             && originalItem instanceof Map;
         const result: Map<any, any> = canUseOriginal ? originalItem as unknown as Map<any, any> : new Map();
 
-        this._uuidToItems.set(id, result as unknown as SerializableItem);
+        this._idToItems.set(id, result as unknown as SerializableItem);
 
         const entries = serializedItem.entries;
         if (!Array.isArray(entries)) {
@@ -294,7 +294,7 @@ export class Deserialization {
             && originalItem instanceof Set;
         const result: Set<any> = canUseOriginal ? originalItem as unknown as Set<any> : new Set();
 
-        this._uuidToItems.set(id, result as unknown as SerializableItem);
+        this._idToItems.set(id, result as unknown as SerializableItem);
 
         const entries = serializedItem.entries;
         if (!Array.isArray(entries)) {
@@ -473,9 +473,9 @@ export class Deserialization {
      * Deserializes the specified property, assuming it's a reference.
      */
     private _deserializePropertyReference(property: SerializedPropertyItemReference, originalValue: unknown): unknown {
-        const uuid = property.uuid;
-        if (typeof uuid !== 'string') {
-            throw new Error(`Bad deserialization: Property .uuid is not a string in ${property}.`);
+        const id = property.id;
+        if (typeof id !== 'string') {
+            throw new Error(`Bad deserialization: Property .id is not a string in ${property}.`);
         }
 
         let itemToReplace: SerializableItem | undefined;
@@ -484,7 +484,7 @@ export class Deserialization {
             itemToReplace = originalValue as SerializableItem;
         }
 
-        return this._deserializeItem(uuid, itemToReplace);
+        return this._deserializeItem(id, itemToReplace);
     }
 
     /**

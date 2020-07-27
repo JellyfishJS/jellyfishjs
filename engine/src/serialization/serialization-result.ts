@@ -170,7 +170,7 @@ export enum SerializedPropertyType {
  */
 export interface SerializedPropertyItemReference {
     type: SerializedPropertyType.Reference;
-    uuid: string;
+    id: string;
 }
 
 /**

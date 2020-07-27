@@ -80,11 +80,11 @@ describe('Serialization', function () {
                         stringKeyedProperties: {
                             item1: {
                                 type: 'reference',
-                                uuid: 'noupdate',
+                                id: 'noupdate',
                             },
                             item2: {
                                 type: 'reference',
-                                uuid: 'update',
+                                id: 'update',
                             },
                         },
                         symbolKeyedProperties: {},
