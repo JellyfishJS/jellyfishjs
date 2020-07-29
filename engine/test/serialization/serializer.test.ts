@@ -44,9 +44,9 @@ describe('Serialization', function () {
             } else {
                 const serializer = new Serializer();
                 const serializedValue: any = {
-                    rootItem: 'id',
+                    rootItem: 1,
                     items: {
-                        id: {
+                        1: {
                             type: SerializedItemType.Object,
                             stringKeyedProperties: {
                                 a: {
@@ -73,30 +73,30 @@ describe('Serialization', function () {
             // item1 is specified as an object and when deserialized, it's value should be update in the original object
             // whereas item2 is a noupdate and when deserialized, it's should not be updated in the original object.
             const serializedValue: any = {
-                rootItem: 'root',
+                rootItem: 1,
                 items: {
-                    root: {
+                    1: {
                         type: 'object',
                         stringKeyedProperties: {
                             item1: {
                                 type: 'reference',
-                                id: 'noupdate',
+                                id: 2,
                             },
                             item2: {
                                 type: 'reference',
-                                id: 'update',
+                                id: 3,
                             },
                         },
                         symbolKeyedProperties: {},
                     },
-                    noupdate: {
+                    2: {
                         type: SerializedItemType.Object,
                         stringKeyedProperties: {
                             a: 'should-update',
                         },
                         symbolKeyedProperties: {},
                     },
-                    update: {
+                    3: {
                         type: SerializedItemType.NoUpdate,
                     },
                 },

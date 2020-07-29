@@ -68,7 +68,7 @@ export class Deserialization {
     /**
      * A map from IDs to items.
      */
-    private _idToItems = new Map<string, SerializableItem>();
+    private _idToItems = new Map<number, SerializableItem>();
 
     /**
      * If the entity has been serialized yet.
@@ -92,7 +92,7 @@ export class Deserialization {
      * so it will not work correctly.
      */
     private _runDeserialization() {
-        if (typeof this._originalEntity.rootItem !== 'string') {
+        if (typeof this._originalEntity.rootItem !== 'number') {
             throw new Error(`Bad deserialization: Property .rootItem is not a string in ${this._originalEntity}.`);
         }
 
@@ -105,7 +105,7 @@ export class Deserialization {
      *
      * Caches results, so can be called multiple times.
      */
-    private _deserializeItem(id: string, originalItem: SerializableItem | undefined): SerializableItem | undefined {
+    private _deserializeItem(id: number, originalItem: SerializableItem | undefined): SerializableItem | undefined {
         const existingItem = this._idToItems.get(id);
         if (existingItem) { return existingItem; }
 
@@ -145,7 +145,7 @@ export class Deserialization {
      * Deserializes the specified array.
      */
     private _deserializeItemArray(
-        id: string,
+        id: number,
         serializedItem: SerializedItemArray,
         originalItem: SerializableItem | undefined,
     ): SerializableItem {
@@ -170,7 +170,7 @@ export class Deserialization {
      * Deserializes the specified object.
      */
     private _deserializeItemObject(
-        id: string,
+        id: number,
         serializedItem: SerializedItemObject,
         originalItem: SerializableItem | undefined,
     ): SerializableItem {
@@ -194,7 +194,7 @@ export class Deserialization {
      * Deserializes the specified prototyped item.
      */
     private _deserializeItemPrototyped(
-        id: string,
+        id: number,
         serializedItem: SerializedItemPrototyped,
         originalItem: SerializableItem | undefined,
     ): SerializableItem {
@@ -237,7 +237,7 @@ export class Deserialization {
      * Deserializes the specified Map.
      */
     private _deserializeItemMap(
-        id: string,
+        id: number,
         serializedItem: SerializedItemMap,
         originalItem: SerializableItem | undefined,
     ): SerializableItem {
@@ -285,7 +285,7 @@ export class Deserialization {
      * Deserializes the specified Set.
      */
     private _deserializeItemSet(
-        id: string,
+        id: number,
         serializedItem: SerializedItemSet,
         originalItem: SerializableItem | undefined,
     ): SerializableItem {
@@ -474,7 +474,7 @@ export class Deserialization {
      */
     private _deserializePropertyReference(property: SerializedPropertyItemReference, originalValue: unknown): unknown {
         const id = property.id;
-        if (typeof id !== 'string') {
+        if (typeof id !== 'number') {
             throw new Error(`Bad deserialization: Property .id is not a string in ${property}.`);
         }
 

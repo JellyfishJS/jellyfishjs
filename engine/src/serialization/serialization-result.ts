@@ -11,9 +11,9 @@ export interface SerializableItem {
  * Compatible with JSON.
  */
 export interface SerializedEntity {
-    rootItem: string;
+    rootItem: number;
     items: {
-        [uuid: string]: SerializedItem,
+        [uuid: number]: SerializedItem,
     };
 }
 
@@ -170,7 +170,7 @@ export enum SerializedPropertyType {
  */
 export interface SerializedPropertyItemReference {
     type: SerializedPropertyType.Reference;
-    id: string;
+    id: number;
 }
 
 /**

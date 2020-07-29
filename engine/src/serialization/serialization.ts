@@ -66,17 +66,17 @@ export class Serialization {
     /**
      * The ID to use for the next item to be serializled.
      */
-    private _nextId = 0;
+    private _nextId = 1;
 
     /**
      * A cache of the serialized entity.
      */
     private _result: SerializedEntity = {
-        rootItem: '',
+        rootItem: 0,
         items: {},
     };
 
-    private _serializableItemToID = new Map<SerializableItem, string>();
+    private _serializableItemToID = new Map<SerializableItem, number>();
 
     /**
      * Serializes the entity without checking the cache.
@@ -97,11 +97,11 @@ export class Serialization {
      *
      * Returns the ID the item was assigned.
      */
-    private _serializeItem(item: SerializableItem): string {
+    private _serializeItem(item: SerializableItem): number {
         const existingID = this._serializableItemToID.get(item);
         if (existingID) { return existingID; }
 
-        const id = (this._nextId++).toString();
+        const id = this._nextId++;
         this._serializableItemToID.set(item, id);
 
         const prototype = Object.getPrototypeOf(item);
