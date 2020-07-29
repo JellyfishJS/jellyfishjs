@@ -64,7 +64,7 @@ export class Serialization {
     private _hasSerialized = false;
 
     /**
-     * The ID to use for the next item to be serializled.
+     * The ID to use for the next item to be serialized.
      */
     private _nextId = 1;
 
