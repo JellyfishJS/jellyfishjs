@@ -80,7 +80,7 @@ export class Vector {
     public static readonly right = Vector.unit(Angle.right);
 
     /**
-     * A unit vector that points right.
+     * A unit vector that points left.
      */
     public static readonly left = Vector.unit(Angle.left);
 
