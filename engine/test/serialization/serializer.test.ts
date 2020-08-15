@@ -258,6 +258,19 @@ describe('Serialization', function () {
             assert.deepEqual(target, result);
         });
 
+        it('should split duplicate references', function () {
+            const serializer = new Serializer();
+
+            const a = {};
+            const target = { a, b: a };
+            const result = { a: { x: 1 }, b: { y: 2 } };
+
+            const serialization = serializer.serialize(result);
+            serializer.deserialize(serialization, target);
+
+            assert.deepEqual(target, result);
+        });
+
     });
 
     describe('Prototype serialization', function () {
