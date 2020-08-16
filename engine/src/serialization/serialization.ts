@@ -1,4 +1,3 @@
-import uuid = require('uuid');
 import {
     SerializableItem,
     SerializedEntity,
@@ -65,14 +64,19 @@ export class Serialization {
     private _hasSerialized = false;
 
     /**
+     * The ID to use for the next item to be serialized.
+     */
+    private _nextId = 1;
+
+    /**
      * A cache of the serialized entity.
      */
     private _result: SerializedEntity = {
-        rootItem: '',
+        rootItem: 0,
         items: {},
     };
 
-    private _serializableItemToUUID = new Map<SerializableItem, string>();
+    private _serializableItemToID = new Map<SerializableItem, number>();
 
     /**
      * Serializes the entity without checking the cache.
@@ -91,14 +95,14 @@ export class Serialization {
      * Serializes the given item,
      * and adds it to the result.
      *
-     * Returns the uuid the item was assigned.
+     * Returns the ID the item was assigned.
      */
-    private _serializeItem(item: SerializableItem): string {
-        const existingUUID = this._serializableItemToUUID.get(item);
-        if (existingUUID) { return existingUUID; }
+    private _serializeItem(item: SerializableItem): number {
+        const existingID = this._serializableItemToID.get(item);
+        if (existingID) { return existingID; }
 
-        const id = uuid();
-        this._serializableItemToUUID.set(item, id);
+        const id = this._nextId++;
+        this._serializableItemToID.set(item, id);
 
         const prototype = Object.getPrototypeOf(item);
         if (prototype === Map.prototype) {
@@ -353,7 +357,7 @@ export class Serialization {
     private _serializePropertyReference(property: SerializableItem): SerializedProperty {
         return {
             type: SerializedPropertyType.Reference,
-            uuid: this._serializeItem(property as SerializableItem),
+            id: this._serializeItem(property as SerializableItem),
         };
     }
 
