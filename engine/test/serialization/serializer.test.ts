@@ -322,6 +322,24 @@ describe('Serialization', function () {
             assert.deepEqual(deserialization[b as any], original[b]);
         });
 
+        it('should remove missing symbol keys', function () {
+            const serializer = new Serializer();
+
+            const b = Symbol('b');
+            serializer.registerSymbol(b);
+
+            const c = Symbol('c');
+            serializer.registerSymbol(c);
+
+            const original: any = { a: 'a', [b]: 'b' };
+            const target: any = { [c]: 'c' };
+            const serialization = serializer.serialize(original);
+            serializer.deserialize(serialization, target);
+            assert.deepEqual(target, original);
+            assert.deepEqual(target[b as any], original[b]);
+            assert.isUndefined(target[c as any]);
+        });
+
     });
 
     describe('Serialization key blacklisting', function () {

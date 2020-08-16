@@ -347,9 +347,16 @@ export class Deserialization {
         properties: { [key: string]: SerializedProperty },
         blacklist?: Set<symbol>,
     ) {
-        Object.keys(properties).forEach((key) => {
-            const symbol = this._getSymbolFromName(key);
+        const newKeys: [string, symbol][] = Object.keys(properties).map((key) => [key, this._getSymbolFromName(key)]);
+        const newKeysSet = new Set(newKeys.map(([key, symbol]) => symbol));
 
+        Object.getOwnPropertySymbols(item).forEach((symbol) => {
+            if (this._configuration.symbolToName.has(symbol) && !newKeysSet.has(symbol)) {
+                delete item[symbol as any];
+            }
+        });
+
+        newKeys.forEach(([key, symbol]) => {
             if (!blacklist || !blacklist.has(symbol)) {
                 item[symbol as any] = this._deserializePropertyValue(properties[key], item[symbol as any]);
             }
