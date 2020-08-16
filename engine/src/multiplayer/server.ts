@@ -121,11 +121,6 @@ export class Server extends GameObject {
      * since this might be caused by a client trying to mess with the server.
      */
     private _onMessage(user: User, type: unknown, contents: unknown) {
-        if (typeof type !== 'string') {
-            console.error(`Unexpected got message from client with type ${type}, which is not a string.`);
-            return;
-        }
-
         if (type === MessageType.Update) {
             if (typeof contents !== 'object' || !contents) {
                 console.log(`Invalid update ${contents}`);
