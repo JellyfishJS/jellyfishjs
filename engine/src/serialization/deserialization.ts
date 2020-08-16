@@ -16,7 +16,6 @@ import {
     SerializedPropertyType,
 } from './serialization-result';
 import type { PrototypeConfiguration, SerializerConfiguration } from './serializer-configuration';
-import symbols = Mocha.reporters.Base.symbols;
 
 /**
  * A class used to deserialize a single entity.
@@ -351,8 +350,8 @@ export class Deserialization {
         const newKeys: [string, symbol][] = Object.keys(properties).map((key) => [key, this._getSymbolFromName(key)]);
         const newKeysSet = new Set(newKeys.map(([key, symbol]) => symbol));
 
-        this._getSymbolsOnObject(item).forEach((symbol) => {
-            if (!newKeysSet.has(symbol)) {
+        Object.getOwnPropertySymbols(item).forEach((symbol) => {
+            if (this._configuration.symbolToName.has(symbol) && !newKeysSet.has(symbol)) {
                 delete item[symbol as any];
             }
         });
@@ -362,17 +361,6 @@ export class Deserialization {
                 item[symbol as any] = this._deserializePropertyValue(properties[key], item[symbol as any]);
             }
         });
-    }
-
-    private _getSymbolsOnObject(
-        item: any,
-    ): Set<symbol> {
-        const symbols: Set<symbol> = new Set();
-        do {
-            Object.getOwnPropertySymbols(item).forEach((symbol) => symbols.add(symbol));
-            item = item.prototype;
-        } while (item);
-        return symbols;
     }
 
     /**
