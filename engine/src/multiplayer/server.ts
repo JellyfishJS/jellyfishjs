@@ -77,28 +77,19 @@ export class Server extends GameObject {
      */
     private _sendUpdate() {
         const serialization = this.game().getSerializer().serialize(this[childrenKey]);
-        const json = JSON.stringify(serialization);
 
         for (const [user, shouldUpdate] of this._shouldUpdateUser.entries()) {
             if (!shouldUpdate) { continue; }
             const socket = this._userToSocket.get(user);
             if (!socket) { continue; }
-            this._send(new User(user), json, MessageType.Update);
+            this._send(new User(user), serialization, MessageType.Update);
         }
     }
 
     /**
      * Handles an update with the specified JSON string.
      */
-    private _handleUpdate(update: string, user: User) {
-        let updateObject;
-        try {
-            updateObject = JSON.parse(update);
-        } catch (error) {
-            console.error(`Failed to parse update JSON with error: ${error}`);
-            return;
-        }
-
+    private _handleUpdate(updateObject: {}, user: User) {
         try {
             this.game().getSerializer().deserialize(updateObject, this[childrenKey]);
         } catch (error) {
@@ -135,20 +126,27 @@ export class Server extends GameObject {
             return;
         }
 
+        if (type === MessageType.Update) {
+            if (typeof contents !== 'object' || !contents) {
+                console.log(`Invalid update ${contents}`);
+                return;
+            }
+
+            this._handleUpdate(contents, user);
+            return;
+        }
+
         if (typeof contents !== 'string') {
-            console.error(`Unexpected got message from client with contents ${contents}, which is not a string.`);
+            console.error(`Unexpectedly got message from client with type ${type} and contents ${contents}, which is not a string.`);
             return;
         }
 
         switch (type) {
             case MessageType.String:
                 this.onMessage?.(user, contents);
-                break;
-            case MessageType.Update:
-                this._handleUpdate(contents, user);
-                break;
+                return;
             default:
-                console.error(`Unexpected got message from client with type ${type}, which is not recognized.`);
+                console.error(`Unexpectedly got message from client with type ${type}, which is not recognized.`);
                 return;
         }
     }
@@ -202,7 +200,7 @@ export class Server extends GameObject {
      * Sends the specified message to the specified user,
      * with the specified type.
      */
-    private _send(user: User, message: string, type: MessageType) {
+    private _send(user: User, message: unknown, type: MessageType) {
         const socket = this._userToSocket.get(user.id());
         if (!socket) { return; }
 
