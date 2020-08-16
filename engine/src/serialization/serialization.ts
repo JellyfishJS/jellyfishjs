@@ -219,8 +219,7 @@ export class Serialization {
     }
 
     /**
-     * Returns `true` if the specified key of the specified item
-     * is blacklisted.
+     * Returns `true` if the specified item is blacklisted.
      */
     private _isItemBlacklisted(
         item: SerializableItem,
