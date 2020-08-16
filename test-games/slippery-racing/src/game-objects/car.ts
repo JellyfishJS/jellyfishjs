@@ -55,21 +55,29 @@ export class Car extends GameObject {
                 this.body.angle,
             );
 
-            if (game.input.isDown(keycode('up')) || game.input.isDown(game.input.mouseCode(0))) {
+            if (
+                game.input.isDown(keycode('up')) ||
+                game.input.isDown(keycode('w')) ||
+                game.input.isDown(game.input.mouseCode(0))
+            ) {
                 this.body.applyForce(mainForce);
             }
 
-            if (game.input.isDown(keycode('down')) || game.input.isDown(game.input.mouseCode(2))) {
+            if (
+                game.input.isDown(keycode('down')) ||
+                game.input.isDown(keycode('s')) ||
+                game.input.isDown(game.input.mouseCode(2))
+            ) {
                 this.body.applyForce(mainForce.negated());
             }
 
             const mainTorque = this.performance.cornering * this.body.inertia;
 
-            if (this.isOwnedByCurrentUser() && game.input.isDown(keycode('left'))) {
+            if (game.input.isDown(keycode('left')) || game.input.isDown(keycode('a'))) {
                 this.body.applyTorque(-mainTorque);
             }
 
-            if (this.isOwnedByCurrentUser() && game.input.isDown(keycode('right'))) {
+            if (game.input.isDown(keycode('right')) || game.input.isDown(keycode('d'))) {
                 this.body.applyTorque(mainTorque);
             }
         }
