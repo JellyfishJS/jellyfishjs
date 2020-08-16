@@ -258,17 +258,79 @@ describe('Serialization', function () {
             assert.deepEqual(target, result);
         });
 
-        it('should split duplicate references', function () {
-            const serializer = new Serializer();
+        describe('split duplicate references', function () {
+            it('should split duplicate object references', function () {
+                const serializer = new Serializer();
 
-            const a = {};
-            const target = { a, b: a };
-            const result = { a: { x: 1 }, b: { y: 2 } };
+                const a = {};
+                const target = { a, b: a };
+                const result = { a: { x: 1 }, b: { y: 2 } };
 
-            const serialization = serializer.serialize(result);
-            serializer.deserialize(serialization, target);
+                const serialization = serializer.serialize(result);
+                serializer.deserialize(serialization, target);
 
-            assert.deepEqual(target, result);
+                assert.deepEqual(target, result);
+            });
+
+            it('should split duplicate prototype references', function () {
+                const serializer = new Serializer();
+
+                class A {
+                    public value: number;
+                    public constructor(value: number) {
+                        this.value = value;
+                    }
+                }
+                serializer.registerClass(A);
+
+                const a = new A(0);
+                const target = { a, b: a };
+                const result = { a: new A(1), b: new A(2) };
+
+                const serialization = serializer.serialize(result);
+                serializer.deserialize(serialization, target);
+
+                assert.deepEqual(target, result);
+            });
+
+            it('should split duplicate array references', function () {
+                const serializer = new Serializer();
+
+                const a = [0];
+                const target = { a, b: a };
+                const result = { a: [1], b: [2] };
+
+                const serialization = serializer.serialize(result);
+                serializer.deserialize(serialization, target);
+
+                assert.deepEqual(target, result);
+            });
+
+            it('should split duplicate set references', function () {
+                const serializer = new Serializer();
+
+                const a = new Set<number>();
+                const target = { a, b: a };
+                const result = { a: new Set([1]), b: new Set([2]) };
+
+                const serialization = serializer.serialize(result);
+                serializer.deserialize(serialization, target);
+
+                assert.deepEqual(target, result);
+            });
+
+            it('should split duplicate map references', function () {
+                const serializer = new Serializer();
+
+                const a = new Map<number, number>();
+                const target = { a, b: a };
+                const result = { a: new Map([[1, 1]]), b: new Map([[2, 2]]) };
+
+                const serialization = serializer.serialize(result);
+                serializer.deserialize(serialization, target);
+
+                assert.deepEqual(target, result);
+            });
         });
 
     });
