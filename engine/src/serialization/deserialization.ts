@@ -71,6 +71,11 @@ export class Deserialization {
     private _idToItems = new Map<number, SerializableItem>();
 
     /**
+     * A list of original objects that should no longer be used for deserialization.
+     */
+    private _itemDeserialized = new Set<SerializableItem>();
+
+    /**
      * If the entity has been serialized yet.
      *
      * Used to determine if the cached version should be returned.
@@ -149,10 +154,17 @@ export class Deserialization {
         serializedItem: SerializedItemArray,
         originalItem: SerializableItem | undefined,
     ): SerializableItem {
-        // It is safe to treat an array like an object with arbitrary access,
-        // it's just usually a bad idea so TypeScript complains.
-        // Hence the `as unknown as SerializableItem`.
-        const result: SerializableItem = Array.isArray(originalItem) ? originalItem : [] as unknown as SerializableItem;
+        let result: SerializableItem;
+
+        if (Array.isArray(originalItem) && !this._itemDeserialized.has(originalItem)) {
+            result = originalItem;
+            this._itemDeserialized.add(originalItem);
+        } else {
+            // It is safe to treat an array like an object with arbitrary access,
+            // it's just usually a bad idea so TypeScript complains.
+            // Hence the `as unknown as SerializableItem`.
+            result = [] as unknown as SerializableItem;
+        }
 
         this._idToItems.set(id, result);
 
@@ -177,10 +189,14 @@ export class Deserialization {
         const canUseOriginal =
             typeof originalItem === 'object'
             && originalItem !== null
-            && !Array.isArray(originalItem);
+            && !Array.isArray(originalItem)
+            && !this._itemDeserialized.has(originalItem);
         const result: SerializableItem = canUseOriginal ? originalItem as SerializableItem : {};
 
         this._idToItems.set(id, result);
+        if (canUseOriginal) {
+            this._itemDeserialized.add(originalItem!);
+        }
 
         if (typeof serializedItem.stringKeyedProperties !== 'object') {
             throw new Error(`Bad deserialization: Property .stringKeyedProperties is not an object in ${serializedItem}.`);
@@ -203,12 +219,16 @@ export class Deserialization {
 
         const canUseOriginal = originalItem
             && typeof originalItem === 'object'
-            && Object.getPrototypeOf(originalItem) === configuration.prototype;
+            && Object.getPrototypeOf(originalItem) === configuration.prototype
+            && !this._itemDeserialized.has(originalItem);
         const result: SerializableItem = canUseOriginal
             ? originalItem as SerializableItem
             : Object.create(configuration.prototype);
 
         this._idToItems.set(id, result);
+        if (canUseOriginal) {
+            this._itemDeserialized.add(originalItem!);
+        }
 
         if (typeof serializedItem.stringKeyedProperties !== 'object') {
             throw new Error(`Bad deserialization: Property .stringKeyedProperties is not an object in ${serializedItem}.`);
@@ -243,10 +263,14 @@ export class Deserialization {
     ): SerializableItem {
         const canUseOriginal =
             typeof originalItem === 'object'
-            && originalItem instanceof Map;
+            && originalItem instanceof Map
+            && !this._itemDeserialized.has(originalItem);
         const result: Map<any, any> = canUseOriginal ? originalItem as unknown as Map<any, any> : new Map();
 
         this._idToItems.set(id, result as unknown as SerializableItem);
+        if (canUseOriginal) {
+            this._itemDeserialized.add(originalItem!);
+        }
 
         const entries = serializedItem.entries;
         if (!Array.isArray(entries)) {
@@ -291,10 +315,14 @@ export class Deserialization {
     ): SerializableItem {
         const canUseOriginal =
             typeof originalItem === 'object'
-            && originalItem instanceof Set;
+            && originalItem instanceof Set
+            && !this._itemDeserialized.has(originalItem);
         const result: Set<any> = canUseOriginal ? originalItem as unknown as Set<any> : new Set();
 
         this._idToItems.set(id, result as unknown as SerializableItem);
+        if (canUseOriginal) {
+            this._itemDeserialized.add(originalItem!);
+        }
 
         const entries = serializedItem.entries;
         if (!Array.isArray(entries)) {
