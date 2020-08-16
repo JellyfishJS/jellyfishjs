@@ -1,4 +1,5 @@
 import type { Class } from '../util/class-type';
+import type { SerializableItem } from './serialization-result';
 
 /**
  * Represents the configuration for a serializer.
@@ -33,6 +34,7 @@ export class SerializerConfiguration {
         {
             serializationBlacklistedKeys = [],
             deserializationBlacklistedKeys = [],
+            blacklistItem = false,
         }: PrototypeRegistrationOptions<T> = {},
     ) {
         const { name, prototype } = Class;
@@ -60,6 +62,7 @@ export class SerializerConfiguration {
             prototype,
             serializationBlacklistedKeys: serializationBlacklistedKeysConfigValue,
             deserializationBlacklistedKeys: deserializationBlacklistedKeysConfigValue,
+            blacklistItem,
         };
 
         this.prototypeNameToConfiguration.set(name, configuration);
@@ -93,12 +96,19 @@ type SerializationKeyBlacklistFunction<T> = (key: string | symbol, item: T) => b
 type DeserializationKeyBlacklistFunction<T> = (key: string | symbol, item: T | undefined) => boolean;
 
 /**
+ * A function that returns true if the SerializableItem should not be serialized.
+ * Instead, it will be treated as NoUpdate.
+ */
+type BlacklistItemFunction<T> = (item: T) => boolean;
+
+/**
  * Represents settings provided by the developer on how objects
  * of a certain prototype are serialized.
  */
 export interface PrototypeRegistrationOptions<T> {
     serializationBlacklistedKeys?: (string | symbol)[] | SerializationKeyBlacklistFunction<T>;
     deserializationBlacklistedKeys?: (string | symbol)[] | DeserializationKeyBlacklistFunction<T>;
+    blacklistItem?: boolean | BlacklistItemFunction<T>;
 }
 
 /**
@@ -108,4 +118,5 @@ export interface PrototypeConfiguration<T> {
     prototype: {};
     serializationBlacklistedKeys?: Set<string | symbol> | SerializationKeyBlacklistFunction<T>;
     deserializationBlacklistedKeys?: Set<string | symbol> | DeserializationKeyBlacklistFunction<T>;
+    blacklistItem?: boolean | BlacklistItemFunction<T>;
 }
