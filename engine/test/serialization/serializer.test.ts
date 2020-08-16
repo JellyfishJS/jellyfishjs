@@ -574,4 +574,33 @@ describe('Serialization', function () {
 
     });
 
+    describe('Serialization item blacklisting', function () {
+
+        [
+            { blacklistItem: true, name: 'true', expectValue: 'target', expectType: 'noupdate' },
+            { blacklistItem: () => true, name: '() => true', expectValue: 'target', expectType: 'noupdate' },
+            { blacklistItem: () => false, name: '() => false', expectValue: 'original', expectType: 'prototyped' },
+        ].forEach(({blacklistItem, name, expectValue, expectType}) => {
+            it(`should omit all instances when set to ${name}`, function () {
+                const serializer = new Serializer();
+
+                class A {}
+                serializer.registerClass(A, { blacklistItem });
+
+                const original: any = new A();
+                original.key = 'original';
+
+                const target: any = new A();
+                target.key = 'target';
+
+                const serialization = serializer.serialize(original);
+                assert.strictEqual((serialization.items[serialization.rootItem] as any).type, expectType);
+
+                const deserialization = serializer.deserialize(serialization, target);
+                assert.strictEqual(deserialization.key, expectValue);
+            });
+        });
+
+    });
+
 });

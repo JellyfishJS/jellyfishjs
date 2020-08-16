@@ -130,6 +130,10 @@ export class Serialization {
         name: string,
         configurations: PrototypeConfiguration<unknown>[],
     ): SerializedItem {
+        if (this._isItemBlacklisted(item, configurations)) {
+            return this._serializeItemNoUpdate();
+        }
+
         return {
             ...this._getProperties(item, configurations),
             type: SerializedItemType.Prototyped,
@@ -211,6 +215,24 @@ export class Serialization {
             }
         }
 
+        return false;
+    }
+
+    /**
+     * Returns `true` if the specified item is blacklisted.
+     */
+    private _isItemBlacklisted(
+        item: SerializableItem,
+        configurations: PrototypeConfiguration<unknown>[] = [],
+    ): boolean {
+        for (const configuration of configurations) {
+            if (
+                typeof configuration.blacklistItem === 'function' && configuration.blacklistItem(item) ||
+                configuration.blacklistItem === true
+            ) {
+                return true;
+            }
+        }
         return false;
     }
 
