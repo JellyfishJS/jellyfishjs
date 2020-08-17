@@ -1,4 +1,4 @@
-import * as Engine from 'engine';
+import * as Engine from 'jellyfish.js';
 import { MainObject } from './main-object';
 
 Engine.game.setCanvasByID('game');

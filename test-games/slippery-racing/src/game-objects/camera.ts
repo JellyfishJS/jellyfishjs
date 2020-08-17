@@ -1,4 +1,4 @@
-import { Body, game, GameObject, Sprite, Vector } from 'engine';
+import { Body, game, GameObject, Sprite, Vector } from 'jellyfish.js';
 import type * as PIXI from 'pixi.js';
 import { Car } from './car';
 

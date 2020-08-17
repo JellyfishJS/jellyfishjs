@@ -1,4 +1,4 @@
-import { Body, game, GameObject, Sprite, Vector } from 'engine';
+import { Body, game, GameObject, Sprite, Vector } from 'jellyfish.js';
 import { Bodies } from 'matter-js';
 
 export class Decoration extends GameObject {

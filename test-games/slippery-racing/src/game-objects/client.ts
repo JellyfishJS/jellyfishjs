@@ -1,4 +1,4 @@
-import { Client, game, Vector } from 'engine';
+import { Client, game, Vector } from 'jellyfish.js';
 import { Camera } from './camera';
 import { Car } from './car';
 

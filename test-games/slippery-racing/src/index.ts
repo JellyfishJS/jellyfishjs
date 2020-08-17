@@ -1,4 +1,4 @@
-import { game, isServer } from 'engine';
+import { game, isServer } from 'jellyfish.js';
 import { Camera } from './game-objects/camera';
 import { SlipperyClient } from './game-objects/client';
 import { SlipperServer } from './game-objects/server';

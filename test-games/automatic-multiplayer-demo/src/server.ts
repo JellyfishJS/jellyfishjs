@@ -1,4 +1,4 @@
-import { Server as JellyfishServer } from 'engine';
+import { Server as JellyfishServer } from 'jellyfish.js';
 
 export class Server extends JellyfishServer {
     public onCreate() {

@@ -1,4 +1,4 @@
-const Jellyfish = require('engine');
+const Jellyfish = require('jellyfish.js');
 
 class Server extends Jellyfish.Server {
 
