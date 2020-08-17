@@ -104,11 +104,6 @@ export class Client extends GameObject {
      * logs an error but doesn't throw.
      */
     private _onMessage(type: unknown, contents: unknown) {
-        if (typeof type !== 'string') {
-            console.error(`Unexpected got message from server with type ${type}, which is not a string.`);
-            return;
-        }
-
         if (type === MessageType.Update) {
             if (typeof contents !== 'object' || !contents) {
                 console.log(`Invalid update ${contents}`);
