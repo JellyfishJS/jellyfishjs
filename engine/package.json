@@ -5,7 +5,7 @@
     "main": "dist/index.js",
     "scripts": {
         "build": "tsc",
-        "prepack": "npm run build -s",
+        "prepack": "cp ../README.md ./README.md && npm run build -s",
         "prepublishOnly": "npm run test -s",
         "lint": "tslint --project . && tslint --project ./test",
         "unit-tests": "mocha",

@@ -1,6 +1,9 @@
 # Dists
 **/dist
 
+# The packed readme
+engine/README.md
+
 # Logs
 logs
 *.log
