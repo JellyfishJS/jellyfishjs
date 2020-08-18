@@ -295,7 +295,7 @@ export class Deserialization {
         });
 
         // TODO: At some point we'll want to make this configurable.
-        // See https://github.com/NicholasThrom/jellyfishjs/issues/174
+        // See https://github.com/JellyfishJS/jellyfishjs/issues/174
         if (false) {
             Array.from(result.keys()).filter((key) => !addedKeys.has(key)).forEach((key) => {
                 result.delete(key);
