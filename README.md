@@ -41,38 +41,46 @@ but let's you control the details when you need.
 
 **NOTE:**
 This doesn't work yet,
-but something like this should work
-once it is released.
+and probably won't till v.0.1.0.
 
 ```js
-const { GameObject, keys, isServer, Client, Server, game } = require('jellyfish');
+const { GameObject, keys, isServer, Client, Server, game } = require('jellyfish.js');
 
 class Player extends GameObject {
-    x = 0;
-    y = 0;
-    sprite = this.graphics.image('/assets/player.png');
+
+    onCreate() {
+        this.position = Vector.xy(0, 0);
+        this.sprite = this.createSprite(ImageSprite, '/assets/player.png');
+        this.sprite.setFollowing(this);
+    }
 
     keyHeld(keycode) {
         if (!this.isOwnedByCurrentUser()) { return; }
         switch (keycode) {
-            case keys.up: this.y++; break;
-            case keys.down: this.y--; break;
-            case keys.left: this.x--; break;
-            case keys.right: this.x++; break;
+            case Button.Up: this.y++; break;
+            case Button.Down: this.y--; break;
+            case Button.Left: this.x--; break;
+            case Button.Right: this.x++; break;
         }
     }
 }
-game.register(Player);
+game.registerClass(Player);
 
 class GameServer extends Server {
+    onCreate() { this.start(); }
+
     onUserJoined(user) {
         const player = this.createObject(Player);
         player.setOwner(user);
     }
 }
 
+class GameClient extends Server {
+    onCreate() { this.connect(); }
+}
+
 if (isServer) { game.createObject(GameServer); }
-else { game.createObject(Client);
+else { game.createObject(GameClient); }
 
 game.start();
 ```
