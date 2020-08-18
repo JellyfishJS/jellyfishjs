@@ -87,8 +87,8 @@ see the rest of [the documentation](./docs/use/use.md).
 ## Contributing
 
 Ideas? Want to help out? Great!
-Make a [new issue](https://github.com/NicholasThrom/jellyfishjs/issues)
-or a new [pull request](https://github.com/NicholasThrom/jellyfishjs/pulls).
+Make a [new issue](https://github.com/JellyfishJS/jellyfishjs/issues)
+or a new [pull request](https://github.com/JellyfishJS/jellyfishjs/pulls).
 
 Check out the [development docs](./docs/development/development.md)
 for more information.

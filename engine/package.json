@@ -13,14 +13,14 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/NicholasThrom/fydp.git"
+        "url": "git+https://github.com/JellyfishJS/jellyfishjs.git"
     },
     "author": "",
     "license": "UNLICENSED",
     "bugs": {
-        "url": "https://github.com/NicholasThrom/fydp/issues"
+        "url": "https://github.com/JellyfishJS/jellyfishjs/issues"
     },
-    "homepage": "https://github.com/NicholasThrom/fydp#readme",
+    "homepage": "https://github.com/JellyfishJS/jellyfishjs#readme",
     "devDependencies": {
         "@types/chai": "^4.2.3",
         "@types/matter-js": "^0.10.2",
