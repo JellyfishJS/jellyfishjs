@@ -1,4 +1,4 @@
-import { Body, game, GameObject, ImageSprite, Vector } from 'jellyfish.js';
+import { Body, game, GameObject, ImageSprite, Vector } from 'engine';
 import { Bodies } from 'matter-js';
 
 export class LooseTire extends GameObject {

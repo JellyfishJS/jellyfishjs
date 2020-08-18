@@ -1,4 +1,4 @@
-import * as Engine from 'jellyfish.js';
+import * as Engine from 'engine';
 import { Circle } from './circle';
 import { Client } from './client';
 import { Server } from './server';

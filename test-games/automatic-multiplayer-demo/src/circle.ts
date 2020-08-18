@@ -1,4 +1,4 @@
-import { game, GameObject, Sprite, Vector } from 'jellyfish.js';
+import { game, GameObject, Sprite, Vector } from 'engine';
 
 const speed = 2;
 

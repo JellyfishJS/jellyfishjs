@@ -1,4 +1,4 @@
-const Jellyfish = require('jellyfish.js');
+const Jellyfish = require('engine');
 const keycode = require('keycode');
 const Vector = Jellyfish.Vector;
 

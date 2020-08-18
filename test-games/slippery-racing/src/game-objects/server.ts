@@ -1,4 +1,4 @@
-import { Angle, game, Server, User, Vector } from 'jellyfish.js';
+import { Angle, game, Server, User, Vector } from 'engine';
 import { Car } from './car';
 import { Decoration } from './decoration';
 import { LooseTire } from './loose-tire';

@@ -1,5 +1,5 @@
-const Jellyfish = require('jellyfish.js');
-const Matter = require('matter-js');
+const Jellyfish = require("engine");
+const Matter = require("matter-js");
 
 class Player extends Jellyfish.GameObject {
 

@@ -1,4 +1,4 @@
-import * as Engine from 'jellyfish.js';
+import * as Engine from 'engine';
 import { Circle } from './circle';
 
 export class Client extends Engine.Client {

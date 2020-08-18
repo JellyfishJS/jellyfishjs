@@ -1,4 +1,4 @@
-import * as Engine from 'jellyfish.js';
+import * as Engine from 'engine';
 
 export class MainObject extends Engine.GameObject {
     public step() {
