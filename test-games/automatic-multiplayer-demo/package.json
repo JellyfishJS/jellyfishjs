@@ -1,5 +1,5 @@
 {
-    "name": "template-typed-game",
+    "name": "automatic-multiplayer-demo",
     "version": "0.0.0",
     "description": "A template game to use with typescript",
     "main": "./dist/index.js",
