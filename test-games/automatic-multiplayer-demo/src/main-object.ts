@@ -1,11 +1,10 @@
-import * as Engine from 'engine';
-import { Circle } from './circle';
+import { GameObject, isServer } from 'engine';
 import { Client } from './client';
 import { Server } from './server';
 
-export class MainObject extends Engine.GameObject {
+export class MainObject extends GameObject {
     public onCreate() {
-        if (Engine.isServer) {
+        if (isServer) {
             this.createObject(Server);
         } else {
             this.createObject(Client);

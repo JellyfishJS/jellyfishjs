@@ -1,6 +1,6 @@
-import * as Engine from 'engine';
+import { GameObject } from 'engine';
 
-export class MainObject extends Engine.GameObject {
+export class MainObject extends GameObject {
     public step() {
         console.log('Running');
     }
