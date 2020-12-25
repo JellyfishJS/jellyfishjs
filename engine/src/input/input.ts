@@ -1,4 +1,3 @@
-import { GameLoop } from '../game-loop/game-loop';
 /**
  * The input class maintains the current state of the mouse and keyboard and can be queried
  * for the state of each key and mouse button
@@ -23,7 +22,7 @@ export class Input {
      * The current state of each key and mouse button, true means a key or mouse button is down
      * a falsey value means the key or mouse button is up
      */
-    private inputState: Map<number, ButtonState> = new Map();
+    private inputState = new Map<number, ButtonState>();
     /**
      * The queue of all input events that occurred since the last time processEvents was called
      */

@@ -169,9 +169,7 @@ export class Game {
 
                 return !item.isOwnedByCurrentUser() && key !== childrenKey;
             },
-            deserializationBlacklistedKeys: (key, item) => {
-                return !!item?.isOwnedByCurrentUser();
-            },
+            deserializationBlacklistedKeys: (key, item) => !!item?.isOwnedByCurrentUser(),
         });
         this.registerSymbol(childrenKey);
         this.registerSymbol(idKey);
