@@ -21,6 +21,9 @@ jobs:
     - name: Test engine
       run: npm test
       working-directory: engine
+    - name: Pack engine
+      run: npm pack
+      working-directory: engine
     - name: Run test games
       run: |
         set +e
