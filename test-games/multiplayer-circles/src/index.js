@@ -115,3 +115,4 @@ if (Jellyfish.isServer) {
 
 }
 Jellyfish.game.start();
+Jellyfish.serve();

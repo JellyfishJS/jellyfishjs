@@ -47,3 +47,4 @@ Jellyfish.game.setCanvasByID("game");
 Jellyfish.game.createObject(Player, Jellyfish.Vector.xy(200, 30), Jellyfish.Vector.xy(0, -0.001));
 Jellyfish.game.createObject(Player, Jellyfish.Vector.xy(220, 250), Jellyfish.Vector.xy(0, -0.0015));
 Jellyfish.game.start();
+Jellyfish.serve();
