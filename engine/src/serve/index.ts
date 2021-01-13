@@ -12,7 +12,7 @@ export function serve(port: number = 8000) {
         .createServer((request, response) => {
             if (request.method === 'GET' && request.url === "/") {
                 response.writeHead(200, { 'Content-Type': 'text/html' });
-                response.write(`<canvas width=400 height=300 id="game" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></canvas><script src="./dist/index.js"></script>`);
+                response.write(`<canvas width=800 height=600 id="game" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></canvas><script src="./dist/index.js"></script>`);
                 response.end();
                 return;
             }
