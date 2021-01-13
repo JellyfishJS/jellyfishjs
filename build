@@ -10,7 +10,10 @@ popd > /dev/null
 for game in test-games/*; do
     pushd "$game" > /dev/null
     if [ -f package.json ]; then
-        NODE_ENV=development npm install
+        echo installing "$game"
+        NODE_ENV=development npm uninstall engine
+        NODE_ENV=development npm install engine@file:../../engine/jellyfish.js-0.0.2.tgz
+        NODE_ENV=development npm ci
         npm run build
     fi
     popd > /dev/null
