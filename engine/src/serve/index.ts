@@ -1,6 +1,9 @@
 import type * as HTTPType from 'http';
+import { isServer } from '../multiplayer';
 
 export function serve(port: number = 8000) {
+
+    if (!isServer) { return; }
 
     // @ts-ignore
     const http: typeof HTTPType = __non_webpack_require__('http');
