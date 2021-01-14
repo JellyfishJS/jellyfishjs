@@ -61,9 +61,9 @@ export async function serve({ port = 3000, html, htmlFilePath }: ServeOptions = 
     // This is the only way to access the real values.
     // They aren't on any global objects, they just float around in the global namespace.
     // eval is usually bad, but this is on a constant string, so it's safe.
-    // tslint:disable-next-line:no-eval
+    // eslint-disable-next-line no-eval
     const dirname: string = eval('__dirname');
-    // tslint:disable-next-line:no-eval
+    // eslint-disable-next-line no-eval
     const filepath: string = eval('__filename');
     const filename: string = path.basename(filepath);
 
