@@ -1,5 +1,4 @@
 import type { Class } from '../util/class-type';
-import type { SerializableItem } from './serialization-result';
 
 /**
  * Represents the configuration for a serializer.

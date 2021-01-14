@@ -63,10 +63,10 @@ export enum SerializedItemType {
  */
 interface HasProperties {
     stringKeyedProperties: {
-        [key: string]: SerializedProperty;
+        [key: string]: SerializedProperty,
     };
     symbolKeyedProperties: {
-        [key: string]: SerializedProperty;
+        [key: string]: SerializedProperty,
     };
 }
 
