@@ -6,7 +6,6 @@
     "scripts": {
         "start": "node ./dist/index.js",
         "build": "webpack --config webpack.config.js",
-        "serve": "serve",
         "lint": "tslint --project .",
         "test": "npm run -s lint",
         "fix": "npm run -s lint -- --fix"

@@ -6,7 +6,6 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "webpack",
-        "serve": "serve",
         "start": "node ./dist/index.js"
     },
     "author": "",
@@ -14,7 +13,6 @@
     "dependencies": {
         "engine": "file:../../engine",
         "pixi.js": "^5.1.3",
-        "serve": "^11.3.2",
         "socket.io": "^2.3.0"
     },
     "devDependencies": {
