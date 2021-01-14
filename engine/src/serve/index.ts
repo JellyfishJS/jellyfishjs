@@ -1,6 +1,6 @@
+import type * as FSType from 'fs';
 import type * as HTTPType from 'http';
 import type * as PathType from 'path';
-import type * as FSType from 'fs';
 import { isServer } from '../multiplayer';
 
 /**
