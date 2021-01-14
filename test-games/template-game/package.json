@@ -11,7 +11,7 @@
     "author": "",
     "license": "UNLICENSED",
     "dependencies": {
-        "engine": "file:../../engine/jellyfish.js-0.0.2.tgz",
+        "engine": "file:../../engine/jellyfish.js.tgz",
         "matter-js": "^0.14.2",
         "pixi.js": "^5.1.3"
     },

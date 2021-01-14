@@ -12,7 +12,7 @@ for game in test-games/*; do
     if [ -f package.json ]; then
         echo installing "$game"
         NODE_ENV=development npm uninstall engine
-        NODE_ENV=development npm install engine@file:../../engine/jellyfish.js-0.0.2.tgz
+        NODE_ENV=development npm install engine@file:../../engine/jellyfish.js.tgz
         NODE_ENV=development npm ci
         npm run build
     fi

@@ -33,7 +33,7 @@ jobs:
           echo "Testing game: $game"
           pushd "$game" > /dev/null
           npm uninstall engine
-          npm install engine@file:../../engine/jellyfish.js-0.0.2.tgz
+          npm install engine@file:../../engine/jellyfish.js.tgz
           npm ci
           npm run build
           timeout 5 npm start > /dev/null
