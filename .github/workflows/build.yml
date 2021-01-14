@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [8.x, 10.x, 12.x, 14.x]
+        node-version: [10.x, 12.x, 14.x, 15.x]
     steps:
     - uses: actions/checkout@v1
     - name: Use Node.js ${{ matrix.node-version }}
@@ -21,6 +21,11 @@ jobs:
     - name: Test engine
       run: npm test
       working-directory: engine
+    - name: Pack engine
+      run: |
+        npm pack
+        cp "$(printf '%s\n' jellyfish.js-*.tgz | sort -Vr | head -n1)" jellyfish.js.tgz
+      working-directory: engine
     - name: Run test games
       run: |
         set +e
@@ -29,7 +34,9 @@ jobs:
           printf '%*s\n' "$COLUMNS" '' | tr ' ' -
           echo "Testing game: $game"
           pushd "$game" > /dev/null
-          npm install
+          npm uninstall engine
+          npm install engine@file:../../engine/jellyfish.js.tgz
+          npm ci
           npm run build
           timeout 5 npm start > /dev/null
           if [ ! "$?" -eq 124 ]; then
