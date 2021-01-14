@@ -2,7 +2,11 @@ import type * as HTTPType from 'http';
 import type * as PathType from 'path';
 import { isServer } from '../multiplayer';
 
-export function serve(port: number = 8000) {
+export interface ServeOptions {
+    port?: number;
+}
+
+export function serve({ port = 8000 }: ServeOptions = {}) {
 
     if (!isServer) { return; }
 
