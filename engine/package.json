@@ -6,7 +6,6 @@
     "scripts": {
         "build": "tsc",
         "prepack": "cp ../README.md ./README.md && npm run build -s",
-        "postpack": "cp ./jellyfish.js-*.tgz ./jellyfish.js.tgz",
         "prepublishOnly": "npm run test -s",
         "lint": "tslint --project . && tslint --project ./test",
         "unit-tests": "mocha",
