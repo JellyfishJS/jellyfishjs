@@ -3,14 +3,38 @@ import type * as PathType from 'path';
 import type * as FSType from 'fs';
 import { isServer } from '../multiplayer';
 
+/**
+ * Options for serving the game.
+ *
+ * All options are optional.
+ *
+ * If the port is not specified,
+ * a default of 3000 is used.
+ *
+ * You can override the default page HTML
+ * by passing a string containing HTML to the html option,
+ * or by passing a path to an html file.
+ * Paths are relative to the current directory
+ * of the user running the game.
+ */
 export interface ServeOptions {
     port?: number;
     html?: string;
     htmlFilePath?: string;
 }
 
-export async function serve({ port = 8000, html, htmlFilePath }: ServeOptions = {}) {
-
+/**
+ * Serves an HTML file where you can play the game.
+ *
+ * This is meant for development.
+ * For production, you can load the game on any page,
+ * served however you like.
+ *
+ * See `ServeOptions` for options.
+ *
+ * This does nothing when run client-side.
+ */
+export async function serve({ port = 3000, html, htmlFilePath }: ServeOptions = {}) {
     if (!isServer) { return; }
 
     // @ts-ignore
