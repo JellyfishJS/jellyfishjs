@@ -15,7 +15,8 @@
     "dependencies": {
         "engine": "file:../../engine",
         "matter-js": "^0.14.2",
-        "pixi.js": "^5.1.3"
+        "pixi.js": "^5.1.3",
+        "serve-handler": "^6.1.3"
     },
     "devDependencies": {
         "@types/matter-js": "^0.10.2",

@@ -8,11 +8,21 @@ export function serve(port: number = 8000) {
 
     // @ts-ignore
     const http: typeof HTTPType = __non_webpack_require__('http');
-    // serve-handler is not compatible with importing types.
-    // @ts-ignore
-    const handler: any = __non_webpack_require__('serve-handler');
     // @ts-ignore
     const path: typeof PathType = __non_webpack_require__('path');
+
+    let handler: any;
+
+    try {
+        // serve-handler is not compatible with importing types.
+        // @ts-ignore
+        handler = __non_webpack_require__('serve-handler');
+    } catch (error) {
+        throw new Error(
+            "Cannot run test server without package `serve-handler`. To install `serve-hander` run:"
+            + "\n\n    npm install serve-handler\n"
+        );
+    }
 
     // Webpack, for some reason, replaces __dirname and __filename with its own value.
     // This is the only way to access the real values.
