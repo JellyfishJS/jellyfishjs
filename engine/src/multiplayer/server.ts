@@ -1,6 +1,14 @@
 import type * as SocketIOForType from 'socket.io';
 import { gameObjectBodyKey } from '../body/body';
-import { afterStepKey, beforeStepKey, bodyKey, childrenKey, gameKey, GameObject, parentKey } from '../game-object/game-object';
+import {
+    afterStepKey,
+    beforeStepKey,
+    bodyKey,
+    childrenKey,
+    gameKey,
+    GameObject,
+    parentKey,
+} from '../game-object/game-object';
 import { MessageType, ServerEvent, ServerEventType } from './event';
 import { getSocketIO } from './socket';
 import { User } from './user';
@@ -29,7 +37,7 @@ export class Server extends GameObject {
      * This updates as changes come in,
      * and does not respect the game loop.
      */
-    private readonly _userToSocket: Map<string, SocketIOForType.Socket> = new Map();
+    private readonly _userToSocket = new Map<string, SocketIOForType.Socket>();
 
     /**
      * The set of the users currently on the server.
@@ -39,7 +47,7 @@ export class Server extends GameObject {
      */
     private readonly _users: Set<User> = new Set();
 
-    private readonly _shouldUpdateUser: Map<string, boolean> = new Map();
+    private readonly _shouldUpdateUser = new Map<string, boolean>();
 
     /**
      * An array of events yet to be processed.

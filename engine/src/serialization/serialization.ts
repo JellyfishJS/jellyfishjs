@@ -104,7 +104,7 @@ export class Serialization {
         const id = this._nextId++;
         this._serializableItemToID.set(item, id);
 
-        const prototype = Object.getPrototypeOf(item);
+        const prototype: unknown = Object.getPrototypeOf(item);
         if (prototype === Map.prototype) {
             this._result.items[id] = this._serializeItemMap(item as unknown as Map<any, any>);
         } else if (prototype === Set.prototype) {
@@ -357,7 +357,7 @@ export class Serialization {
     private _serializePropertyReference(property: SerializableItem): SerializedProperty {
         return {
             type: SerializedPropertyType.Reference,
-            id: this._serializeItem(property as SerializableItem),
+            id: this._serializeItem(property),
         };
     }
 
