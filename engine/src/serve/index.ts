@@ -1,12 +1,15 @@
 import type * as HTTPType from 'http';
 import type * as PathType from 'path';
+import type * as FSType from 'fs';
 import { isServer } from '../multiplayer';
 
 export interface ServeOptions {
     port?: number;
+    html?: string;
+    htmlFilePath?: string;
 }
 
-export function serve({ port = 8000 }: ServeOptions = {}) {
+export async function serve({ port = 8000, html, htmlFilePath }: ServeOptions = {}) {
 
     if (!isServer) { return; }
 
@@ -14,6 +17,8 @@ export function serve({ port = 8000 }: ServeOptions = {}) {
     const http: typeof HTTPType = __non_webpack_require__('http');
     // @ts-ignore
     const path: typeof PathType = __non_webpack_require__('path');
+    // @ts-ignore
+    const fs: typeof FSType = __non_webpack_require__('fs');
 
     let handler: any;
 
@@ -38,11 +43,25 @@ export function serve({ port = 8000 }: ServeOptions = {}) {
     const filepath: string = eval('__filename');
     const filename: string = path.basename(filepath);
 
+    const defaultPageHTML = `<canvas width=800 height=600 id="game" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></canvas><script src="./${filename}"></script>`;
+    let pageHTML: string | undefined;
+
+    if (htmlFilePath) {
+        const result = await new Promise<string | undefined>((resolve) => {
+            fs.readFile(htmlFilePath, 'utf8', (error, data) => {
+                if (error) { resolve(undefined); }
+                resolve(data);
+            });
+        });
+        pageHTML = result;
+    }
+    pageHTML = pageHTML || html || defaultPageHTML;
+
     http
         .createServer((request, response) => {
             if (request.method === 'GET' && request.url === '/') {
                 response.writeHead(200, { 'Content-Type': 'text/html' });
-                response.write(`<canvas width=800 height=600 id="game" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></canvas><script src="./${filename}"></script>`);
+                response.write(pageHTML);
                 response.end();
                 return;
             }
