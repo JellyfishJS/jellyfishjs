@@ -19,8 +19,8 @@ export function serve(port: number = 8000) {
         handler = __non_webpack_require__('serve-handler');
     } catch (error) {
         throw new Error(
-            "Cannot run test server without package `serve-handler`. To install `serve-hander` run:"
-            + "\n\n    npm install serve-handler\n"
+            'Cannot run test server without package `serve-handler`. To install `serve-hander` run:'
+            + '\n\n    npm install serve-handler\n',
         );
     }
 
