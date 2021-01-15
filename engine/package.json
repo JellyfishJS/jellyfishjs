@@ -5,7 +5,7 @@
     "main": "dist/index.js",
     "scripts": {
         "build": "tsc",
-        "prepack": "cp ../README.md ./README.md && npm run build -s",
+        "prepack": "cp ../README.md ../LICENSE . && npm run build -s",
         "prepublishOnly": "npm run test -s",
         "lint": "eslint .",
         "unit-tests": "mocha",
@@ -18,7 +18,7 @@
         "url": "git+https://github.com/JellyfishJS/jellyfishjs.git"
     },
     "author": "",
-    "license": "UNLICENSED",
+    "license": "MIT",
     "bugs": {
         "url": "https://github.com/JellyfishJS/jellyfishjs/issues"
     },
