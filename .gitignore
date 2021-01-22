@@ -1,7 +1,8 @@
 # Dists
 **/dist
 
-# The packed readme
+# The packed license and readme
+engine/LICENSE
 engine/README.md
 
 # Logs

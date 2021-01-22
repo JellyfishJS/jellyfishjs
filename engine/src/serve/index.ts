@@ -68,8 +68,8 @@ export async function serve({ port = 3000, html, htmlFilePath }: ServeOptions = 
     const filename: string = path.basename(filepath);
 
     const defaultPageHTML = `<canvas width=800 height=600 id="game" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></canvas><script src="./${filename}"></script>`;
-    let pageHTML: string | undefined;
 
+    let fileHTML: string | undefined;
     if (htmlFilePath) {
         const result = await new Promise<string | undefined>((resolve) => {
             fs.readFile(htmlFilePath, 'utf8', (error, data) => {
@@ -77,9 +77,9 @@ export async function serve({ port = 3000, html, htmlFilePath }: ServeOptions = 
                 resolve(data);
             });
         });
-        pageHTML = result;
+        fileHTML = result;
     }
-    pageHTML = pageHTML || html || defaultPageHTML;
+    const pageHTML = fileHTML || html || defaultPageHTML;
 
     http
         .createServer((request, response) => {
