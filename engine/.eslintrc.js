@@ -149,7 +149,7 @@ module.exports = {
         'no-empty': 'off',
         'no-eval': 'error',
         'no-fallthrough': 'off',
-        'no-invalid-this': 'error',
+        'no-invalid-this': 'off', // Doesn't allow accessing this in class member initializers
         'no-multiple-empty-lines': 'error',
         'no-new-wrappers': 'error',
         'no-shadow': ['off', { 'hoist': 'all' }],
