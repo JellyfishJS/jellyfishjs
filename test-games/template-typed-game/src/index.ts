@@ -4,4 +4,4 @@ import { MainObject } from './main-object';
 game.setCanvasByID('game');
 game.createObject(MainObject);
 game.start();
-serve();
+void serve();
