@@ -179,6 +179,7 @@ export class Server extends GameObject {
         if (!SocketIO || this._socketIOServer) { return; }
 
         this._socketIOServer = SocketIO(port);
+        this._socketIOServer.origins((req, callback) => { callback(null, true); });
         this._socketIOServer.on('connect', (socket) => {
             // this._userToSocket changes aren't queued,
             // to avoid using sockets that are dead.
