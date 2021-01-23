@@ -1,4 +1,4 @@
-import { Body, game, GameObject, Sprite, Vector } from 'engine';
+import { game, GameObject, Sprite, Vector } from 'engine';
 import type * as PIXI from 'pixi.js';
 import { Car } from './car';
 

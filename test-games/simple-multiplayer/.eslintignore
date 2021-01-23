@@ -1,0 +1,6 @@
+typings
+dist
+coverage
+.eslintrc.js
+webpack.config.js
+.eslintrc.js

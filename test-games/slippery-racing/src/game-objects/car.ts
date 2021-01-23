@@ -1,7 +1,6 @@
 import { Angle, Body, game, GameObject, ImageSprite, Sprite, Vector } from 'engine';
 import * as keycode from 'keycode';
 import { Bodies } from 'matter-js';
-import { Camera } from './camera';
 
 interface Performance {
     /**
