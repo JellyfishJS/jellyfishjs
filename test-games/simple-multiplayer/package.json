@@ -16,7 +16,7 @@
         "engine": "file:../../engine/jellyfish.js.tgz",
         "pixi.js": "^5.1.3",
         "serve-handler": "^6.1.3",
-        "socket.io": "^2.3.0"
+        "socket.io": "^2.4.0"
     },
     "devDependencies": {
         "eslint": "^7.16.0",
