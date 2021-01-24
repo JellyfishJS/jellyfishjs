@@ -28,7 +28,6 @@ jobs:
       working-directory: engine
     - name: Run test games
       run: |
-        set +e
         for game in test-games/*; do
           echo
           printf '%*s\n' "$COLUMNS" '' | tr ' ' -
@@ -38,8 +37,8 @@ jobs:
           npm install engine@file:../../engine/jellyfish.js.tgz
           npm ci
           npm run build
-          timeout 5 npm start > /dev/null
-          if [ ! "$?" -eq 124 ]; then
+          timeout 5 npm start > /dev/null || ret=$?
+          if [ "$ret" -ne 124 ]; then
             echo "Game $game failed to run for 5 seconds without errors"
             exit 1
           fi
