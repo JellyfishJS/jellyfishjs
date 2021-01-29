@@ -155,6 +155,7 @@ export class Client extends GameObject {
 
         if (!url) {
             const splitOrigin = window.location.origin.split(':');
+            // There's a colon in the http:// part.
             const origin = `${splitOrigin[0]}:${splitOrigin[1]}`;
 
             link = `${origin}:${port ?? Server.DEFAULT_PORT}`;
