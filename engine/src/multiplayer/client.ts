@@ -154,7 +154,10 @@ export class Client extends GameObject {
         let link: string;
 
         if (!url) {
-            link = `${window.location.origin}:${port ?? Server.DEFAULT_PORT}`;
+            const splitOrigin = window.location.origin.split(':');
+            const origin = `${splitOrigin[0]}:${splitOrigin[1]}`;
+
+            link = `${origin}:${port ?? Server.DEFAULT_PORT}`;
         } else {
             link = `${url}:${port ?? Server.DEFAULT_PORT}`;
         }
