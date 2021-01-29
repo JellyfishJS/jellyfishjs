@@ -144,16 +144,22 @@ export class Client extends GameObject {
     /**
      * Connects this client to the server with the specified url.
      *
+     * If no URL is specified,
+     *
      * If no port is specified, defaults to `17771`.
      */
-    public connect(url?: string) {
+    public connect(port?: number, url?: string) {
         if (isServer) { return; }
 
+        let link: string;
+
         if (!url) {
-            url = `http://localhost:${Server.DEFAULT_PORT}`;
+            link = `${window.location.origin}:${port ?? Server.DEFAULT_PORT}`;
+        } else {
+            link = `${url}:${port ?? Server.DEFAULT_PORT}`;
         }
 
-        this._socketIOClient = SocketIOClient(url);
+        this._socketIOClient = SocketIOClient(link);
 
         this._socketIOClient.on('connect', () => {
             this._eventQueue.push({ type: ClientEventType.Connect });

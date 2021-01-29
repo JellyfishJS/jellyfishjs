@@ -4,7 +4,7 @@ import { Circle } from './circle';
 export class Client extends Jellyfish.Client {
 
     public onCreate() {
-        this.connect(process.env.MULTIPLAYER_CIRCLES_SERVER);
+        this.connect(+process.env.MULTIPLAYER_CIRCLES_PORT!);
     }
 
     public onRegistered() {
