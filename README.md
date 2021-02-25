@@ -107,4 +107,4 @@ If you have a question,
 have general feedback,
 want to insult us,
 or want to help out,
-that that's too bad because we don't have a slack yet.
+join our [Discord](https://discord.gg/NYBxGRJfNn)!
