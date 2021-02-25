@@ -50,7 +50,7 @@ class Client extends Jellyfish.Client {
     onCreate() {
         this.position = Vector.xy(Math.floor(Math.random() * 400), Math.floor(Math.random() * 300));
         this.others = [];
-        this.connect(process.env.MULTIPLAYER_CIRCLES_SERVER);
+        this.connect();
         this.sprite = this.createSprite(ClientSprite);
         this.sprite.others = this.others;
         this.sprite.position = this.position;
