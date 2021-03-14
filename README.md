@@ -1,6 +1,3 @@
-Jellyfish is currently in heavy development
-and is not yet useful for much.
-
 # Jellyfish
 
 Multiplayer game development made easy.
@@ -39,50 +36,50 @@ but let's you control the details when you need.
 
 ## Simple Multiplayer Game
 
-**NOTE:**
-This doesn't work yet,
-and probably won't till v.0.1.0.
-
 ```js
-const { GameObject, keys, isServer, Client, Server, game } = require('jellyfish.js');
+const { GameObject, ImageSprite, Vector, Server, Client, isServer, game, serve } = require('jellyfish.js');
 
 class Player extends GameObject {
-
     onCreate() {
-        this.position = Vector.xy(0, 0);
+        this.position = Vector.xy(100, 300);
         this.sprite = this.createSprite(ImageSprite, '/assets/player.png');
-        this.sprite.setFollowing(this);
+        this.sprite.following = this;
     }
 
     keyHeld(keycode) {
         if (!this.isOwnedByCurrentUser()) { return; }
+
+        let movement = Vector.zero;
         switch (keycode) {
-            case Button.Up: this.y++; break;
-            case Button.Down: this.y--; break;
-            case Button.Left: this.x--; break;
-            case Button.Right: this.x++; break;
+            case 40: movement = Vector.up; break;
+            case 38: movement = Vector.down; break;
+            case 37: movement = Vector.left; break;
+            case 39: movement = Vector.right; break;
         }
+
+        this.position = this.position.plus(movement);
     }
 }
 game.registerClass(Player);
 
 class GameServer extends Server {
     onCreate() { this.start(); }
-
-    onUserJoined(user) {
-        const player = this.createObject(Player);
-        player.setOwner(user);
-    }
 }
 
-class GameClient extends Server {
+class GameClient extends Client {
     onCreate() { this.connect(); }
+    onRegistered() {
+        const player = this.createObject(Player);
+        player.setOwner(this.user());
+    }
 }
 
 if (isServer) { game.createObject(GameServer); }
 else { game.createObject(GameClient); }
 
+game.setCanvasByID("game");
 game.start();
+serve();
 ```
 
 ## Getting Started
