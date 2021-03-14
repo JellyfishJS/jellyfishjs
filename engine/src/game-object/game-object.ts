@@ -303,7 +303,7 @@ export abstract class GameObject {
             if (current instanceof ServerClass) {
                 return this[ownerKey] === undefined;
             } else if (current instanceof ClientClass) {
-                return this[ownerKey] === current.user();
+                return current.user().id === this[ownerKey]?.id;
             }
             current = current.parent();
         }
