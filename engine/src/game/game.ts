@@ -75,6 +75,10 @@ export class Game {
      */
     public setCanvasByID(id: string) {
         this._pixiSetup = new PIXISetup(id);
+        const canvas = this._pixiSetup.getCanvas();
+        if (canvas) {
+            this.input['_setCanvas'](canvas);
+        }
     }
 
     /**

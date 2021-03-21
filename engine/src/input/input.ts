@@ -1,7 +1,4 @@
-/**
- * The input class maintains the current state of the mouse and keyboard and can be queried
- * for the state of each key and mouse button
- */
+import { Vector } from '../util/geometry';
 
 export enum ButtonState {
     Down = 'DOWN',
@@ -17,37 +14,62 @@ export enum ButtonEvent {
 // The maximum value of keycodes returned by KeyEvent.keyCode, appears to be less than 222 for English keyboards
 const maxKeyCode = 222;
 
+type InputEvent =
+    | { type: 'button', buttonCode: number, buttonState: ButtonState }
+    | { type: 'mouseMove', x: number, y: number };
+
+/**
+ * The input class maintains the current state of the mouse and keyboard and can be queried
+ * for the state of each key and mouse button
+ */
 export class Input {
+
+    /**
+     * The canvas this game is on.
+     */
+    private _canvas: HTMLCanvasElement | undefined;
+
+    /**
+     * The mouse location on the previous step.
+     */
+    private _previousMouseLocation: Vector | undefined;
+
+    /**
+     * The mouse location on this step.
+     */
+    private _mouseLocation: Vector | undefined;
+
     /**
      * The current state of each key and mouse button, true means a key or mouse button is down
      * a falsey value means the key or mouse button is up
      */
     private inputState = new Map<number, ButtonState>();
+
     /**
      * The queue of all input events that occurred since the last time processEvents was called
      */
-    private inputEvents: { buttonCode: number, buttonState: ButtonState }[] = [];
+    private inputEvents: InputEvent[] = [];
 
     public constructor() {
         if (typeof window !== 'undefined') {
             window.document.addEventListener(
                 'keydown', (event) => {
-                    this.addEvent(event, ButtonState.Down);
+                    this.addButtonEvent(event, ButtonState.Down);
                 },
             );
             window.document.addEventListener(
                 'keyup', (event) => {
-                    this.addEvent(event, ButtonState.Up);
+                    this.addButtonEvent(event, ButtonState.Up);
                 },
             );
             window.document.addEventListener(
                 'mousedown', (event) => {
-                    this.addEvent(event, ButtonState.Down);
+                    this.addButtonEvent(event, ButtonState.Down);
                 },
             );
             window.document.addEventListener(
                 'mouseup', (event) => {
-                    this.addEvent(event, ButtonState.Up);
+                    this.addButtonEvent(event, ButtonState.Up);
                 },
             );
             window.document.addEventListener(
@@ -55,22 +77,42 @@ export class Input {
                     event.preventDefault();
                 },
             );
+            window.document.addEventListener(
+                'mousemove', (event) => {
+                    this.addMouseMoveEvent(event);
+                },
+            );
         }
     }
 
     /**
-     * Callback for handling key press and mouse click events that come from Javascript
+     * Sets the canvas element
+     * that mouse positions will be relative to.
+     */
+    private _setCanvas(canvas: HTMLCanvasElement) {
+        this._canvas = canvas;
+    }
+
+    /**
+     * Records key press and mouse click events, to be handled by `processEvents`.
      * @param event
      * @param buttonState
      */
-    private addEvent(event: Event, buttonState: ButtonState) {
+    private addButtonEvent(event: Event, buttonState: ButtonState) {
         if (event instanceof KeyboardEvent) {
             if (!event.repeat) {
-                this.inputEvents.push({ buttonCode: event.keyCode, buttonState });
+                this.inputEvents.push({ type: 'button', buttonCode: event.keyCode, buttonState });
             }
         } else if (event instanceof MouseEvent) {
-            this.inputEvents.push({ buttonCode: this.mouseCode(event.button), buttonState });
+            this.inputEvents.push({ type: 'button', buttonCode: this.mouseCode(event.button), buttonState });
         }
+    }
+
+    /**
+     * Records mouse movement events, to be handled by `processEvents`.
+     */
+    private addMouseMoveEvent(event: MouseEvent) {
+        this.inputEvents.push({ type: 'mouseMove', x: event.clientX, y: event.clientY });
     }
 
     /**
@@ -79,13 +121,27 @@ export class Input {
      * @param dispatchInputEvent: the callback to call with the processed input events
      */
     public processEvents(dispatchInputEvent: (inputCode: number, eventType: ButtonEvent) => void): void {
+        this._previousMouseLocation = this._mouseLocation;
         for (const inputEvent of this.inputEvents) {
-            if (inputEvent.buttonState === ButtonState.Down) {
-                dispatchInputEvent(inputEvent.buttonCode, ButtonEvent.Pressed);
-                this.inputState.set(inputEvent.buttonCode, inputEvent.buttonState);
-            } else { // Button is up
-                dispatchInputEvent(inputEvent.buttonCode, ButtonEvent.Released);
-                this.inputState.delete(inputEvent.buttonCode);
+            switch (inputEvent.type) {
+                case 'button':
+                    if (inputEvent.buttonState === ButtonState.Down) {
+                        dispatchInputEvent(inputEvent.buttonCode, ButtonEvent.Pressed);
+                        this.inputState.set(inputEvent.buttonCode, inputEvent.buttonState);
+                    } else { // Button is up
+                        dispatchInputEvent(inputEvent.buttonCode, ButtonEvent.Released);
+                        this.inputState.delete(inputEvent.buttonCode);
+                    }
+                    break;
+                case 'mouseMove':
+                    if (this._canvas) {
+                        const canvasBoundingRect = this._canvas.getBoundingClientRect();
+                        const canvasPosition = Vector.xy(canvasBoundingRect.left, canvasBoundingRect.top);
+                        this._mouseLocation = Vector.xy(inputEvent.x, inputEvent.y).minus(canvasPosition);
+                    } else {
+                        this._mouseLocation = Vector.xy(inputEvent.x, inputEvent.y);
+                    }
+                    break;
             }
         }
 
@@ -120,6 +176,33 @@ export class Input {
      */
     public isDown(buttonCode: number): boolean {
         return this.is(ButtonState.Down, buttonCode);
+    }
+
+    /**
+     * Returns the coordinates of the mouse's current location.
+     *
+     * May return undefined, if the mouse cannot be found.
+     */
+    public mouseLocation(): Vector | undefined {
+        return this._mouseLocation;
+    }
+
+    /**
+     * Returns the coordinates of the mouse's location the previous step.
+     *
+     * May return undefined, if the mouse cannot be found.
+     */
+    public previousMouseLocation(): Vector | undefined {
+        return this._previousMouseLocation;
+    }
+
+    /**
+     * Returns the movement of the mouse over the last step,
+     * or undefined if it could not be found.
+     */
+    public mouseMovement(): Vector | undefined {
+        if (!this._mouseLocation || !this._previousMouseLocation) { return; }
+        return this._mouseLocation.minus(this._previousMouseLocation);
     }
 
     /**
