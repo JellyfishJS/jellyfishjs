@@ -28,4 +28,11 @@ export class User {
         this._id = id;
     }
 
+    /**
+     * Returns true if and only if this User equals the other User.
+     */
+    public equals(other: User): boolean {
+        return this.id() === other.id();
+    }
+
 }
