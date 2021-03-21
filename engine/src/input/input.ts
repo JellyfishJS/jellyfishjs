@@ -25,6 +25,11 @@ type InputEvent =
 export class Input {
 
     /**
+     * The canvas this game is on.
+     */
+    private _canvas: HTMLCanvasElement | undefined;
+
+    /**
      * The mouse location on the previous step.
      */
     private _previousMouseLocation: Vector | undefined;
@@ -81,6 +86,14 @@ export class Input {
     }
 
     /**
+     * Sets the canvas element
+     * that mouse positions will be relative to.
+     */
+    private _setCanvas(canvas: HTMLCanvasElement) {
+        this._canvas = canvas;
+    }
+
+    /**
      * Records key press and mouse click events, to be handled by `processEvents`.
      * @param event
      * @param buttonState
@@ -121,7 +134,13 @@ export class Input {
                     }
                     break;
                 case 'mouseMove':
-                    this._mouseLocation = Vector.xy(inputEvent.x, inputEvent.y);
+                    if (this._canvas) {
+                        const canvasBoundingRect = this._canvas.getBoundingClientRect();
+                        const canvasPosition = Vector.xy(canvasBoundingRect.left, canvasBoundingRect.top);
+                        this._mouseLocation = Vector.xy(inputEvent.x, inputEvent.y).minus(canvasPosition);
+                    } else {
+                        this._mouseLocation = Vector.xy(inputEvent.x, inputEvent.y);
+                    }
                     break;
             }
         }
