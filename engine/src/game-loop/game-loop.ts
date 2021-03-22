@@ -216,8 +216,8 @@ export class GameLoop {
             });
         };
 
-        this._gameObjects.forEach((gameObjectA) => {
-            this._gameObjects.forEach((gameObjectB) => {
+        this._forEachObject((gameObjectA) => {
+            this._forEachObject((gameObjectB) => {
                 if (gameObjectB === gameObjectA) {
                     return;
                 }
