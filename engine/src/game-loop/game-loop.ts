@@ -216,14 +216,14 @@ export class GameLoop {
             });
         };
 
-        this._gameObjects.forEach((gameObjectA) => {
-            this._gameObjects.forEach((gameObjectB) => {
+        this._forEachObject((gameObjectA) => {
+            if (!gameObjectA.onCollision) { return; }
+            this._forEachObject((gameObjectB) => {
                 if (gameObjectB === gameObjectA) {
                     return;
                 }
                 if (collides(gameObjectA, gameObjectB)) {
                     gameObjectA.onCollision && gameObjectA.onCollision(gameObjectB);
-                    gameObjectB.onCollision && gameObjectB.onCollision(gameObjectA);
                 }
             });
         });
