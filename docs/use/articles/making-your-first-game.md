@@ -95,7 +95,7 @@ but a simple `serve()` is good enough for this tutorial.
 This is how it should look:
 
 <div align="center">
-    <img src="../../assets/first-game/empty.png" width=150 />
+    <img src="../../assets/first-game/empty.png" width=450 />
 </div>
 
 ## Adding a character
@@ -211,7 +211,7 @@ and go to [localhost:3000](http://localhost:3000),
 you should see a Jellyfish.
 
 <div align="center">
-    <img src="../../assets/first-game/jellyfish.png" width=150 />
+    <img src="../../assets/first-game/jellyfish.png" width=450 />
 </div>
 
 ## Adding controls
@@ -456,7 +456,7 @@ If you rent a server and run it there,
 your friends can connect and you can play together!
 
 <div align="center">
-    <img src="../../assets/first-game/multi-jellyfish.png" width=150 />
+    <img src="../../assets/first-game/multi-jellyfish.png" width=450 />
 </div>
 
 ## You're done!
