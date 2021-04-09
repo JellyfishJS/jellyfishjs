@@ -10,6 +10,17 @@ It will get you to this
 which is a working multiplayer game
 with a circle you can move around.
 
+## Contents
+
+1. [Prerequisites](#prerequisites)
+2. [Installing the minimal example](#installing-the-minimal-example)
+3. [Running the minimal example](#running-the-minimal-example)
+4. [What we have so far](#what-we-have-so-far)
+5. [Adding a character](#adding-a-character)
+6. [Adding controls](#adding-controls)
+7. [Adding multiplayer](#adding-multiplayer)
+8. [You're done!](#youre-done)
+
 ## Prerequisites
 
 This tutorial assumes you know how to use, and have the following available:
