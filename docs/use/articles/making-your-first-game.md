@@ -13,10 +13,12 @@ with a circle you can move around.
 ## Prerequisites
 
 This tutorial assumes you know how to use, and have the following available:
+
 - Javascript,
 - npm,
 - node,
 - bash, or some similar shell.
+
 If you do not, many fantastic tutorials are available online.
 
 ## Installing the minimal example
@@ -142,6 +144,7 @@ const {
 ```
 
 We have some new imports:
+
 - `GameObject` is a superclass for pretty much any object in your game.
     You can subclass it to make anything —
     players, bullets, cars, enemies, buttons,
