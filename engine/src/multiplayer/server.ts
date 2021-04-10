@@ -1,4 +1,5 @@
 import type * as SocketIOForType from 'socket.io';
+import uuid = require('uuid');
 import { gameObjectBodyKey } from '../body/body';
 import {
     afterStepKey,
@@ -48,6 +49,14 @@ export class Server extends GameObject {
     private readonly _users: Set<User> = new Set();
 
     private readonly _shouldUpdateUser = new Map<string, boolean>();
+
+    /**
+     * A unique ID for this server.
+     *
+     * This way, if a client swaps servers somehow,
+     * it can be detected and ignored.
+     */
+    private readonly _serverID = uuid.v4();
 
     /**
      * An array of events yet to be processed.
@@ -187,7 +196,7 @@ export class Server extends GameObject {
             this._userToSocket.set(user.id(), socket);
             this._eventQueue.push({ type: ServerEventType.Connect, user });
 
-            this._send(user, user.id(), MessageType.User);
+            this._send(user, JSON.stringify({ user: user.id(), server: this._serverID }), MessageType.User);
 
             socket.on('message', (type: unknown, contents: unknown) => {
                 this._eventQueue.push({ type: ServerEventType.Message, user, message: { type, contents } });
