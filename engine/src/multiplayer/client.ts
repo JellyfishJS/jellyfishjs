@@ -138,7 +138,7 @@ export class Client extends GameObject {
             case MessageType.User: {
                 const { user, server } = JSON.parse(contents);
                 this._user = new User(user);
-                this._serverID = server;
+                this._serverID = this._serverID || server;
                 this.onRegistered?.();
                 return;
             }
@@ -204,7 +204,7 @@ export class Client extends GameObject {
     private _send(message: unknown, type: MessageType) {
         if (!this._socketIOClient) { return; }
 
-        this._socketIOClient.send(type, message);
+        this._socketIOClient.send(type, { message, server: this._serverID });
     }
 
     /**
