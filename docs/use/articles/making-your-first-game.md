@@ -36,7 +36,7 @@ If you do not, many fantastic tutorials are available online.
 
 You can find the minimal example here: [github.com/JellyfishJS/template-minimal](https://github.com/JellyfishJS/template-minimal).
 
-You can download it [here](https://github.com/JellyfishJS/template-multiplayer/archive/refs/heads/main.zip),
+You can download it [here](https://github.com/JellyfishJS/template-minimal/archive/refs/heads/main.zip),
 or, if you prefer, use GitHub's "Use this template" feature.
 
 Then, unzip the project, and open it in your favourite editor.
