@@ -52,8 +52,9 @@ npm install
 
 Then, to build and run the game, run
 
-```bash
-npm run build && npm start
+```sh
+npm run build
+npm start
 ```
 
 It will print the URL [localhost:3000](http://localhost:3000),
@@ -220,7 +221,13 @@ game.createObject(Player);
 
 This creates a player.
 
-Now, if you `npm run build && npm start`,
+Now, if you
+
+```sh
+npm run build
+npm start
+```
+
 and go to [localhost:3000](http://localhost:3000),
 you should see a Jellyfish.
 
@@ -311,7 +318,13 @@ If you want to move twice as fast, you could do this instead:
         this.position = this.position.plus(movement.times(2));
 ```
 
-Now, if you `npm run build && npm start`,
+Now, if you
+
+```sh
+npm run build
+npm start
+```
+
 and go to [localhost:3000](http://localhost:3000),
 you should be able to move your Jellyfish.
 
@@ -461,7 +474,13 @@ Finally, instead of creating a player direct,
 here, we create a `GameServer` object if we're on a server
 and a `GameClient` object if we're on a client.
 
-Now, if you `npm run build && npm start`,
+Now, if you
+
+```sh
+npm run build
+npm start
+```
+
 and go to [localhost:3000](http://localhost:3000),
 you can play this game in multiplayer.
 If you open it in multiple windows,
