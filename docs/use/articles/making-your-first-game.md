@@ -425,6 +425,15 @@ in their web browser.
 and `false` on the client.
 
 ```js
+        if (!this.isOwnedByCurrentUser()) { return; }
+```
+
+Here, if the player isn't owned by the current user,
+it's a player controlled by someone else.
+Since you cannot move other players,
+it returns, instead of moving the Jellyfish.
+
+```js
 class GameServer extends Server {
     onCreate() { this.start(); }
 }
@@ -435,14 +444,6 @@ Here, we make our own server.
 When it's created,
 the `onCreate` hook starts the server.
 Since this is a simple game, we don't need to do anything else here.
-
-```js
-        if (!this.isOwnedByCurrentUser()) { return; }
-```
-Here, if the player isn't owned by the current user,
-it's a player controlled by someone else.
-Since you cannot move other players,
-it returns, instead of moving the Jellyfish.
 
 ```js
 class GameClient extends Client {
