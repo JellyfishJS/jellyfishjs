@@ -1,4 +1,5 @@
 import type * as SocketIOForType from 'socket.io';
+import uuid = require('uuid');
 import { gameObjectBodyKey } from '../body/body';
 import {
     afterStepKey,
@@ -48,6 +49,14 @@ export class Server extends GameObject {
     private readonly _users: Set<User> = new Set();
 
     private readonly _shouldUpdateUser = new Map<string, boolean>();
+
+    /**
+     * A unique ID for this server.
+     *
+     * This way, if a client swaps servers somehow,
+     * it can be detected and ignored.
+     */
+    private readonly _serverID = uuid.v4();
 
     /**
      * An array of events yet to be processed.
@@ -129,24 +138,38 @@ export class Server extends GameObject {
      * since this might be caused by a client trying to mess with the server.
      */
     private _onMessage(user: User, type: unknown, contents: unknown) {
+        if (typeof contents !== 'object' || !contents) {
+            console.log(`Invalid update contents${contents}`);
+            return;
+        }
+        const serverID = (contents as any)['server'];
+
+        if (serverID !== this._serverID) {
+            // The client is from before the server restart.
+            // It's safe to drop them.
+            return;
+        }
+
+        const message = (contents as any)['message'];
+
         if (type === MessageType.Update) {
-            if (typeof contents !== 'object' || !contents) {
-                console.log(`Invalid update ${contents}`);
+            if (typeof message !== 'object' || !message) {
+                console.log(`Invalid update ${message}`);
                 return;
             }
 
-            this._handleUpdate(contents, user);
+            this._handleUpdate(message, user);
             return;
         }
 
         if (typeof contents !== 'string') {
-            console.error(`Unexpectedly got message from client with type ${type} and contents ${contents}, which is not a string.`);
+            console.error(`Unexpectedly got message from client with type ${type} and message ${message}, which is not a string.`);
             return;
         }
 
         switch (type) {
             case MessageType.String:
-                this.onMessage?.(user, contents);
+                this.onMessage?.(user, message);
                 return;
             default:
                 console.error(`Unexpectedly got message from client with type ${type}, which is not recognized.`);
@@ -187,7 +210,7 @@ export class Server extends GameObject {
             this._userToSocket.set(user.id(), socket);
             this._eventQueue.push({ type: ServerEventType.Connect, user });
 
-            this._send(user, user.id(), MessageType.User);
+            this._send(user, JSON.stringify({ user: user.id(), server: this._serverID }), MessageType.User);
 
             socket.on('message', (type: unknown, contents: unknown) => {
                 this._eventQueue.push({ type: ServerEventType.Message, user, message: { type, contents } });
