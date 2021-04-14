@@ -1,6 +1,9 @@
 # Dists
 **/dist
 
+# Generated documentation
+engine/docs
+
 # The packed license and readme
 engine/LICENSE
 engine/README.md
