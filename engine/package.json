@@ -5,6 +5,7 @@
     "main": "dist/index.js",
     "scripts": {
         "build": "tsc",
+        "document": "typedoc src/index.ts",
         "prepack": "cp ../README.md ../LICENSE . && npm run build -s",
         "prepublishOnly": "npm run test -s",
         "lint": "eslint .",
