@@ -39,6 +39,13 @@ export class Client extends GameObject {
     private _user: User | undefined;
 
     /**
+     * The server the client thinks it is connected to.
+     *
+     * Used to detect if the server is changed, somehow.
+     */
+    private _serverID: string | undefined;
+
+    /**
      * Indicates if it is the client's turn to send an update.
      *
      * Set to false on sending an update,
@@ -128,10 +135,13 @@ export class Client extends GameObject {
         }
 
         switch (type) {
-            case MessageType.User:
-                this._user = new User(contents);
+            case MessageType.User: {
+                const { user, server } = JSON.parse(contents);
+                this._user = new User(user);
+                this._serverID = this._serverID || server;
                 this.onRegistered?.();
                 return;
+            }
             case MessageType.String:
                 this.onMessage?.(contents);
                 return;
@@ -160,7 +170,7 @@ export class Client extends GameObject {
 
             link = `${origin}:${port ?? Server.DEFAULT_PORT}`;
         } else {
-            link = `${url}:${port ?? Server.DEFAULT_PORT}`;
+            link = url;
         }
 
         this._socketIOClient = SocketIOClient(link);
@@ -194,7 +204,7 @@ export class Client extends GameObject {
     private _send(message: unknown, type: MessageType) {
         if (!this._socketIOClient) { return; }
 
-        this._socketIOClient.send(type, message);
+        this._socketIOClient.send(type, { message, server: this._serverID });
     }
 
     /**
