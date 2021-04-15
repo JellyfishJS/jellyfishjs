@@ -8,7 +8,7 @@ export class Camera extends GameObject {
 
     private velocity: Vector = Vector.zero;
 
-    private positionFollowSpeed = 0.004;
+    private positionFollowSpeed = 0.008;
 
     private positionFrictionFactor = 0.9;
 

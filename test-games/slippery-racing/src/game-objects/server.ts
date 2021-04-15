@@ -3,6 +3,7 @@ import { Car } from './car';
 import { Decoration } from './decoration';
 import { LooseTire } from './loose-tire';
 import { SoccerBall } from './soccer-ball';
+import { Track } from './track';
 
 export class SlipperServer extends Server {
 
@@ -32,18 +33,25 @@ export class SlipperServer extends Server {
 
     public onCreate() {
 
-        this.generateCircle(Vector.zero, 200);
+        this.generateCircle(Vector.xy(-1000, -1900), 200);
+        this.generateCircle(Vector.xy(3400, -1160), 300);
+        this.generateCircle(Vector.xy(4900, -2200), 500);
+        this.generateCircle(Vector.xy(3300, -3300), 400);
+        this.generateCircle(Vector.xy(1000, -4600), 800);
+        this.generateCircle(Vector.xy(-2900, -2600), 400);
+        this.generateCircle(Vector.xy(-5100, -600), 600);
+        this.generateCircle(Vector.xy(-3000, 300), 200);
+        this.generateCircle(Vector.xy(-2500, -100), 700);
 
-        // Too many items cause a lot of lag,
-        // so these are commented out for now.
-        this.generateCircle(Vector.xy(1200, 1500), 400);
-        this.generateCircle(Vector.xy(-1900, 1500), 800);
-        this.generateCircle(Vector.xy(-1900, -2200), 150);
-        this.generateCircle(Vector.xy(1900, -2700), 150);
-        this.generateCircle(Vector.xy(2900, -2400), 250);
+        this.createObject(
+            Track,
+            Vector.xy(0, -1400),
+        );
 
-        // this.generateTireCircle(Vector.zero, 800, 24);
-        // this.generateTireCircle(Vector.xy(-2900, -2700), 300, 48);
+        // this.generateCircle(Vector.xy(-1900, 1500), 800);
+        // this.generateCircle(Vector.xy(-1900, -2200), 150);
+        // this.generateCircle(Vector.xy(1900, -2700), 150);
+        // this.generateCircle(Vector.xy(2900, -2400), 250);
 
         this.createObject(
             SoccerBall,

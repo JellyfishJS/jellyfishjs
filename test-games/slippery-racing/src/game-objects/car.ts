@@ -48,6 +48,7 @@ export class Car extends GameObject {
 
     public beforePhysics() {
         if (this.isOwnedByCurrentUser()) {
+            console.log(this.body.position);
 
             const mainForce = Vector.lengthAndDirection(
                 this.performance.acceleration * this.body.mass,
