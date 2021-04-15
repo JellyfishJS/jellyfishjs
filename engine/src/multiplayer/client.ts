@@ -170,7 +170,7 @@ export class Client extends GameObject {
 
             link = `${origin}:${port ?? Server.DEFAULT_PORT}`;
         } else {
-            link = `${url}:${port ?? Server.DEFAULT_PORT}`;
+            link = url;
         }
 
         this._socketIOClient = SocketIOClient(link);

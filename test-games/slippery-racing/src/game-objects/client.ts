@@ -15,7 +15,7 @@ export class SlipperyClient extends Client {
     public onCreate() {
         this.game().getWorld()!.gravity = { x: 0, y: 0, scale: 0 };
 
-        this.connect(+process.env.SLIPPERY_RACING_PORT!);
+        this.connect(+process.env.SLIPPERY_RACING_PORT!, process.env.SLIPPERY_RACING_SERVER);
     }
 
     public onRegistered() {
