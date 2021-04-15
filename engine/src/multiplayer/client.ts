@@ -229,9 +229,9 @@ export class Client extends GameObject {
     public [afterStepKey]() {
         super[afterStepKey] && super[afterStepKey]!();
 
-        if (this._shouldSendUpdate) {
+        // if (this._shouldSendUpdate) {
             this._sendUpdate();
-        }
+        // }
     }
 
     /**
