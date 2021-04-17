@@ -84,10 +84,10 @@ serve();
 
 ## Getting Started
 
-To get started quickly, check out the [quick start guide](./docs/use/articles/quick-start.md).
+To get started quickly, check out the [first game guide](./docs/use/articles/making-your-first-game.md).
 
 For more information,
-see the rest of [the documentation](./docs/use/use.md).
+see the rest of [the documentation](https://docs.jellyfishjs.org/).
 
 ## Contributing
 
