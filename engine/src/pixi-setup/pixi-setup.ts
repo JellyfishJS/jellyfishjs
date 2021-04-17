@@ -80,7 +80,7 @@ export class PIXISetup {
         if (this._application) {
             this._application.ticker.add(callback);
         } else {
-            setInterval(callback, 1000 / 60);
+            setInterval(callback, 3);
         }
     }
 

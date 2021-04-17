@@ -16,6 +16,7 @@ import {
 import { Input } from '../input/input';
 import { Matter } from '../matter-setup/matter-setup';
 import { Client, isServer, Server, User } from '../multiplayer';
+import { Performance } from '../performance/performance';
 import { PIXISetup } from '../pixi-setup/pixi-setup';
 import { Serializer } from '../serialization';
 import type { PrototypeRegistrationOptions } from '../serialization/serializer-configuration';
@@ -49,6 +50,8 @@ export class Game {
     private _physicsEngine: Matter.Engine | undefined = Matter?.Engine.create();
 
     private _serializer: Serializer = new Serializer();
+
+    private _performance: Performance = new Performance();
 
     /**
      * Creates an instance of a specified subclass of GameObject,
@@ -206,7 +209,27 @@ export class Game {
         }
 
         this._pixiSetup.onInterval(() => {
-            this._gameLoop.runStep(this.input, this._pixiSetup, this._physicsEngine);
+            const now = Date.now();
+            if (!this._performance.shouldStep(now)) { return; }
+
+            const singleStep = () => {
+                this._performance.step();
+                this._gameLoop.runStep(this.input, this._pixiSetup, this._physicsEngine);
+            };
+            singleStep();
+
+            const amountBehind = this._performance.amountBehind(now);
+
+            // If we are way behind, we probably froze. Don't try to catch up.
+            if (amountBehind > 10) {
+                console.info(`Fell behind ${amountBehind} steps. Resetting timer.`);
+                this._performance.start(now);
+            }
+
+            // Doublestep to catch up from being a bit behind.
+            if (amountBehind > 3) {
+                singleStep();
+            }
         });
     }
 
