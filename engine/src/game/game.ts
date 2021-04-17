@@ -211,6 +211,7 @@ export class Game {
         this._pixiSetup.onInterval(() => {
             const now = Date.now();
             if (!this._performance.shouldStep(now)) { return; }
+
             const singleStep = () => {
                 this._performance.step();
                 this._gameLoop.runStep(this.input, this._pixiSetup, this._physicsEngine);

@@ -7,7 +7,15 @@ const STEP_TIME = 1000 / 60;
  * Handles how quickly and how often steps run.
  */
 export class Performance {
+
+    /**
+     * Records when the performance started being recorded.
+     */
     private _startTime = Date.now();
+
+    /**
+     * Records the number of steps that have occurred.
+     */
     private _numberOfSteps = 0;
 
     /**
@@ -30,15 +38,24 @@ export class Performance {
         this._numberOfSteps = 0;
     }
 
+    /**
+     * Records that a step has occurred.
+     */
     public step() {
         this._numberOfSteps++;
     }
 
+    /**
+     * Returns `true` if it's time for another step.
+     */
     public shouldStep(now: number) {
         const nextStep = this._startTime + this._numberOfSteps * STEP_TIME;
         return now > nextStep;
     }
 
+    /**
+     * Returns how many steps it has fallen behind.
+     */
     public amountBehind(now: number) {
         return (now - this._startTime) / STEP_TIME - this._numberOfSteps;
     }
