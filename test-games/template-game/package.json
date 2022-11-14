@@ -23,6 +23,6 @@
         "eslint-plugin-import": "^2.22.1",
         "eslint-plugin-prefer-arrow": "^1.2.2",
         "webpack": "^4.40.2",
-        "webpack-cli": "^3.3.8"
+        "webpack-cli": "^3.3.12"
     }
 }
