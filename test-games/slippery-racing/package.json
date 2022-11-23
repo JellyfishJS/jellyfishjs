@@ -17,7 +17,7 @@
         "engine": "file:../../engine/jellyfish.js.tgz",
         "keycode": "^2.2.0",
         "matter-js": "^0.14.2",
-        "socket.io": "^2.4.0"
+        "socket.io": "^2.5.0"
     },
     "devDependencies": {
         "@types/matter-js": "^0.10.2",
